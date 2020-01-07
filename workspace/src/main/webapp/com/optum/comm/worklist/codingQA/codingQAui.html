@@ -1,0 +1,526 @@
+<style>
+	body {
+		padding-left: 15px;
+		padding-top: 5px;
+	}
+	
+	.coding-qa-ui {
+		border: 1px solid grey;
+		border-collapse: separate !important;
+		width: 99%;
+		padding-bottom: 5px;
+	}
+	.tk-help-btn {
+	width :30% !important;
+	}
+	.coding-qa-ui td, .coding-qa-ui th {
+		padding: 5px;
+		text-align: left;
+	}
+	
+	.coding-qa-ui th {
+		border-bottom: 1px solid grey;
+	}
+	
+	.coding-qa-ui tr {
+		height: 30px;
+	}
+	
+	.header-data {
+		color: #c25608;
+		font-size: 16px;
+	}
+	
+	.header {
+		border: 1px solid grey;
+		border-collapse: separate !important;
+	}
+	
+	.header tr {
+		height: 40px;
+	}
+	
+	a:link {
+		color: blue;
+	}
+	
+	.panel-table {
+		width: 100% !important
+	}
+	
+	.encountersForm {
+		margin-bottom: 30px;
+		height: 60px;
+	}
+	
+	.uitk-calendar-custom-class {
+		width: 90px;
+	}
+	
+	.uitk-input-custom-class-number {
+		width: 90px;
+		margin-right: 25px;
+	}
+	
+	.uitk-input-custom-class-text {
+		width: 90px;
+		margin-right: 25px;
+	}
+	
+	.uitk-panel-custom-class {
+		width: 100%;
+		margin-bottom: 30px;
+	}
+	
+	#eoCodeDropDownId {
+		width: 160px !important;
+		margin-top: 10px;
+	}
+	
+	#renderingProviderId {
+		width: 110px !important;
+		margin-top: 10px;
+		margin-right: 25px;
+	}
+	
+	#dynamicTableComments {
+		border-top: none;
+		width: 100%
+	}
+	
+	.form-label {
+		display: block;
+		margin-bottom: 10px;
+	}
+	
+	.form-span {
+		display: inline-block;
+		margin-right: 20 px;
+		float: left
+	}
+	
+	.coding-panel {
+		display: block;
+		width: 99% !important;
+	}
+	
+	#dynamicTableICDCodes {
+		border: none;
+		margin-bottom: 10px;
+	}
+	
+	#codingUIEncountersPanelContent {
+		overflow: visible !important;
+	}
+	
+	#commentsTextId_textarea {
+		height: 140px;
+		width: 35rem;
+	}
+	
+	.add-encounter-dialog input {
+		width: 100px;
+	}
+	
+	#qaDOSFromDate_cal{
+		width: 80px;
+	}
+	
+	#qaDOSFromDate_calIcon{
+		padding-left: 1px;
+		padding-right: 2px;
+	}
+	
+	#qaDOSThruDate_cal{
+		width: 80px;
+	}
+	#qaDOSThruDate_calIcon{
+		padding-left: 1px;
+		padding-right: 2px;
+	}
+	
+	#throughDate_cal{
+		width: 80px;
+	}
+	
+	#throughDate_calIcon{
+		padding-left: 1px;
+		padding-right: 2px;
+	}
+	
+	#fromDate_cal{
+		width: 80px;
+	}
+	
+	#fromDate_calIcon{
+		padding-left: 1px;
+		padding-right: 2px;
+	}
+	
+	#codingQALoadingDialog_headerId{
+		display: none
+	}
+	#codingQALoadingDialog_closeLink{
+		display: none
+	}
+	#codingQALoadingDialog{
+		border-width:unset;
+		border-style: none
+	}
+	.tk-input-masking-assistivetext{
+		display:none;
+	}
+	.tk-cal-assistivetext{
+		display:none;
+	}
+	#fromDate_tip{
+		display:block;
+	}
+	#throughDate_tip{
+		display:block;
+	}
+	.encDtlTable table tbody tr td:nth-child(3) {
+	    border-left-style	:	solid;
+		border-left-width	:	3px;
+	    border-left-color	: 	darkgrey;
+	}
+	.tk-multi-sel{
+		width : 30rem !important;
+	}
+	.tk-chckbox-layer{
+		width : 20rem !important;
+	}
+	.tk-multi-btn-wrap{
+		margin-top:10px;
+	}
+	 .tk-multi-btn {
+  	  width: 6.5rem;
+	}
+	#eoCode .tk-multi-sel{
+		width: 30rem !important;
+	}
+	#eoCode .tk-chckbox-layer{
+		width : 30rem !important;
+	}
+	#eoCode .tk-multi-btn-wrap{
+		border:0px;
+		margin-top: 0px;
+   		height: 25px;
+	}
+	#eoCode .tk-multi-btn {
+  	  width: 14.25rem;
+	}
+	#eoCode .tk-multi-col{
+		/* height:13.5px;
+		display:inline-block; */
+		line-height:12px;
+	}
+	
+	/* #eoCode .tk-multi-chck-box{
+		height:13px;
+		width:13px;
+	}
+	#eoCode .tk-multi-tick{
+		height:7px;
+		width:7px;
+		border:none;
+	}
+	#eoCode .tk-multi-chck{
+		height:7px;
+		width:7px;
+	} */
+	
+	
+</style>
+<div ng-controller="qaUIController" style='width:97%'>
+	<h1>QA</h1>
+	<table class="coding-qa-ui">
+		<tr class="header">
+			<th>Name</th>
+			<th class="header-data"><span ng-bind="dataModel.chartDetailsObj.memberName"></span></th>
+			<th>Member ID</th>
+			<th class="header-data"><span ng-bind="dataModel.chartDetailsObj.hpMemberId"></span></th>
+			<th>Gender</th>
+			<th class="header-data"><span ng-bind="dataModel.chartDetailsObj.memberGender"></span></th>
+			<th>DOB</th>
+			<th class="header-data"><span ng-bind="dataModel.chartDetailsObj.memberDOB | date : 'MM-dd-yyyy'"></span></th>
+		</tr>
+		<tbody>
+			<tr>
+				<td style = "width : 130px;"><label>Health plan</label></td>
+				<td><span ng-bind="dataModel.chartDetailsObj.clientCode"></span></td>
+				<td style = "width : 130px;"><label>Member MBI</label></td>
+				<td><span ng-bind="dataModel.chartDetailsObj.mbrextID"></span></td>
+				<td style = "width : 90px;"><label>Provider</label></td>
+				<td><span ng-bind="dataModel.chartDetailsObj.provName"></span></td>
+				<td style = "width : 130px;"><label>Provider ID</label></td>
+				<td><span ng-bind="dataModel.chartDetailsObj.providerId"></span></td>
+			</tr>
+			<tr>
+				<td><label>Health Plan Name</label></td>
+				<td><span ng-bind="dataModel.chartDetailsObj.hpCode"></span></td>
+				<td><label>Chart Review Year</label></td>
+				<td><span ng-bind="dataModel.chartDetailsObj.chartReviewYear"></span></td>
+				<td><label>Group Name</label></td>
+				<td><span ng-bind="dataModel.chartDetailsObj.provGroupName"></span></td>
+				<td><label>Chart ID</label></td>
+				<td><span ng-bind="dataModel.chartDetailsObj.chartId"></span></td>
+			</tr>
+			<tr>
+				<td><label>Health Plan Product</label></td>
+				<td><span ng-bind="dataModel.chartDetailsObj.hpProduct"></span></td>
+				<td><label>Chart Status</label></td>
+				<td><span ng-bind="dataModel.chartDetailsObj.chartStatus"></span></td>
+				<td><label>Group ID</label></td>
+				<td><span ng-bind="dataModel.chartDetailsObj.provGroupId"></span></td>
+				<td><label>Business Segment</label></td>
+				<td><span ng-bind="dataModel.chartDetailsObj.busSegment"></span></td>
+			</tr>
+		</tbody>
+	</table>
+	<br>
+	<div>
+		<a href="" ng-click="openImage()">Chart Image</a> | <a href="" ng-click="toggleCIDialog()">Coding Instructions</a> | <a href="" ng-click="togglePDDialog()">Program Directions</a>
+		<uitk:dialog dialog-id='codingInstructionsId' dialog-role='dialog' header-text='Coding Instructions' show='showCodingInstructions'
+			confirm-dialog="false" default-width='507px' default-height="217px">
+			<uitk:label><span ng-bind='dataModel.chartDetailsObj.codingInstructions'></span></uitk:label><br><br><br><br><br>
+			<uitk:button type="button" value="Close" enable-default="true" ng-click="toggleCIDialog()"
+				custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+		</uitk:dialog>
+
+		<uitk:dialog dialog-id='programDirectionsId' dialog-role='dialog' header-text='Program Directions' show='showProgramDirections'
+			confirm-dialog="false" default-width='507px' default-height="217px">
+			<uitk:label><span ng-bind='dataModel.chartDetailsObj.programInstructions'></span></uitk:label><br><br><br><br><br>
+			<uitk:button type="button" value="Close" enable-default="true" ng-click="togglePDDialog()"
+				custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+		</uitk:dialog>
+		<uitk:dialog dialog-id='encEoDescIdCoder' dialog-role='dialog' header-text='Encounter Level EO Codes' show='showencEoDescCoder'
+				confirm-dialog="false" default-width='507px' default-height="217px">
+				<div ng-repeat="coderEncEoDesc in savedEncountersTableViewModel.encEoDescValueCoder"><uitk:label><span>{{coderEncEoDesc}}</span></uitk:label></div>
+				<uitk:button type="button" style="float:center;display:block" value="Close" enable-default="true" ng-click="toggleEncEoDescCoder()"
+					custom-class='tk-width-6t uitk-btn-close-dialog'></uitk:button>
+		</uitk:dialog>
+		<uitk:dialog dialog-id='encEoDescIdQA' dialog-role='dialog' header-text='Encounter Level EO Codes' show='showencEoDescQA'
+				confirm-dialog="false" default-width='507px' default-height="217px">
+				<div ng-repeat="qaEncEoDesc in savedEncountersTableViewModel.encEoDescValueQA"><uitk:label><span>{{qaEncEoDesc}}</span></uitk:label></div>
+				<uitk:button type="button" style="float:center;display:block" value="Close" enable-default="true" ng-click="toggleEncEoDescQA()"
+					custom-class='tk-width-6t uitk-btn-close-dialog'></uitk:button>
+		</uitk:dialog>
+		<uitk:dialog dialog-id='encEoDescIdEnc' dialog-role='dialog' header-text='Encounter Level EO Codes' show='showencEoDescEnc'
+				confirm-dialog="false" default-width='507px' default-height="217px">
+				<div ng-repeat="encEoDesc in savedEncountersTableViewModel.encEoDescValueEnc"><uitk:label><span>{{encEoDesc}}</span></uitk:label></div>
+				<uitk:button type="button" style="float:center;display:block" value="Close" enable-default="true" ng-click="toggleEncEoDescEnc()"
+					custom-class='tk-width-6t uitk-btn-close-dialog'></uitk:button>
+		</uitk:dialog>
+		<uitk:dialog dialog-id='encEoDescIdVal' dialog-role='dialog' header-text='Encounter Level EO Codes' show='showencEoDescVal'
+				confirm-dialog="false" default-width='507px' default-height="217px">
+				<div ng-repeat="encEoDescVal in savedEncountersTableViewModel.encEoDescValueVal"><uitk:label><span>{{encEoDescVal}}</span></uitk:label></div>
+				<uitk:button type="button" style="float:center;display:block" value="Close" enable-default="true" ng-click="toggleEncEoDescVal()"
+					custom-class='tk-width-6t uitk-btn-close-dialog'></uitk:button>
+		</uitk:dialog>
+	</div>
+	<div>
+		<br>
+		<uitk:panel class="coding-panel" model="historyPanelViewModel"></uitk:panel>
+		<uitk:panel class="coding-panel" model="commentsPanelViewModel"></uitk:panel>
+		<uitk:label>Saved Encounters</uitk:label>
+		<uitk:message model="savedEncountersTableViewModel.errorMessageModel"></uitk:message>
+		<uitk:message model="errorMessageModel"></uitk:message>
+		<span ng-if="savedEncountersTableViewModel">
+			<uitk:dynamic-table style="width: 99%;" id="savedEncountersTable" model="savedEncountersTableViewModel"></uitk:dynamic-table>			
+		</span>
+			
+		<span class="add-encounter-dialog">
+			<uitk:dialog dialog-id='addEncounterDialog' dialog-role='dialog' header-text='Add Encounter' show='addEncounterObj.showAddEncounterDialog' confirm-dialog="false" default-width='85%' default-height="auto">
+				<uitk:message model="dialogErrorMessageModel"></uitk:message>
+			<uitk:label style="display:block; color:red">* Required</uitk:label><br>
+			<div style="line-height: 25px">
+			<div style="float:left;width:98%">
+			<span class="form-span" style="width:12rem">
+					<uitk:label for="fromDate">From <span style="color: red">*</span></uitk:label> 
+					<uitk:calendar id="fromDate" name="fromDate" ng-model="addEncounterObj.fromDate" ng-keyup="fromDateChange()" ng-change="fromDateChange()" view-model="fromDateCalendarViewModel" />
+			</span>
+			<span class="form-span" style="width:12rem">
+				<uitk:label for="throughDate">Through <span style="color: red">*</span></uitk:label> 
+				<uitk:calendar id="throughDate" name="throughDate" ng-model="addEncounterObj.throughDate" ng-keyup="displayICDCodeTable()" ng-change="displayICDCodeTable()" view-model="throughDateCalendarViewModel" />
+			</span>
+			<span class="form-span" style="width:12rem">
+					<uitk:label for="pageNo">Page # <span style="color: red">*</span></uitk:label>
+					<div>
+						<input type="text" id="pageNo" class="tk-width-7t" style="height: 20px;" ng-model="addEncounterObj.pageNo" name="pageNo" />
+					</div>
+			</span>
+			<span class="form-span" style="width:18rem">
+					<uitk:label for="through">Rendering Provider Match</uitk:label>
+					<uitk:icon-font title="Does the rendering provider match the provider displayed above?" icon="cux-icon-info_hollow"></uitk:icon-font>
+					<span style="color: red">*</span>
+					<div>
+						<uitk:select id="renderingProviderMatch" class='tk-width-8t' item-list="savedEncountersTableViewModel.renderingProviderMatchList" on-change='addEncounterObj.onRendProvMatchChange(selectedValue)' selected-value="addEncounterObj.selectedRendProvMatch"></uitk:select>
+					</div>
+			</span>
+			<span class="form-span" style="width:10rem">
+				<span ng-if="addEncounterObj.selectedRendProvMatch.value == 'N'">
+					<label class="tk-labl">NPI <span ng-if='dataModel.isOptumCoding()' style="color: red">*</span></label>
+					<uitk-input tk-type="number" id='npi' name="npi"  max-character-allowed="10" model="addEncounterObj.npi" style-class="tk-width-7t"></uitk-input>
+				</span>
+			</span>
+			<span class="form-span" style="width:10rem">
+				<span ng-if="addEncounterObj.selectedRendProvMatch.value == 'N'">
+					<uitk:label for="firstName">First Name</uitk:label>
+					<uitk:input tk-type="text" novalidate id="firstName" style-class="tk-width-7t" model="addEncounterObj.firstName" name="firstName"></uitk:input>
+				</span>
+			</span>
+			<span class="form-span" style="width:10rem">
+				<span ng-if="addEncounterObj.selectedRendProvMatch.value == 'N'">
+					<uitk:label for="lastName">Last Name</uitk:label>
+					<uitk:input tk-type="text" novalidate id="lastName" style-class="tk-width-7t" model="addEncounterObj.lastName" name="lastName"></uitk:input>
+				</span>
+			</span>
+			<span class="form-span" style="width:18rem">
+				<uitk:label for="eoCode">EO Code</uitk:label>
+				<div>
+					 <uitk:multiselect id="eoCode" input-model="addEncounterObj.eoCodeList" style="width:18rem!important;height:36px;"
+			        	output-model="addEncounterObj.selectedEOCode" button-label="label" item-label="label"
+			        	max-height="16.667rem"  max-labels="1"  helper-elements="all none"
+			        	tick-property="ticked" default-label="Select" on-item-click="onEOCodeChange()" on-close="onEOCodeChange()">
+			 		</uitk:multiselect>
+				</div> 
+			</span>
+			</div>
+			<br>
+				<div style="width:98%">
+					<div ng-if="icdCodesTableViewModel && showICDCodeTable">
+						<div class='tk-dtbl-container'>
+							<table class='tk-dtbl tk-dtbl-reorderable-columns'>
+								<thead>
+									<tr>
+										<th><span>ICD-10 DX Codes</span></th>
+										<th ng-if="dataModel.chartDetailsObj.busSegment =='MCARE'"><span>HCC</span></th>
+										<th ng-if="dataModel.chartDetailsObj.busSegment =='MCARE'"><span>RxHCC</span></th>
+										<th ng-if="dataModel.chartDetailsObj.busSegment =='ACA'"><span>HCC</span></th>
+										<th><span>ICD 10 DX Description</span></th>
+										<th ng-if='dataModel.dxLevelEoCodeLst.length > 1'><span>EO Code</span></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr ng-repeat='record in icdCodesTableViewModel.records track by $index'> 
+										<td id='icdCodeId'><input ng-model="record.icdDxCd" ng-update-model-on="blur" ng-blur="dataModel.handleIcdDXChange(record)" type="text" id="icdCodeInputId"></input></td>
+										<td id='hccId' ng-if="dataModel.chartDetailsObj.busSegment =='MCARE'"><span ng-if="record.v22Hcc">V22 : <span ng-bind="record.v22Hcc"></span><br/></span><span ng-if="record.v24Hcc">V24 : <span ng-bind="record.v24Hcc"></span></span></td>
+										<td id='rxHccId' ng-if="dataModel.chartDetailsObj.busSegment =='MCARE'"><span ng-bind="record.rxHcc"> </span></td>
+										<td id='hhsId' ng-if="dataModel.chartDetailsObj.busSegment =='ACA'"><span ng-bind="record.hhs"> </span></td>
+										<td id='icdDescriptionId' ><span ng-bind="record.icdDesc"> </span></td>
+										<td id='eoCodeId' ng-if='dataModel.dxLevelEoCodeLst.length > 0'><select ng-model="record.eoCode" ng-disabled ='dataModel.isReadonly || dataModel.isSupervisorUI' style='max-width:250px;'class="eocodes-class" id="eoTableDropDown" ng-options="eoCodeObj.gcmEoKey as eoCodeObj.gcmEoDesc for eoCodeObj in dataModel.dxLevelEoCodeLst"></select></td>
+									</tr>
+								</tbody>
+							</table>
+							<div>
+								<span style="display: block;" ng-if='(!dataModel.isReadonly && !dataModel.isSupervisorUI)'>
+									<a href ng-click="onAddRow()" style="float:left;"><uitk:icon-font icon="cux-icon-add2"></uitk:icon-font> Add More</a>
+								</span>
+							</div>
+						
+						</div>
+					</div>
+					<div style="margin-top:30px;">
+						<span style="float:left;margin-top:40px;">
+							<uitk:button ng-click="saveEncounter()">Save</uitk:button>
+							<uitk:button ng-click="closeAddEncounterDialog()">Cancel</uitk:button>
+						</span>
+						<span>
+							<uitk:label id="addCommentslbleId" style="float:left;padding-right:10px;" name="addCommentslble" for="addComment_textarea">Add Comment</uitk:label>
+							<uitk:textarea style="margin-left:90px;" id="addComment" name="addComment" model="addEncounterObj.qaEncComments" width="87%" rows="5"></uitk:textarea>
+						</span>
+						
+					</div>
+				</div>			
+			</div>
+			</uitk:dialog>
+		</span>
+		<br><br>
+	</div>
+	<uitk:dialog  dialog-id='codingQALoadingDialog' dialog-role='dialog' show="showCodingQALoadingDialog"
+			                 header-text='' confirm-dialog="false" default-width="auto" tk-aria-describedby="dialogInsTextId">
+			      			<img src="../../lib/images/loader.gif"/>
+  	</uitk:dialog>
+	<div>
+		<p>
+			<input type="checkbox" ng-disabled="dataModel.isReadOnly" ng-model="dataModel.checkboxValue" name="string" ng-true-value="'Y'" ng-change="noDosMeetsCriteriaChange()">
+				 <span>I have reviewed and attest no DOS meets criteria for coding</span>
+		</p>
+		<uitk:button ng-if="!dataModel.isReadOnly" ng-click="acceptCodingData()">Accept</uitk:button>
+		<uitk:button ng-click="exitCodingUI()">Exit</uitk:button>
+	</div>
+	<div>
+		<uitk:dialog dialog-id='deleteEncounterConfirm' dialog-role='dialog' header-text='Confirm Message' show='showConfirmDeleteEncounter'
+				confirm-dialog="false" default-width='400px' default-height="150px">
+				<div>
+					<span>Are you sure you want to delete the encounter?</span>
+				</div>
+				<div style="margin-top:7px;">
+					<uitk:button type="button" value="Yes"
+								 style="float:left;"
+								 ng-click="dataModel.deleteEncounter(deleteEncounerRecord)"
+								 custom-class='uitk-width-6t uitk-btn-close-dialog'>
+					</uitk:button>
+					<uitk:button type="button" value="No"
+								 style="float:left;"
+								 onclick="document.getElementById('deleteEncounterConfirm_closeLink').click();"
+								 custom-class='uitk-width-6t uitk-btn-close-dialog'>
+					</uitk:button>
+				</div>
+		</uitk:dialog>
+	</div>
+	
+	
+	<div>
+		<uitk:dialog dialog-id='exitConfirm' dialog-role='dialog' header-text='Confirm Message' show='showConfirmExitWorkItem'
+				confirm-dialog="false" default-width='450px' default-height="200px">
+				<div>
+					<span>All unsaved information will be lost.Do you want to continue?</span>
+				</div>
+				<div style="margin-top:7px;">
+					<uitk:button type="button" value="Yes"
+								 style="float:left;"
+								 ng-click="dataModel.exitWorkItem()"
+								 custom-class='uitk-width-6t uitk-btn-close-dialog'>
+					</uitk:button>
+					<uitk:button type="button" value="No"
+								 style="float:left;"
+								 onclick="document.getElementById('exitConfirm_closeLink').click();"
+								 custom-class='uitk-width-6t uitk-btn-close-dialog'>
+					</uitk:button>
+				</div>
+		</uitk:dialog>
+	</div>
+	<div>
+		<uitk:dialog dialog-id='acceptConfirm' dialog-role='dialog' header-text='Confirm Message' show='showConfirmAcceptWorkItem'
+				confirm-dialog="false" default-width='450px' default-height="200px">
+				<div>
+					<span>Ready to Accept? Click Yes to Accept or No to return to the chart.<br/><br/>Warning! No changes can be made once the chart is accepted</span>
+				</div>
+				<div style="margin-top:7px;">
+					<uitk:button type="button" value="Yes"
+								 style="float:left;"
+								 ng-click="dataModel.acceptWorkItem()"
+								 custom-class='uitk-width-6t uitk-btn-close-dialog'>
+					</uitk:button>
+					<uitk:button type="button" value="No"
+								 style="float:left;"
+								 onclick="document.getElementById('acceptConfirm_closeLink').click();"
+								 custom-class='uitk-width-6t uitk-btn-close-dialog'>
+					</uitk:button>
+				</div>
+		</uitk:dialog>
+	</div>
+</div>
+<script type="text/ng-template" id="commentstemplate.html">
+ 		<div ng-controller="commentsTableController">
+			<uitk:dynamic-table model="commentsTableViewModel"></uitk:dynamic-table>
+ 		</div>
+</script>
+
+<script type="text/ng-template" id="historytemplate.html">
+		<div ng-controller="historyTableController">
+			<uitk:dynamic-table model="historyTableViewModel"></uitk:dynamic-table> 
+		</div> 
+</script>

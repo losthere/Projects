@@ -1,0 +1,30 @@
+<div id="{{viewModel.id}}">
+
+    <uitk:dialog dialog-id='uitkPopupId1' dialog-role='alertdialog'
+                 header-text='{{viewModel.heading}} Data'
+                 show='showMe'
+                 ng-if="showMe"
+                 call-back-hide="callBackHideDialog()"
+                 confirm-dialog="false"
+                 default-width='35%' default-height="51%" trigger-element='#uitkPopupId1_openModalBtn'>
+        <table>
+            <tbody>
+            <tr>
+                <th scope="col" class="tk-accessible-chart-label-column">Label</th>
+                <th scope="col">Value</th>
+            </tr>
+            <tr ng-repeat="item in viewModel.data[0].values">
+                <th scope="row" class="tk-accessible-chart-label-column">{{item.label}}</th>
+                <td class="tk-accessible-chart-value-column">{{item.value | number:2 }}</td>
+            </tr>
+            </tbody>
+
+        </table>
+    </uitk:dialog>
+<div aria-hidden="{{isOpened.dialogOpened}}">
+    <div id="myChartLabel"><h2>{{viewModel.heading}}</h2></div>
+    <div id="myChartDesc" ng-class="{'oui-a11y-hidden': !viewModel.showA11yDescription}">{{viewModel.a11yDescription}}</div>
+    <!-- <button class="tk-barchart-showdata-button" ng-click="contentKeyupHandler()">Show data for this chart</button> -->
+    <svg aria-labelledby="myChartLabel" aria-describedby="myChartDesc" role="img" alt={{viewModel.description}}></svg>
+</div>
+</div>

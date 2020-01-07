@@ -1,0 +1,16 @@
+<div ng-controller="myWorklistController">
+	<div>
+		<h3>My Worklist</h3>
+		<div>		
+			<uitk:dynamic-table id="myWorklistTable" model="dataModel.myWorklistModel"> </uitk:dynamic-table>
+			<uitk:dialog  dialog-id='myWorklistLoadingDialogId' dialog-role='dialog' show="dataModel.showMyWorklistLoadingDialog"
+			                 header-text='' confirm-dialog="false" default-width="auto" tk-aria-describedby="dialogInsTextId">
+			      			<img src="../lib/images/loader.gif"/>
+    		</uitk:dialog>
+			<uitk:button id="saveProvider" type="button" value="Save" enable-default="true"
+           		ng-click="dataModel.myWorklistModel.saveProviderInfo()" custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+		   	<uitk:button type="button" id="cancelProvider" value="Cancel" enable-default="true"
+		   		ng-click="dataModel.myWorklistModel.cancelProviderInfo()" custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+		</div>
+	</div>
+</div>

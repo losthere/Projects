@@ -1,0 +1,18 @@
+<div ng-controller='codingCtrl'>
+	<div ng-if="dataModel.codingShowChart && dataModel.codingCounts[0].totalCnt > 0" style="width: 73%;float: left; height: 431px;">
+		<uitk-pie-chart view-model="dataModel.codingPieChartModel"></uitk-pie-chart>
+	</div>
+	<div ng-if="dataModel.codingCounts[0].totalCnt == 0 || dataModel.codingCounts[0].totalCnt == ''" style="width: 72%; height: 431px;">
+		<h1><span style="color: #f20202; font-size: 15px;">No Data Found</span><br/>
+	</div>
+	<div ng-if="dataModel.codingShowChart && dataModel.codingCounts[0].totalCnt > 0" style="width: 27%;float: right;">
+	<br/><br/><br/><br/><br/><br/>
+		<span><span style="font-size: 15px; font-weight: bold;">Total Charts = {{dataModel.codingCounts[0].totalCnt}}</span></span><br/><br/>
+		<div style="padding-left:5px;"><div class="symbolStyle" style="background-color: #ba7032;"></div><span style="width: 55%;" class="labelStyle">Unassigned</span><span style="width: 30%;" class="labelValuesStyle">{{dataModel.codingCounts[0].unassingedCnt}}</span></div><br/><br/>
+		<div style="padding-left:5px;"><div class="symbolStyle" style="background-color: #db843d;"></div><span style="width: 55%;" class="labelStyle">Assigned</span><span style="width: 30%;" class="labelValuesStyle">{{dataModel.codingCounts[0].assignedCnt}}</span></div><br/><br/>
+		<div style="padding-left:5px;"><div class="symbolStyle" style="background-color: #f79646;"></div><span style="width: 55%;" class="labelStyle">Escalated</span><span style="width: 30%;" class="labelValuesStyle">{{dataModel.codingCounts[0].escalatedCnt}}</span></div><br/><br/>
+		<div style="padding-left:5px;"><div class="symbolStyle" style="background-color: #f9b590;"></div><span style="width: 55%;" class="labelStyle">Coding Complete</span><span style="width: 30%;" class="labelValuesStyle">{{dataModel.codingCounts[0].codingCompletedCnt}}</span></div><br/><br/>
+		<div style="padding-left:5px;"><div class="symbolStyle" style="background-color: #fbcfba;"></div><span style="width: 55%;" class="labelStyle">Coding Rejected</span><span style="width: 30%;" class="labelValuesStyle">{{dataModel.codingCounts[0].rejectedCnt}}</span></div><br/><br/> 
+	</div>
+
+</div>

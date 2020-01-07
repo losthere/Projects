@@ -1,0 +1,146 @@
+<style>
+span.overflow-needed {
+	display: block;
+}
+
+span.overflow-needed div {
+	width: fit-content;
+}
+
+span.overflow-needed input {
+	width: 180px;
+	height: 25px;
+}
+
+.ux-tabl-form, .ux-tabl-form-narrow, .ux-tabl-form-multicol {
+	margin: 0px;
+}
+
+</style>
+<div ng-controller='lookupCtrl'>
+	
+	<span style="color : red; margin-top:13px;">* Required</span><br><br>
+	<table class="ux-tabl-form-multicol ux-padding-bottom-none ux-margin-top-none">
+		<tbody class="tbllabel">
+			<tr>
+				<td>
+					<label class="tk-labl">Business segment <span style="color: red;">*</span></label>
+				</td>
+				<td>
+					<select class="size" ng-model="filters.busSegment" ng-change="onBusSegmentChange()">
+						<option ng-repeat="busSegments in lookup.businessSegments" value="{{busSegments.key}}">{{busSegments.value}}</option>
+					</select>
+				</td>
+				<td>
+					<label class="tk-labl">Health plan</label>
+				</td>
+				<td>
+					<select class="size" ng-model="filters.client" ng-change="onClientChange()">
+						<option value="">All</option>
+						<option ng-repeat="client in lookup.clients" value="{{client.key}}">{{client.value}}</option>
+					</select>
+				</td>
+				<td>
+					<label class="tk-labl">Provider State</label>
+				</td>
+				<td>
+					<select class="size" ng-model="filters.providerState">
+						<option value="">All</option>
+						<option ng-repeat="providerState in lookup.providerStates" value="{{providerState.key}}">{{providerState.value}}</option>
+					</select>
+				</td>
+				<td>
+					<label class="tk-labl">Chart Request Status</label>
+				</td>
+				<td>
+					<select class="size" ng-model="filters.chartRequestStatus">
+						<option value="">All</option>
+						<option ng-repeat="chartRequestStatus in lookup.chartRequestStatuses" value="{{chartRequestStatus.key}}">{{chartRequestStatus.value}}</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label class="tk-labl">Project type</label>
+				</td>
+				<td colspan='1'>
+					<select class="size" ng-model="filters.program" ng-disabled="filters.busSegment==''" ng-change="onProjectTypeChange()">
+						<option selected="selected" value="">All</option>
+						<option ng-repeat="program in lookup.programs" value="{{program.key}}">{{program.value}}</option>
+					</select>
+				</td>
+				<td>
+					<label class="tk-labl">Health plan name</label>
+				</td>
+				<td>
+					<select class="size" ng-model="filters.hp" ng-disabled="filters.client==''" ng-change="onHPChange()">
+						<option value="">All</option>
+						<option ng-repeat="healthPlan in lookup.healthPlans" value="{{healthPlan.key}}">{{healthPlan.value}}</option>
+					</select>
+				</td>
+				<td>
+					<label class="tk-labl">Provider last name</label>
+				</td>
+				<td>
+					<uitk:input tk-type="text" novalidate id="providerLastName" style-class="tk-width-14t" model="filters.providerLastName" name="providerLastName"></uitk:input>
+				</td>
+				<td>
+					<label class="tk-labl">Vendor name</label>
+				</td>
+				<td>
+					<select class="size" ng-model="filters.vendor">
+						<option value="">All</option>
+						<option ng-repeat="vendor in lookup.vendors" value="{{vendor.key}}">{{vendor.value}}</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label class="tk-labl">Project name</label>
+				</td>
+				<td colspan='1'>
+					<select class="size" ng-model="filters.projectKey" ng-disabled="filters.busSegment==''">
+						<option selected="selected" value="">All</option>
+						<option ng-repeat="project in lookup.projects" value="{{project.key}}">{{project.value}}</option>
+					</select>
+					<!-- <uitk:input tk-type="text" novalidate id="projectName" style-class="tk-width-14t" model="filters.projectKey" name="projectName"></uitk:input> -->
+				</td>
+				<td>
+					<label class="tk-labl">Health plan product</label>
+				</td>
+				<td>
+					<select class="size" ng-model="filters.hpp" ng-disabled="filters.hp==''">
+						<option value="">All</option>
+						<option ng-repeat="hpp in lookup.healthPlanProds" value="{{hpp}}">{{hpp}}</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label class="tk-labl">Project ID</label>
+				</td>
+				<td>
+					<uitk:input tk-type="text" novalidate id="projectId" style-class="tk-width-14t" model="filters.projectId" name="projectId"></uitk:input>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label class="tk-labl">Project Year <span style="color: red;">*</span></label>
+				</td>
+				<td colspan='1'>
+					<select class="size" ng-model="filters.projectYear">
+						<option ng-repeat="projectYear in lookup.projectYears" value="{{projectYear}}">{{projectYear}}</option>
+					</select>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div>
+		<span>
+			<input type="button" value="Filter" ng-click="filter()" class="tk-btn-default-action   ux-btn-width" />
+		</span> 
+		<span>
+			<input type="button" value="Clear" ng-click="clear()" class="tk-btn-default-action   ux-btn-width" />
+		</span>
+	</div>
+</div>

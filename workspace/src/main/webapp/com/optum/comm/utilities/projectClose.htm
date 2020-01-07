@@ -1,0 +1,58 @@
+<div ng-controller="projectCloseCtrl">
+	<div class="tk-grid-container"
+		style="padding-left: 10px; padding-right: 10px;">
+		<div>
+			<table class="ux-padding-bottom-1t" style="margin-left: 9px;">
+				<tr>
+					<td>
+						<uitk:message model="errorMessageModel"> </uitk:message> 
+					</td>
+				</tr>
+			</table>
+		</div>
+		<uitk:panel model="projectCloseFilters"></uitk:panel>
+	</div>
+	<div
+		style="max-height: inherit; width: 100%; padding-left: 10px; padding-right: 10px;">
+		<uitk:dynamic-table id="projectListTable" model="projectListModel">
+		</uitk:dynamic-table>
+	</div>
+	<div>
+		<uitk:dialog  dialog-id='uitkPopupId1' dialog-role='dialog' show="showLoadingDialog"
+                 header-text='' confirm-dialog="false" default-width="auto" tk-aria-describedby="dialogInsTextId">
+      		<img src="../lib/images/loader.gif"/>
+    	</uitk:dialog>
+	</div>
+	<div>
+		<uitk:dialog dialog-id='chartFileUpload' dialog-role='dialog'
+			default-width="auto;" default-height="auto;"
+			style="overflow:hidden; top: 75%;" header-text='Close Project Confirmation'
+			show="showExtractPopup" confirm-dialog="false">
+			<div style="margin-top: 10px;">
+				 <span style="">You are about to close the selected project. This action cannot</span>
+			</div>
+			<div style="margin-top: 10px;">
+				  <span>be undone.</span>
+			</div>
+			<br>
+			<div style="margin-top: 10px;">
+				 <span style="">Are you sure you want to continue?</span>
+			</div>
+			<br>
+			<div style="margin-top: 10px;">
+				<input style="size: 20px;" type="checkbox" ng-model="closeProjectDialogObj.extractCheckbox"  ng-false-value="0" ng-true-value="1" id="extractCheckboxId"/>
+				 <span style="margin-top: 5px;">Select checkbox to receive image extract</span>
+			</div>
+			<div style="margin-top: 20px;">
+				<uitk:button type="button" id="closePopup" value="Continue"
+					enable-default="true" 
+					ng-click="closeDialog();"
+					custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+				<uitk:button type="button" id="cancelPopup" value="Cancel"
+					enable-default="true" 
+					onclick="document.getElementById('chartFileUpload_closeLink').click();"
+					custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+			</div>
+		</uitk:dialog>
+	</div>
+</div>

@@ -1,0 +1,130 @@
+<!doctype html>
+	<html onapplicationready="onReady()">
+		<head>
+			<META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+			<title>Session Renewal Warning</title>
+			<link rel="stylesheet" href="../com/optum/comm/lib/css/general2.css" />
+				<style type="text/css">
+
+							.ux-head-cntr-navigation-global
+							{
+							font-size: 25px;
+							font-family: Times New Roman;
+							padding-top: 15px;
+							}
+
+							.h_button
+							{
+							background-color: #e6e6e6;
+							background: -webkit-linear-gradient(top, #f3f3f3 0%, #cccccc 100%);
+							background: -moz-linear-gradient(top, #f3f3f3 0%, #cccccc 100%);
+							background: linear-gradient(top, #f3f3f3 0%, #cccccc 100%);
+							-moz-box-shadow: inset 0 0 0 1px white;
+							-webkit-box-shadow: inset 0 0 0 1px white;
+							box-shadow: inset 0 0 0 1px white;
+							border: 1px solid #999999;
+							-webkit-border-radius: 3px;
+							-moz-border-radius: 3px;
+							   border-radius: 3px;
+							line-height: 16px;
+							color: #333333;
+							font-family:Times New Roman;
+							margin: 0px .3em;
+							padding: 0px .3em;
+							width: 7em;
+							font-weight: normal;
+							font-size: 1.2em;
+							text-align: center;
+							height: 2em;
+							text-overflow: ellipsis;
+
+							}
+
+							.h_button:active
+							{
+							border: 1px solid #f47b29;
+							}
+
+							.h_button:disabled
+							{
+							color: #808080;
+							border: 1px solid #999999;
+							}
+
+							.h_button:hover
+							{
+							border: 2px solid #F47B29;
+							background-color: #e6e6e6;
+							color: black;
+							}
+							.fontstyle
+							{
+							margin-left:2cm;
+							font-size: 20px;
+							font-family: Times New Roman;
+							color:#484848;
+							}
+					  </style>
+					<script type="text/javascript">
+
+						var dataObject = {"isOK":true};
+
+						function onReady()
+						{
+						window.focus();
+						document.getElementById('okButton').focus();
+							//call add base events from optumui.js
+							document.onkeydown = function(eventObject)
+							{
+									  if ( typeof(eventObject) == 'undefined' ) eventObject = window.event;
+									  //only for enter
+									  if ( eventObject && eventObject.keyCode == 13 )
+									  {
+
+										  //eventObject.returnValue = false;
+										  continueSession();
+										  //for non-IE, didn't use cordys code here
+										  if ( eventObject.preventDefault ) eventObject.preventDefault();
+									  }
+	  						}
+						}
+
+						function closeHandler()
+						{
+							dataObject.isOK= true;
+							application.container.close();
+						}
+
+						function continueSession(eventObject)
+						{
+							closeHandler();
+						}
+
+						function dialogReturnValue()
+						{
+							return dataObject;
+						}
+
+					</script>
+					<script type="text/javascript" src="../wcp/application.js"></script>
+					<script type="text/javascript" src="../com/optum/comm/lib/js/common/optumui.js"></script>
+
+		</head>
+		<body style="margin-left:50px;margin-top:20px">
+			<div id="content" style="width:350px" >
+				<p style="padding:10px">
+					Your session will end in 15 minutes.  
+					According to Optum’s application security guidelines, all sessions must be renewed every 2 hours.  
+					Please save all unsaved work, sign out and sign back in to continue working.
+					<br>
+					<!--<p style="padding:10px">
+						Click OK to continue the current session.<br>
+					</p>-->
+
+					<div style="align:center" align="center">
+						<button type="button" class="h_button" id="okButton" onclick="continueSession()" >OK</button>
+					</div>
+				</p>
+			</div>
+		</body>
+</html>

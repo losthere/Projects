@@ -1,0 +1,261 @@
+<div ng-controller="userAdminCtrl">
+	<div style="padding-left: 10px;">
+		<h1><span>User Administration</span><br/>
+	</div>
+	<div class="tk-grid-container" style="padding-left: 10px; padding-right: 10px;">
+		<div>
+			<table class="ux-padding-bottom-1t" style="margin-left: 9px;">
+				<tr>
+					<td>
+						<uitk:message model="errorMessageModel"> </uitk:message> 
+					</td>
+				</tr>
+			</table>
+		</div>
+		<uitk:panel model="userAdminFilters"></uitk:panel>
+	</div>
+	<div>
+		<uitk:dialog  dialog-id='uitkPopupId1' dialog-role='dialog' show="showLoadingDialog"
+                 header-text='' confirm-dialog="false" default-width="7%" tk-aria-describedby="dialogInsTextId">
+      		<img src="../lib/images/loader.gif"/>
+    	</uitk:dialog>
+	</div>
+	<div style="max-height: inherit; width: 100%; padding-left: 10px; padding-right: 10px;">
+		<uitk:dynamic-table id="userAdminListTable" model="userAdminListModel"></uitk:dynamic-table>
+	</div>
+	<div>
+		<uitk:dialog dialog-id='changeSupervisor' dialog-role='dialog'
+			default-width="auto;" default-height="auto;"
+			style="overflow:hidden; top: 75%;" header-text='Change Supervisor'
+			show="supervisorPopup" confirm-dialog="false" overflow="hidden;">
+			<div style="width: 400px; height: 30px; margin-top: 10px;">
+				<span style="margin-right: 10px;"><b>Available Reports To</b></span>
+				<select class="size" style="width: 250px;" ng-model="changeSupervisorDialogObj.changeSupervisorId" ng-change="onSelectSupervisor()">
+					<option value="">Select</option>
+					<option ng-repeat="supervisors in filters.supervisorsList" value="{{supervisors.loginUserKey}}">{{supervisors.fullName}}</option>
+				</select>
+			</div>
+			<div style="display:block;clear:both; text-align: center;">
+				<uitk:button style="width:15%"  ng-click="changeSupervisor()">Save</uitk:button>
+				<uitk:button style="width:15%" onclick="document.getElementById('changeSupervisor_closeLink').click();">Cancel</uitk:button>		
+			</div>
+		</uitk:dialog>
+	</div>
+	<div>
+		<uitk:dialog dialog-id='activateUser' dialog-role='dialog'
+			default-width="auto;" default-height="auto;"
+			style="overflow:hidden; top: 75%;" header-text='Reactivate User'
+			show="activateUserPopup" confirm-dialog="false" overflow="hidden;">
+			<div style="width: 430px; height: 25%; margin-top: 10px;">
+			<table id="filtersTableId" class="ux-tabl-form-multicol ux-margin-left-1t ux-padding-bottom-none ux-margin-top-none">  
+				<tbody>
+					<tr >
+						<td><label class="tk-labl">Enter Email ID</label></td>
+						<td><uitk-input id="emailIdText" name="emailIdText" model="newUserObj.emailIdText" ></uitk-input></td>
+					</tr>
+					<tr ng-if='newUserObj.isValidEmail'>
+						<td width="120px;"><label class="tk-labl">Reports To</label></td>
+						<td>
+							<select ng-model="newUserObj.supervisor">
+								<option value="">Select</option>
+								<option ng-repeat="supervisor in newUserObj.userAdminSupervisors" value="{{supervisor.loginUserKey}}">{{supervisor.fullName}}</option>
+							</select>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			</div>
+			<div style="display:block; clear:both; text-align: center;">
+				<uitk:button style="width:20%"  ng-if='!newUserObj.isValidEmail' ng-click="newUserObj.validateUser()">Validate</uitk:button>
+				<uitk:button style="width:20%"  ng-if='newUserObj.isValidEmail' ng-click="newUserObj.activateUser()">Activate</uitk:button>
+			</div>
+		</uitk:dialog>
+	</div>
+	<div>
+		<uitk:dialog dialog-id='userProfile' dialog-role='dialog'
+			default-width="auto;" default-height="auto;"
+			style="overflow:hidden; top: 75%;" header-text='User Profile'
+			show="userProfilePopup" confirm-dialog="false" overflow="hidden; " handle-close = "true"
+				call-back-before-close = "dataModel.closeUpdateRoleDialog()">
+			<div><uitk:message model="userProfileObj.popUpErrorMessageModel"> </uitk:message></div>
+			<div style="width: 700px; height: 70px; margin-top: 10px;">
+				<table id="filtersTableId" class="ux-tabl-form-multicol ux-margin-left-1t ux-padding-bottom-none ux-margin-top-none">  
+					<tbody>
+						<tr>
+							<td style="width: 150px;"><label class="tk-labl">User ID</label></td>
+							<td style="width: 150px;"><label class="tk-labl">Name</label></td>
+							<td style="width: 150px;"><label class="tk-labl">Email Address</label></td>
+							<td style="width: 150px;"><label class="tk-labl">Supervisor</label></td>
+							 <td style="width: 150px;"><label class="tk-labl">Organization</label><span style="color : red;">*</span></td> 
+						</tr>
+						<tr>
+							<td style="width: 150px;"><span ng-bind='userProfileObj.userID'></span></td>
+							<td style="width: 150px;"><span ng-bind='userProfileObj.name'></span></td>
+							<td style="width: 150px;"><span ng-bind='userProfileObj.email'></span></td>
+							<td style="width: 150px;"><span ng-bind='userProfileObj.supervisor'></span></td>
+							<td  style="width: 140px;">
+					<select   ng-model="userProfileObj.vendor" ng-change="onuserProfileVendorChange()">
+						<option value="">Select</option>
+						<option ng-repeat="vendor in supervisorVendorList.records" value="{{vendor.vendorKey}}">{{vendor.vendorName}}</option>
+					</select>
+				</td>	
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			
+			<div style="padding-left: 13px;">
+				<h2><span>Roles</span></h2>
+			</div>
+			<div style="padding-left: 13px; height:25px;">
+				<span>Move the roles you wish to assign to the user to the Selected list. All users must have at least one role.</span><br/>
+			</div>
+			<div  ng-if="userProfileObj.pickListShow == true" style="width: 650px; padding-left: 13px;">
+				<uitk:picklist tk-modal="userProfileObj.picklistModal">
+				</uitk:picklist>
+			</div>
+			<div style="height: 20px;"></div>
+			<uitk:dialog dialog-id='removeAllRolesConfirm' dialog-role='dialog' header-text='Confirm' show='userProfileObj.showRemoveAllRolesConfirm' default-width="auto;" default-height="auto;">
+					<div>
+						<span style="font-size:13px;" >Please note: By selecting to remove all roles from this Organization, the system will verify if other role(s) exist within other Organizations.  If other role(s) exist, the user will remain active, however, if no role(s) exist the user will be disabled and deactivated from the system.  Do you wish to proceed?</span>
+					</div>
+					<div>
+						<uitk:button type="button" value="Yes"
+									 style="float:left;"
+									 ng-click="userProfileObj.handleUpdateProfileConfirmYesClick()"
+									 custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+						<uitk:button type="button" value="No"
+									 style="float:left;"
+									 onclick="document.getElementById('removeAllRolesConfirm_closeLink').click();"
+									 custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+					</div>
+				</uitk:dialog>
+			<div style="display:block;clear:both; text-align: left;padding-left: 13px;">
+				<uitk:button style="width:15%"  ng-click="updateProfile()">Save</uitk:button>
+				<uitk:button style="width:15%" ng-click="closeUpdateProfile()">Cancel</uitk:button>
+			</div>
+		</uitk:dialog>
+	</div>
+<div>
+		<uitk:dialog dialog-id='EnableUserProfile' dialog-role='dialog'
+			default-width="auto;" default-height="auto;"
+			style="overflow:hidden; top: 75%;" header-text='Enable User Profile'
+			show="EnableUserProfilePopup" confirm-dialog="false" overflow="hidden; " handle-close = "true"
+				 call-back-before-close = "dataModel.closeUpdateRoleDialog()"> 
+			 <div><uitk:message model="userProfileObj.popUpErrorMessageModel"> </uitk:message></div> 
+			<div style="width: 700px; height: 70px; margin-top: 10px;">
+				<table id="filtersTableId" class="ux-tabl-form-multicol ux-margin-left-1t ux-padding-bottom-none ux-margin-top-none">  
+					<tbody>
+						<tr>
+							<td style="width: 150px;"><label class="tk-labl">User ID</label></td>
+							<td style="width: 150px;"><label class="tk-labl">Name</label></td>
+							<td style="width: 150px;"><label class="tk-labl">Email Address</label></td>
+							<td style="width: 150px;"><label class="tk-labl">Supervisor</label></td>
+							 <td style="width: 150px;"><label class="tk-labl">Organization</label><span style="color : red;">*</span></td> 
+						</tr>
+						<tr>
+							<td style="width: 150px;"><span ng-bind='userProfileObj.userID'></span></td>
+							<td style="width: 150px;"><span ng-bind='userProfileObj.name'></span></td>
+							<td style="width: 150px;"><span ng-bind='userProfileObj.email'></span></td>
+							<!-- <td style="width: 150px;"><span ng-model='getValue(newUserObj.supervisor, newUserObj.userAdminSupervisors)'></span></td> -->
+							 <td style="width: 150px;"><span ng-bind='newUserObj.supervisorList[newUserObj.supervisor]'></span></td>
+							<td  style="width: 140px;">
+							
+						<select   ng-model="userProfileObj.vendor" ng-options='vendor.key as vendor.value for vendor in filters.supOrganizations' ng-change="onuserProfileVendorChangeForEnable()">
+						<option value="">Select</option>
+						<!-- <option ng-repeat="vendor in filters.supOrganizations"  value="{{vendor.key}}">{{vendor.value}}</option> -->
+					</select>
+				</td>	
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div style="padding-left: 13px;">
+				<h2><span>Roles</span></h2>
+			</div>
+			<div style="padding-left: 13px; height:25px;">
+				<span>Move the roles you wish to assign to the user to the Selected list. All users must have at least one role.</span><br/>
+			</div>
+			<div ng-if="userProfileObj.pickListShow == true" style="width: 650px; padding-left: 13px;">
+				<uitk:picklist tk-modal="userProfileObj.picklistModal"></uitk:picklist>
+			</div>
+			<div style="height: 20px;"></div>
+			<uitk:dialog dialog-id='removeAllRolesConfirm' dialog-role='dialog' header-text='Confirm' show='userProfileObj.showRemoveAllRolesConfirm' default-width='70%' default-height="35%">
+					<div>
+						<span style="font-size:13px;" >Please note: By selecting to remove all roles from this Organization, the system will verify if other role(s) exist within other Organizations.  If other role(s) exist, the user will remain active, however, if no role(s) exist the user will be disabled and deactivated from the system.  Do you wish to proceed?</span>
+					</div>
+					<div>
+						<uitk:button type="button" value="Yes"
+									 style="float:left;"
+									 ng-click="userProfileObj.handleUpdateProfileConfirmYesClick()"
+									 custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+						<uitk:button type="button" value="No"
+									 style="float:left;"
+									 onclick="document.getElementById('removeAllRolesConfirm_closeLink').click();"
+									 custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+					</div>
+				</uitk:dialog>
+			<div style="display:block;clear:both; text-align: left;padding-left: 13px;">
+				<uitk:button style="width:15%" ng-click="closeUpdateUserProfile()">Cancel</uitk:button>
+				<uitk:button align="right" style="width:15%" ng-click="enableUser()">Enable</uitk:button>
+			</div>
+		</uitk:dialog>
+	</div>
+	
+ <div>
+		<uitk:dialog dialog-id='onLastNameClick' dialog-role='dialog'
+			default-width="auto;" default-height="auto;"
+			style="overflow:hidden; top: 75%;" header-text='User Profile UI'
+			show="userProfileUIPopup" confirm-dialog="false" overflow="hidden; " handle-close = "true"
+				call-back-before-close = "dataModel.closeUpdateRoleDialog()">
+			<div><uitk:message model="viewUserProfileObj.popUpErrorMessageModel1"> </uitk:message></div> 
+			<div style="width: 700px; height: 70px; margin-top: 10px;">
+				<table id="filtersTableId" class="ux-tabl-form-multicol ux-margin-left-1t ux-padding-bottom-none ux-margin-top-none">  
+					<tbody>
+						<tr><td style="width: 150px;"><label class="tk-labl">User ID</label></td>
+							<td style="width: 150px;"><span ng-bind='viewUserProfileObj.userID'></span></td></tr>
+						
+							<tr><td style="width: 150px;"><label class="tk-labl">Name</label></td>
+								<td style="width: 150px;"><span ng-bind='viewUserProfileObj.name'></span></td></tr>
+							
+							<tr><td style="width: 150px;"><label class="tk-labl">Email Address</label></td>
+							    <td style="width: 150px;"><span ng-bind='viewUserProfileObj.email'></span></td></tr>
+							
+							<tr><td style="width: 150px;"><label class="tk-labl">Supervisor</label></td>
+								<td style="width: 150px;"><span ng-bind='viewUserProfileObj.supervisor'></span></td></tr>
+							
+							
+							<tr><td style="width: 150px;"><label class="tk-labl">Organization</label></td> 
+							
+							<td  style="width: 150px;">
+					<select   ng-model="viewUserProfileObj.vendor"  ng-options='vendor.key as vendor.value for vendor in viewUserProfileObj.organizations' ng-change="viewProfileVendorChange()">
+					<option value= "filters.supOrganizations[0].key"></option>
+					</select>
+				</td></tr>	
+			</tbody>
+		</table>
+	</div>
+	
+	<div style="padding-left: 13px;margin-top:70px">
+				<h5><span><label class="tk-labl">Role(s)</label></span></h5>
+				<div style="width:250px;"> 
+				
+				<uitk:dynamic-table id="userRolesTable" model="viewUserProfileObj.userRoleListModel"> </uitk:dynamic-table>
+		</div>
+	</div>
+</div>
+<div>
+		<uitk:dialog dialog-id='updateVendorId' dialog-role='dialog'
+			default-width="auto;" default-height="auto;"
+			style="overflow:hidden; top: 75%;" header-text='Add or Remove organization'
+			show="updateVendorPopup" confirm-dialog="false" overflow="hidden;">
+			 <div><uitk:message model="userProfileObj.popUpErrorMessageModel"> </uitk:message></div>
+			<div style="display:block;clear:both; text-align: center;">
+				<uitk:dynamic-table id="updateVendorTable" model="supervisorVendorList"> </uitk:dynamic-table>
+			</div>
+			<div style="display:block;clear:both; text-align: left;padding-left: 13px;">
+				<uitk:button style="width:35%" ng-click="closeUpdateVendorPopup()">Cancel</uitk:button>
+				<uitk:button align="right" style="width:35%" ng-click="addRemoveOrg()">Save</uitk:button>
+			</div>
+		</uitk:dialog>
+	</div>

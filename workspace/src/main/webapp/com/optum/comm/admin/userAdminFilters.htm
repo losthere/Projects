@@ -1,0 +1,52 @@
+<div ng-controller='lookupCtrl'>
+	<table id="filtersTableId" class="ux-tabl-form-multicol ux-margin-left-1t ux-padding-bottom-none ux-margin-top-none">  
+		<tbody>
+			<tr>
+				<td><label class="tk-labl">Last Name</label></td>
+				<td><uitk-input style-class="size" id="lastNameId" name="lastName" model="filters.memberLastName" ></uitk-input></td>
+				<td><label class="tk-labl">First Name</label></td>
+				<td><uitk-input style-class="size" id="firstNameId" name="firstName" model="filters.memberFirstName"></uitk-input></td>	
+				<td width="150px;"><label class="tk-labl">Organization</label><span ng-if="filters.userStatus=='Active'"style="color : red;">*</span></td>
+				<td>
+					<select class="size" ng-model="filters.vendor" ng-change="onVendorChange()">
+						<option value="">Select</option>
+						<option ng-repeat="vendor in lookup.vendors" value="{{vendor.key}}">{{vendor.value}}</option>
+					</select>
+				</td>				
+			</tr>
+			<tr>
+				<td><label class="tk-labl">User ID</label></td>
+				<td><uitk-input style-class="size" id="userid" name="userId" model="filters.userId"></uitk-input></td>
+				<td width="150px;"><label class="tk-labl">Role</label></td>
+				<td>
+					<select class="size" ng-model="filters.userRole">
+						<option value="">Select</option>
+						<option ng-repeat="roles in lookup.usrAdminRoles" value="{{roles.roleCode}}">{{roles.roleName}}</option>
+					</select>
+				</td>		
+			</tr>
+			<tr>
+				<td width="150px;"><label class="tk-labl">Reports To</label></td>
+				<td>
+					<select class="size" ng-model="filters.supervisor">
+						<option value="">Select</option>
+						<option ng-repeat="supervisors in lookup.userAdminSupervisors" value="{{supervisors.loginUserKey}}">{{supervisors.fullName}}</option>
+					</select>
+				</td>
+				<td width="150px;"><label class="tk-labl">Status</label><span style="color : red;">*</span></td>
+				<td>
+					<select class="size" ng-model="filters.userStatus">
+						<option value="">Select</option>
+						<option value="Active">Active</option>
+						<option value="Inactive">Inactive</option>
+					</select>
+				</td>
+			</tr>
+						
+		</tbody>
+	</table>
+	<div style="display:block;clear:both;">
+		<uitk:button style="width:7%"  ng-click="filter()">Filter</uitk:button>
+		<uitk:button style="width:7%" ng-click="clear()">Clear</uitk:button>		
+	</div>
+</div>

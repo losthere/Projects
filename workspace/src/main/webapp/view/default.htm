@@ -1,0 +1,2848 @@
+<!doctype html>
+<html >
+   <head>
+     <meta charset="utf-8" />
+     <meta name="viewport" content="width=device-width" />
+     <title>Clinical Review</title>
+	 <link type="image/x-icon" href="../../gcm-app-services/com/optum/comm/lib/images/favicon.ico" rel="icon"></link>
+	 <link type="image/x-icon" href="../../gcm-app-services/com/optum/comm/lib/images/favicon.ico" rel="shortcut icon"></link>
+	 <link rel="stylesheet" href="../../gcm-app-services/com/optum/comm/lib/css/general2.css" />
+	 <link rel="stylesheet" href="../../gcm-app-services/com/optum/comm/lib/css/cdefault.css" type="text/css" />
+	 <link rel="stylesheet" href="../../gcm-app-services/com/optum/comm/lib/css/uitk.min.css"/>
+	<style type="text/css">
+		li { list-style: none !important; }
+		.ux-content { margin : 0px !important;  }
+		#ux-footer {
+		    position: fixed;
+		    left: 0;
+		    bottom: 0;
+		    padding : 5px;
+		    width: 100%;
+		    border-top: 1px solid #F47B29;
+		 }
+	</style>
+
+	<script type="cordys/xml" id="userProfileScriptXML">
+	   <Application taskbar="false">
+	      <url>com/optum/comm/useradmin/userprofile.htm</url>
+	      <id>com_optum_cpc_emerald_</id>
+	      <caption>User Profile</caption>
+	      <description>User Profile</description>
+	      <icon>wcp/theme/default/icon/task/generictask.png</icon>
+	      <frame features="dialogHeight:900px;dialogWidth:700px" />
+	      <data />
+
+	    </Application>
+	</script>
+	<script type="cordys/xml" id="BlankApplicationXML">
+		<Application
+			taskbar="false">
+			<id>com_optum_cpc_emerald_inbox_WorkListTaskView</id>
+			<url>mrm/blank.htm</url>
+			<description>Task</description>
+			<caption>Task</caption>
+			<frame>com_optum_cpc_emerald_inbox_WorkListTaskView</frame>
+		</Application>
+	</script>
+
+	<script type="cordys/xml" id="timeoutConfirmXML">
+	   <Application taskbar="false">
+	      <url>mrm/timeoutconfirm.htm</url>
+	      <id>com_optum_cpc_emerald_homepage_timeoutconfirm</id>
+	      <caption>2 minutes warning</caption>
+	      <description>2 minutes warning</description>
+	      <icon>wcp/theme/default/icon/task/generictask.png</icon>
+	      <frame features="dialogHeight:188px;dialogWidth:414px">_modal</frame>
+	      <data />
+	    </Application>
+	</script>
+
+	<script type="cordys/xml" id="optumSessiontimeoutConfirmXML">
+	   <Application taskbar="false">
+	      <url>mrm/optumsessiontimeoutconfirm.htm</url>
+	      <id>com_optum_cpc_emerald_homepage_optumsessiontimeoutconfirm</id>
+	      <caption>15 minutes warning</caption>
+	      <description>15 minutes warning</description>
+	      <icon>wcp/theme/default/icon/task/generictask.png</icon>
+	      <frame features="dialogHeight:188px;dialogWidth:414px">_modal</frame>
+	      <data />
+	    </Application>
+	</script>
+
+	<script type="cordys/xml" id="signoutConfirmXML">
+	   <Application taskbar="false">
+	      <url>com/optum/cpc/emerald/homepage/signoutconfirm.caf</url>
+	      <id>com_optum_cpc_emerald_homepage_signoutconfirm</id>
+	      <caption>Sign Out</caption>
+	      <description>Sign Out</description>
+	      <icon>wcp/theme/default/icon/task/generictask.png</icon>
+	      <frame features="dialogHeight:188px;dialogWidth:414px" >_modal</frame>
+	      <data />
+	    </Application>
+	</script>
+
+	<script type="cordys/xml" id="homePage">
+
+	    <Application taskbar="false">
+	      <url />
+	      <id>com_optum_cpc_emerald_user_profile_htm</id>
+	      <caption>User Profile</caption>
+	      <description>Profile</description>
+	      <icon>wcp/theme/default/icon/task/generictask.png</icon>
+	      <data/>
+	      <frame>desktop</frame>
+	    </Application>
+
+	</script>
+
+	<script type="cordys/xml" id="userTasksXml">
+		<SOAP:Envelope xmlns:SOAP="http://schemas.xmlsoap.org/soap/envelope/">
+		  <SOAP:Body>
+			<GetUserTasks xmlns="http://schemas.cordys.com/com/optum/mrm/comm/userprofile/1.0" preserveSpace="no" qAccess="0" qValues="" />
+		  </SOAP:Body>
+		</SOAP:Envelope>
+	</script>
+
+	<script type="cordys/xml" id="userRecordLogOff">
+		<SOAP:Envelope xmlns:SOAP="http://schemas.xmlsoap.org/soap/envelope/">
+		  <SOAP:Body>
+			<RecordUserLogOff xmlns="http://schemas.optum.com/optum/mrm/comm/useradmin/1.0" preserveSpace="no" qAccess="0" qValues="">
+			  <logOffMode/>
+			</RecordUserLogOff>
+		  </SOAP:Body>
+		</SOAP:Envelope>
+	</script>
+	<script src="../../gcm-app-services/com/optum/comm/lib/js/common/jquery.js" type="text/javascript"></script>
+		<script src="../../gcm-app-services/com/optum/comm/lib/js/common/angular.min.js" type="text/javascript"></script>
+		<script src="../../gcm-app-services/com/optum/comm/lib/js/common/ux.js" type="text/javascript"></script>
+		<script type="text/javascript" src="../../gcm-app-services/com/optum/comm/lib/js/common/ng-csv.js"></script>
+		<script type="text/javascript" src="../../gcm-app-services/com/optum/comm/lib/js/common/angular-sanitize.js"></script>
+		<script type="text/javascript" src="../../gcm-app-services/com/optum/comm/lib/js/common/angular-touch.js"></script>
+		<script type="text/javascript" src="../../gcm-app-services/com/optum/comm/lib/js/common/angular-translate/angular-translate.js"></script>
+		<script type="text/javascript" src="../../gcm-app-services/com/optum/comm/lib/js/common/lodash.js"></script>
+		<script type="text/javascript" src="../../gcm-app-services/com/optum/comm/lib/js/common/ngDialog.min.js"></script>
+		<script src="../../gcm-app-services/com/optum/comm/lib/js/common/uitk.min.js"></script>
+		<script src="../../gcm-app-services/com/optum/comm/lib/js/modules/admin/userProfile.js" type="text/javascript"></script>
+<script>
+	var defaultApp = angular.module('defaultApp', [ 'userProfileApp' ]);
+	defaultApp.controller("defaultAppCtrl", function($scope) {
+	});
+</script>
+</head>
+   <body onload ="onApplicationReady()" onbeforeunload="return onBeforeApplicationClose()">
+   		<div id="__xbody_msg_group_element"> </div>
+      <div id="ux-wrapper" style="position:relative">
+      <div class="ux-head">
+         <div class="ux-head-cntr-logo" style="padding-top:40px">
+            <span class="ux-head-logo" style="height:40px"><img src="../../gcm-app-services/com/optum/comm/lib/images/clinicalReview.png" alt="Clinical Review" /></span>
+         </div>
+         <div class="ux-head-cntr-navigation">
+         <div class="ux-head-cntr-navigation-global" style="background-color:#666666;height:32px;">
+            <ul class="ux-unav" id="userSection">
+               <li class="ux-unav-has-submenu">
+                  <span class="ux-head-welcome" id="lbl_username" style="color:white;">Welcome, </span> 
+                  <ul>
+                     <li id='cpcUrlElement' style='display:none'><a style="cursor:pointer;">CHARTOPS</a></li>
+                     <li id='profileElement'><a style="cursor:pointer;" onclick="handleProfileClick()">Profile</a></li>
+                     <li id='groupElement1' style='display:none'><a style="cursor:pointer;"></a></li>
+                  </ul>
+               <li id='li_switch_user'>
+                 <span class='cux-icon-search' id="lbl_search" style="color:white;cursor: default;">
+						<span class="tk-icon-glyph">
+							<span icon='cux-icon-search' style='font-size:16px;'></span>
+						</span>
+					</span>
+               </li>
+              
+                <li class="ux-unav-has-submenu">
+                  <span class="ux-head-userrole" id="lbl_userrole" style="color:white;"></span>
+                  <ul id='rolesElement'>
+                  	<li id='roleElement' style='display:none'><a style="cursor:pointer;"></a></li>
+                  </ul>
+               </li>
+               <li class="ux-unav-has-submenu">
+                  <span class="ux-head-userhelp" id="lbl_userhelp" style="color:white;">Help</span>
+                  <ul>
+                     <li id='userGuideElement'><a href="../../gcm-app-services/com/optum/comm/lib/guides/UserGuide.pdf" style="cursor:pointer;" download target="_blank">User Guide</a></li>
+                     <li id='contactUsElement'><a style="cursor:pointer;">Contact Us</a></li>
+                  </ul>
+               </li>
+                 
+			   <li id='signoutElement'><a style="cursor:pointer;color:white;">Sign Out</a></li>
+			  </li>
+            </ul>
+         </div>
+         <div class="ux-head-cntr-navigation-primary" style="padding-top:12px">
+            <ul class="ux-pnav">
+			   <li class="ux-pnav-selected" id='dashboardMainElement' style="display:none"><a style="cursor:pointer;"><img id="userHomeIcon"  src="../../gcm-app-services/com/optum/comm/lib/images/userhome.png" />Dashboard</a></li>
+			   <li id='retrievalAssignmentMainElement' style="display:none"><a style="cursor:pointer;">Assignment</a></li>
+			   <li id='worklistMainElement' style="display:none"><a style="cursor:pointer;">Worklist</a></li>
+               <li id='utilityMainElement' style="display:none"><a style="cursor:pointer;">Utility</a></li>
+               <li id='adminMainElement'  style="display:none"><a style="cursor:pointer;">Administration</a></li>
+               <li id='reportsMainElement'  style="display:none"><a style="cursor:pointer;">Reports</a></li>
+               <li id='retrievalUIMainElement'  style="display:none"><a style="cursor:pointer;">Retrieval</a></li>
+               <li id='inventoryMainElement'  style="display:none"><a style="cursor:pointer;">Inventory</a></li>           
+            </ul>
+         </div>
+         </div>
+      </div>
+      <div class="ux-content" style="height:100%;position:relative">
+
+         <ul class="ux-vnav" style="display:none">
+
+            <li id='projectsElement'  style='display:none'><a style="cursor:pointer;">Projects</a></li>
+            <li id='workAssignmentsElement'  style='display:none' class='ux-vnav-submenu-closed'>
+               <a style="cursor:pointer;">Work Assignments</a>
+               <ul>
+                  <li id='locationElement' ><a style="cursor:pointer;">Location Assignments</a></li>
+                  <li id='workuserElement' ><a style="cursor:pointer;">User Assignments</a></li>
+				  <li id='workuserloadElement' ><a style="cursor:pointer;">User Work List View</a></li>
+				  <li id='autoAssignElement' ><a style="cursor:pointer;">Automatic Assignments</a></li>
+               </ul>
+            </li>
+			 <li id='usersElement'  style='display:none'> <a style="cursor:pointer;">Users</a></li>
+			 <li id='useruploadElement'  style='display:none'> <a style="cursor:pointer;">User Registration</a></li>
+			 <li id='hpProdConfigElement'  style='display:none'> <a style="cursor:pointer;">Health Plans</a></li>
+			 <li id='vendorConfigElement'  style='display:none'> <a style="cursor:pointer;">Vendor</a></li>
+			 <li id='dataIntakeElement'  style='display:none'> <a style="cursor:pointer;">Data Intake</a></li>
+			 <li id='programsElement'  style='display:none' class='ux-vnav-submenu-closed'>
+				<a style="cursor:pointer;">Programs</a>
+				<ul>
+					<li id='supplFileAttElement'><a style="cursor:pointer;">Supplemental File Attributes</a></li>
+                   <li id='attrCatElement'><a style="cursor:pointer;">Attribute Categories</a></li>
+				   <li id='programAttrElement'><a style="cursor:pointer;">Attributes</a></li>
+				</ul>
+			 </li>
+			 <li id='inventoryHpElement'  style='display:none' class='ux-vnav-submenu-closed'>
+			 <a style="cursor:pointer;">Inventory</a>
+			 <ul>
+					<li id='hpCodingConfigElement'><a style="cursor:pointer;">Health Plan Coding Configuration</a></li>
+					<li id='hpChartSelElement'><a style="cursor:pointer;">Health Plan Chart Selection</a></li>
+				</ul>
+			 </li>
+         </ul>
+
+         <div class="ux-tpnl" style="display:none;top:26px;position:relative;height:10px;">
+ 			<ul>
+			<li class="ux-tpnl-selected"><a style="cursor:pointer" id='dashboardTabElement' class='tab-label' >Dashboard</a>
+
+			</li>
+				<li><a style="cursor:pointer" id='workListTabElement' class='tab-label'>Work List</a>
+				</li>
+			</ul>
+			<div class="ux-tpnl-content" style="height:100%;position:relative"></div>
+			</div>
+		 </div>
+
+		<div id="dashboardMainConfigElement" style="display:none">
+			<iframe id="com_optum_cpc_emerald_dashboard_frame" src="about:blank"  style="display:none;position:absolute;width:100%;top:153px;left:0px;height:11%;"  frameborder="0" framespacing="0" border="0" cellspacing="0" scrolling="auto" class="container"></iframe>
+		</div>
+		<div id="workListMainConfigElement" style="display:none">
+			<iframe id="com_optum_cpc_emerald_worklist_frame" src="about:blank"  style="display:none;position:absolute;width:100%;top:153px;left:0px;height: 11%;"  frameborder="0" framespacing="0" border="0" cellspacing="0" scrolling="auto" class="container"></iframe>
+		</div>
+		<div id="retrievalAssignmentMainConfigElement" style="display:none">
+			<iframe id="com_optum_comm_mrm_retassignment_frame" src="about:blank"  style="display:none;position:absolute;width:100%;top:153px;left:0px;height: 11%;"  frameborder="0" framespacing="0" border="0" cellspacing="0" scrolling="auto" class="container"></iframe>
+		</div>
+		<div id="retrievalUIMainConfigElement" style="display:none">
+			<iframe id="com_optum_comm_mrm_retui_frame" src="about:blank"  style="display:none;position:absolute;width:100%;top:153px;left:0px;height: 11%;"  frameborder="0" framespacing="0" border="0" cellspacing="0" scrolling="auto" class="container"></iframe>
+		</div>
+		<div id="utilityMainConfigElement" style="display:none">
+			<iframe id="com_optum_comm_mrm_utility_frame" src="about:blank"  style="display:none;position:absolute;width:100%;top:153px;left:0px;height: 11%;"  frameborder="0" framespacing="0" border="0" cellspacing="0" scrolling="auto" class="container"></iframe>
+		</div>
+		<div id="userUploadDivElement" style="display:none">
+			<iframe id="com_optum_comm_mrm_userupload_frame" src="about:blank"  style="position:absolute;width:100%;top:153px;left:0px;height: 11%;"  frameborder="0" framespacing="0" border="0" cellspacing="0" scrolling="auto" class="container"></iframe>
+		</div>
+		<div id="dataIntakeDivElement" style="display:none">
+			<iframe id="com_optum_comm_mrm_dataintake_frame" src="about:blank"  style="position:absolute;width:88%;top:90px;left:165px;height: 11%;"  frameborder="0" framespacing="0" border="0" cellspacing="0" scrolling="auto" class="container"></iframe>
+		</div>
+		<div  id="inventoryDivElement"   style="display:none">
+			<iframe id="com_optum_cpc_emerald_inventory_Inventory_id" src="about:blank"  style="position:absolute;width:88%;top:90px;left:160px;height: 11%;" frameborder="0" framespacing="0" border="0" cellspacing="0" scrolling="auto" class="container"></iframe>
+		</div>
+
+		<div  id="autoAssignDivElement"   style="display:none">
+			<iframe id="com_optum_cpc_emerald_inventory_autoAssign_id" src="about:blank"  style="position:absolute;width:88%;top:90px;left:160px;height: 11%;" frameborder="0" framespacing="0" border="0" cellspacing="0" scrolling="auto" class="container"></iframe>
+		</div>
+		<div  id="userworkloadDivElement"   style="display:none">
+			<iframe id="com_optum_cpc_emerald_inventory_userworkload_id" src="about:blank"  style="position:absolute;width:88%;top:90px;left:160px;height: 11%;" frameborder="0" framespacing="0" border="0" cellspacing="0" scrolling="auto" class="container"></iframe>
+		</div>
+		<div  id="hpProdConfigDivElement"   style="display:none">
+			<iframe id="com_optum_cpc_emerald_admin_hpProdConfig_id" src="about:blank"  style="position:absolute;width:88%;top:90px;left:160px;height: 11%;" frameborder="0" framespacing="0" border="0" cellspacing="0" scrolling="auto" class="container"></iframe>
+		</div>
+		<div  id="vendorConfigDivElement"   style="display:none">
+			<iframe id="com_optum_cpc_emerald_admin_vendorConfig_id" src="about:blank"  style="position:absolute;width:88%;top:90px;left:160px;height: 11%;" frameborder="0" framespacing="0" border="0" cellspacing="0" scrolling="auto" class="container"></iframe>
+		</div>
+
+		<div id="retrievalDivElement"   style="display:none">
+			<iframe id="com_optum_cpc_emerald_inventory_retrieval_id" src="about:blank"  style="position:absolute;width:88%;top:90px;left:160px;height: 11%;"  frameborder="0" framespacing="0" border="0" cellspacing="0" scrolling="auto" class="container"></iframe>
+		</div>
+		<div id="healthPlanConfigElement"   style="display:none">
+			<iframe id="com_optum_cpc_emerald_health_plan_config_id" src="about:blank"  style="position:absolute;width:88%;top:90px;left:160px;height: 11%;"  frameborder="0" framespacing="0" border="0" cellspacing="0" scrolling="auto" class="container"></iframe>
+		</div>
+		<div id="inventoryUserConfigElement"  style="display:none">
+			<iframe id="com_optum_cpc_emerald_inventory_user_config_id" src="about:blank"  style="position:absolute;width:88%;top:90px;left:160px;height: 11%;"  frameborder="0" framespacing="0" border="0" cellspacing="0" scrolling="auto" class="container"></iframe>
+		</div>
+
+		<div id="managerUsersDivElement"  style="display:none">
+			<iframe id="com_optum_cpc_emerald_managerusers_id" src="about:blank"  style="position:absolute;width:88%;top:90px;left:160px;height: 11%;"  frameborder="0" framespacing="0" border="0" cellspacing="0" scrolling="auto" class="container"></iframe>
+		</div>
+
+		<div id="searchConfigElement"  style="display:none">
+			<iframe id="com_optum_cpc_emerald_search_id" src="about:blank"  style="position:absolute;width:100%;top:90px;left:0px;height: 11%;"  frameborder="0" framespacing="0" border="0" cellspacing="0" scrolling="auto" class="container"></iframe>
+		</div>
+
+		<div id="workListConfigElement" style="display:none">
+			<iframe id="com_optum_cpc_emerald_worklist_id" src="about:blank"  style="position:absolute;width:100%;top:90px;left:0px;height: 11%;"  frameborder="0" framespacing="0" border="0" cellspacing="0" scrolling="auto" class="container"></iframe>
+		</div>
+
+		<iframe id="com_optum_cpc_emerald_search_WorkListTaskView" src="about:blank"  style="display:none;position:absolute;width:100%;top:90px;left:0px;height: 11%;"  frameborder="0" framespacing="0" border="0" cellspacing="0" scrolling="auto" class="container"></iframe>
+
+
+		<iframe id="com_optum_cpc_emerald_inbox_WorkListTaskView" src="about:blank"  style="display:none;position:absolute;width:100%;top:90px;left:0px;height: 11%;"  frameborder="0" framespacing="0" border="0" cellspacing="0" scrolling="auto" class="container"></iframe>
+
+
+		<div  id="attributeTypeDivElement"  style="display:none">
+			<iframe id="com_optum_cpc_emerald_supp_attrtype_id" src="about:blank"  style="position:absolute;width:88%;top:90px;left:160px;height: 15%;" frameborder="0" framespacing="0" border="0" cellspacing="0" scrolling="no" class="container"></iframe>
+		</div>
+		<div id="chartAttributeElement"   style="display:none">
+			<iframe id="com_optum_cpc_emerald_supp_chartattr_id" src="about:blank"  style="position:absolute;width:88%;top:90px;left:160px;height: 15%;"  frameborder="0" framespacing="0" border="0" cellspacing="0" scrolling="no" class="container"></iframe>
+		</div>
+		<div id="programAttributeElement"   style="display:none">
+			<iframe id="com_optum_cpc_emerald_supp_programattr_id" src="about:blank"  style="position:absolute;width:88%;top:90px;left:160px;height: 10%;"  frameborder="0" framespacing="0" border="0" cellspacing="0" scrolling="no" class="container"></iframe>
+		</div>
+		<div id="hpCodingConfigAttrElement"   style="display:none">
+			<iframe id="com_optum_cpc_emerald_hp_codingconfig_id" src="about:blank"  style="position:absolute;width:88%;top:90px;left:160px;height: 10%;"  frameborder="0" framespacing="0" border="0" cellspacing="0" scrolling="auto" class="container"></iframe>
+		</div>
+		<div id="hpChartSelectionAttrElement"   style="display:none">
+			<iframe id="com_optum_cpc_emerald_hp_chartselection_id" src="about:blank"  style="position:absolute;width:88%;top:90px;left:160px;height: 10%;"  frameborder="0" framespacing="0" border="0" cellspacing="0" scrolling="no" class="container"></iframe>
+		</div>
+
+		<div id="reportsPageElement"   style="display:none">
+			<iframe id="com_optum_reports_content_frame" src="about:blank"  style="position:absolute;width:100%;top:90px;left:0px;height: 10%;"  frameborder="0" framespacing="0" border="0" cellspacing="0" scrolling="no" class="container"></iframe>
+		</div>
+
+
+		<div id="homePageContentElement"   style="display:none">
+			<iframe id="com_optum_homepage_content_frame" src="about:blank"  style="position:absolute;width:100%;top:90px;left:0px;height: 10%;"  frameborder="0" framespacing="0" border="0" cellspacing="0" scrolling="no" class="container"></iframe>
+		</div>
+
+         <div id="ux-footer">
+			<div><span>© 2019 Optum, Inc. All rights reserved.</span><span><a href='javascript:openPrivacyPolicy()'>Privacy Policy</a> | </span><span><a href='javascript:openTerms()'>Terms of Use</a></span></div>
+			<!-- <div><span>2019 Optum. All Rights Reserved</span></div> -->
+         </div>
+      </div>
+		<script type="text/javascript" src="../../gcm-app-services/com/optum/comm/lib/js/common/angular.min.js"></script>
+		<script type="text/javascript" src="../../gcm-app-services/com/optum/comm/lib/js/common/jquery-3.2.1.min.js"></script>
+		<script type="text/javascript" src="../../gcm-app-services/com/optum/comm/lib/js/common/responsive-layout.js" type="text/javascript"></script>
+		<script type="text/javascript" src="../../gcm-app-services/com/optum/comm/lib/js/common/ux.js"></script>
+		<script type="text/javascript" src="../../gcm-app-services/com/optum/comm/lib/js/common/optumui.js"></script>
+      <script>
+	var gatewayURL = "";
+
+		var SSO_RUNTIME_NS = "http://schemas.cordys.com/SSO/Runtime/1.0";
+		var activeWorkList = "";
+		var windowHeight=$( window ).height();
+		var headerHeight="130";
+		var iframeHeight=windowHeight-headerHeight;
+		var allTasks = [];
+		allTasks["WorkList"] = {};
+		allTasks["WorkList"].containerId = "workListMainConfigElement";
+		allTasks["WorkList"].frameId = "com_optum_cpc_emerald_worklist_frame";
+		allTasks["WorkList"].tabId = "worklistMainElement";
+		
+		allTasks["CommRetrievalAssignment"] = {};
+		allTasks["CommRetrievalAssignment"].containerId = "retrievalAssignmentMainConfigElement";
+		allTasks["CommRetrievalAssignment"].frameId = "com_optum_comm_mrm_retassignment_frame";
+		allTasks["CommRetrievalAssignment"].tabId = "retrievalAssignmentMainElement";
+		
+		allTasks["CommRetrievalU"] = {};
+		allTasks["CommRetrievalU"].containerId = "retrievalUIMainConfigElement";
+		allTasks["CommRetrievalU"].frameId = "com_optum_comm_mrm_retassignment_frame";
+		allTasks["CommRetrievalU"].tabId = "retrievalUIMainElement";
+		
+		allTasks["CommSchedulerWorklistUI"] = {};
+		allTasks["CommSchedulerWorklistUI"].containerId = "workListMainConfigElement";
+		allTasks["CommSchedulerWorklistUI"].frameId = "com_optum_cpc_emerald_worklist_frame";
+		allTasks["CommSchedulerWorklistUI"].tabId = "worklistMainElement";
+
+		allTasks["CRQS CommWorklistUI"] = {};
+		allTasks["CRQS CommWorklistUI"].containerId = "workListMainConfigElement";
+		allTasks["CRQS CommWorklistUI"].frameId = "com_optum_cpc_emerald_worklist_frame";
+		allTasks["CRQS CommWorklistUI"].tabId = "worklistMainElement";
+
+		allTasks["HelpDesk CommWorklistUI"] = {};
+		allTasks["HelpDesk CommWorklistUI"].containerId = "workListMainConfigElement";
+		allTasks["HelpDesk CommWorklistUI"].frameId = "com_optum_cpc_emerald_worklist_frame";
+		allTasks["HelpDesk CommWorklistUI"].tabId = "worklistMainElement";
+
+		allTasks["InventorySearch"] = {};
+		allTasks["InventorySearch"].containerId = "searchConfigElement";
+		allTasks["InventorySearch"].frameId = "com_optum_cpc_emerald_search_id";
+		allTasks["InventorySearch"].tabId = "searchMainElement";
+		
+		
+		allTasks["CRQSInventorySearch"] = {};
+		allTasks["CRQSInventorySearch"].containerId = "searchConfigElement";
+		allTasks["CRQSInventorySearch"].frameId = "com_optum_cpc_emerald_search_id";
+		allTasks["CRQSInventorySearch"].tabId = "searchMainElement";
+
+		allTasks["GCMChartDashboard"] = {};
+		allTasks["GCMChartDashboard"].containerId = "dashboardMainConfigElement";
+		allTasks["GCMChartDashboard"].frameId = "com_optum_cpc_emerald_dashboard_frame";
+		allTasks["GCMChartDashboard"].tabId = "dashboardMainElement";
+
+		allTasks["CommChartDashboardUI"] = {};
+		allTasks["CommChartDashboardUI"].containerId = "dashboardMainConfigElement";
+		allTasks["CommChartDashboardUI"].frameId = "com_optum_cpc_emerald_dashboard_frame";
+		allTasks["CommChartDashboardUI"].tabId = "dashboardMainElement";
+		
+		allTasks["CRQS Dashboard UI"] = {};
+		allTasks["CRQS Dashboard UI"].containerId = "dashboardMainConfigElement";
+		allTasks["CRQS Dashboard UI"].frameId = "com_optum_cpc_emerald_dashboard_frame";
+		allTasks["CRQS Dashboard UI"].tabId = "dashboardMainElement";
+
+		allTasks["ChartDashboard"] = {};
+		allTasks["ChartDashboard"].containerId = "dashboardMainConfigElement";
+		allTasks["ChartDashboard"].frameId = "com_optum_cpc_emerald_dashboard_frame";
+		allTasks["ChartDashboard"].tabId = "dashboardMainElement";
+
+		allTasks["projects"] = {};
+		allTasks["projects"].containerId = "retrievalDivElement";
+		allTasks["projects"].frameId = "com_optum_cpc_emerald_inventory_retrieval_id";
+		allTasks["projects"].tabId = "inventoryMainElement";
+
+		allTasks["ManageUsers"] = {};
+		allTasks["ManageUsers"].containerId = "managerUsersDivElement";
+		allTasks["ManageUsers"].frameId = "com_optum_cpc_emerald_managerusers_id";
+		allTasks["ManageUsers"].tabId = "adminMainElement";
+		
+		allTasks["CommUserUploadUI"] = {};
+		allTasks["CommUserUploadUI"].containerId = "userUploadDivElement";
+		allTasks["CommUserUploadUI"].frameId = "com_optum_comm_mrm_userupload_frame";
+		allTasks["CommUserUploadUI"].tabId = "adminMainElement";
+		
+		allTasks["CommDataIntakeUI"] = {};
+		allTasks["CommDataIntakeUI"].containerId = "dataIntakeDivElement";
+		allTasks["CommDataIntakeUI"].frameId = "com_optum_comm_mrm_dataintake_frame";
+		allTasks["CommDataIntakeUI"].tabId = "utilityMainElement";
+
+		allTasks["ManageProgramAttributes"] = {};
+		allTasks["ManageProgramAttributes"].containerId = "programAttributeElement";
+		allTasks["ManageProgramAttributes"].frameId = "com_optum_cpc_emerald_supp_programattr_id";
+		allTasks["ManageProgramAttributes"].tabId = "adminMainElement";
+
+		allTasks["ManageAttributeType"] = {};
+		allTasks["ManageAttributeType"].containerId = "attributeTypeDivElement";
+		allTasks["ManageAttributeType"].frameId = "com_optum_cpc_emerald_supp_attrtype_id";
+		allTasks["ManageAttributeType"].tabId = "adminMainElement";
+
+		allTasks["ManageAttributeList"] = {};
+		allTasks["ManageAttributeList"].containerId = "chartAttributeElement";
+		allTasks["ManageAttributeList"].frameId = "com_optum_cpc_emerald_supp_chartattr_id";
+		allTasks["ManageAttributeList"].tabId = "adminMainElement";
+
+		allTasks["InventoryUserAssignment"] = {};
+		allTasks["InventoryUserAssignment"].containerId = "inventoryUserConfigElement";
+		allTasks["InventoryUserAssignment"].frameId = "com_optum_cpc_emerald_inventory_user_config_id";
+		allTasks["InventoryUserAssignment"].tabId = "inventoryMainElement";
+		
+		allTasks["CommInventoryUserAssignment"] = {};
+		allTasks["CommInventoryUserAssignment"].containerId = "inventoryUserConfigElement";
+		allTasks["CommInventoryUserAssignment"].frameId = "com_optum_cpc_emerald_inventory_user_config_id";
+		allTasks["CommInventoryUserAssignment"].tabId = "inventoryMainElement";
+		
+		allTasks["InventoryUserWorkLoad"] = {};
+		allTasks["InventoryUserWorkLoad"].containerId = "userworkloadDivElement";
+		allTasks["InventoryUserWorkLoad"].frameId = "com_optum_cpc_emerald_inventory_userworkload_id";
+		allTasks["InventoryUserWorkLoad"].tabId = "inventoryMainElement";
+		
+		allTasks["CommHPProductConfigurationUI"] = {};
+		allTasks["CommHPProductConfigurationUI"].containerId = "hpProdConfigDivElement";
+		allTasks["CommHPProductConfigurationUI"].frameId = "com_optum_cpc_emerald_admin_hpProdConfig_id";
+		allTasks["CommHPProductConfigurationUI"].tabId = "adminMainElement";
+		
+		allTasks["Vendor Configuration UI"] = {};
+		allTasks["Vendor Configuration UI"].containerId = "vendorConfigDivElement";
+		allTasks["Vendor Configuration UI"].frameId = "com_optum_cpc_emerald_admin_vendorConfig_id";
+		allTasks["Vendor Configuration UI"].tabId = "adminMainElement";
+
+		allTasks["CommInventoryAssignment"] = {};
+		allTasks["CommInventoryAssignment"].containerId = "inventoryDivElement";
+		allTasks["CommInventoryAssignment"].frameId = "com_optum_cpc_emerald_inventory_Inventory_id";
+		allTasks["CommInventoryAssignment"].tabId = "locationElement";
+		
+		
+		allTasks["InventoryAssignment"] = {};
+		allTasks["InventoryAssignment"].containerId = "inventoryDivElement";
+		allTasks["InventoryAssignment"].frameId = "com_optum_cpc_emerald_inventory_Inventory_id";
+		allTasks["InventoryAssignment"].tabId = "locationElement";
+
+		allTasks["AutoAssignmentConfigUI"] = {};
+		allTasks["AutoAssignmentConfigUI"].containerId = "autoAssignDivElement";
+		allTasks["AutoAssignmentConfigUI"].frameId = "com_optum_cpc_emerald_inventory_autoAssign_id";
+		allTasks["AutoAssignmentConfigUI"].tabId = "inventoryMainElement";
+
+
+		allTasks["CommHealthPlanConfiguration"] = {};
+		allTasks["CommHealthPlanConfiguration"].containerId = "hpCodingConfigAttrElement";
+		allTasks["CommHealthPlanConfiguration"].frameId = "com_optum_cpc_emerald_hp_codingconfig_id";
+		allTasks["CommHealthPlanConfiguration"].tabId = "adminMainElement";
+
+		allTasks["HealthPlanChartSelection"] = {};
+		allTasks["HealthPlanChartSelection"].containerId = "hpChartSelectionAttrElement";
+		allTasks["HealthPlanChartSelection"].frameId = "com_optum_cpc_emerald_hp_chartselection_id";
+		allTasks["HealthPlanChartSelection"].tabId = "adminMainElement";
+
+		allTasks["ReportsApplication"] = {};
+		allTasks["ReportsApplication"].containerId = "reportsPageElement";
+		allTasks["ReportsApplication"].frameId = "com_optum_reports_content_frame";
+		allTasks["ReportsApplication"].tabId = "reportsMainElement";
+
+	var isTabSet = false;
+	var rootData = {
+						currentRole : '' ,
+						currentRoleName : '',
+						userData : {}
+				   };
+
+
+	var userObject = optumUI.preLogin(null, null, null, rootData);
+	var isShowMessage = true;
+	var optumSessionTimeout = 479.5;
+	var optumSessionTimeoutAlertBefore = 465;
+	var sessionTime=20;
+	var sessionTimeoutAlertBefore=2;
+	var newSessionValue = sessionTime*1 - sessionTimeoutAlertBefore*1;
+	var interval;
+	var signOutInterval;
+	var currentElementID;
+	var promptInterval;
+	var selectedRole = "";
+	var selectedRoleName = "";
+	var winLookup;
+	var rapsLookup;
+	var pnpTab;
+	var bulkUploadLookup;
+	var showPopUp = false;
+	
+	rootData.getVendorsByRole = function(roleCode){
+		if(rootData.userData && rootData.userData.roleVendorList && rootData.userData.roleVendorList.length > 0){
+			for(var i = 0; i < rootData.userData.roleVendorList.length; i++){
+				if(rootData.userData.roleVendorList[i].gcmRoleCode && roleCode.toUpperCase() === rootData.userData.roleVendorList[i].gcmRoleCode.toUpperCase()){
+					return rootData.userData.roleVendorList[i].roleVendor;
+				}
+			}
+		}
+		return [];
+	}
+	
+	var termsLookup = {}; 
+	
+	function openTerms(){
+		var terms = optumUI.getQualifiedURL("../crp/termsofuse.html");
+		
+		 if ((termsLookup) && (!termsLookup.closed)){
+			 termsLookup = window.open(terms,"termsOfUse","width=800, height=" + (screen.availHeight-50) + ",resizable=yes,scrollbars=yes" );
+		 }
+		 termsLookup = window.open(terms,"termsOfUse","width=800, height=" + (screen.availHeight-50) + ",resizable=yes,scrollbars=yes" );
+		 termsLookup.moveTo(20,20);
+	}
+	
+	function openPrivacyPolicy(){
+		var privacyPolicy = optumUI.getQualifiedURL("../crp/privacypolicy.html");
+		
+		 if ((privacyPolicy) && (!privacyPolicy.closed)){
+			 privacyPolicyLookup = window.open(privacyPolicy,"privacyPolicy","width=800,height=" + (screen.availHeight-50) + ",resizable=yes,scrollbars=yes" );
+		 }
+		 privacyPolicyLookup = window.open(privacyPolicy,"privacyPolicy","width=800,height=" + (screen.availHeight-50) + ",resizable=yes,scrollbars=yes" );
+		 termsLookup.moveTo(20,20);
+	}
+	function handleProfileClick(){
+		$(".js_user_profile_popup").show();
+		
+	}
+	function initializeCountersToDefault(){
+		isTabSet = false;
+		isShowMessage = true;
+		optumSessionTimeout = 479.5;
+		optumSessionTimeoutAlertBefore = 465;
+		sessionTime=20;
+		sessionTimeoutAlertBefore=2;
+		newSessionValue = sessionTime*1 - sessionTimeoutAlertBefore*1;
+	}
+	
+	function initializeSessionCounters(idleTime){
+	    if(isNaN(optumSessionTimeout)){
+			initializeCountersToDefault();
+		}
+		sessionTime= ! idleTime ? 20 : idleTime;
+		sessionTimeoutAlertBefore=2;
+		newSessionValue = sessionTime*1 - sessionTimeoutAlertBefore*1;
+		startOptumSessionTimer(optumSessionTimeout * 60);
+		startOptumSessionAlertTimer(optumSessionTimeoutAlertBefore * 60);
+        startMainTimer(newSessionValue * 60);
+		start18MinsTimer(newSessionValue*60)
+	}
+	
+	function handleCRQSSessionCounters(){
+		if(isNaN(optumSessionTimeout)){
+			initializeCountersToDefault();
+		}
+		var crqsTimer = 115;//5 minutes before 2 hours
+		showOptum2HoursPrompt( crqsTimer * 60 );
+		startOptumSessionTimer(optumSessionTimeout * 60);
+		startOptumSessionAlertTimer(optumSessionTimeoutAlertBefore * 60);
+	}
+
+
+	//This will store reference to system.mapToRelativeURL
+	var __map_system_URL = {};
+	//This will append version for every URL requested through framework.
+	//This will not handle inline javascripts, css, SOAP Requests and inline URLs
+	//Application's CSS files are covered through optumUI.js. OptumUI.js will not be cached more than 1 week.
+	function __custom_map_system_URL(url)
+	{
+	   return __map_system_URL(url);
+	}
+	var isHttpError = false;
+	var isCoachOrSupervisor = false;
+	
+		function getDashBoardTask(){
+			if ( allTasks["CommChartDashboardUI"].applicationDefinition ) return allTasks["CommChartDashboardUI"];
+			else if ( allTasks["CRQS Dashboard UI"].applicationDefinition ) return allTasks["CRQS Dashboard UI"];
+			else return allTasks["CommChartDashboardUI"];
+		}
+	
+		//function used to find whether user can open work item or not
+		function isWorkItemAccessible(){
+			return true;
+		}
+
+		function hideOrDisplayNavigations()
+		{
+			isTabSet = false;
+			// Uncomment this after testing
+			
+ 			if ( allTasks["HelpDesk CommWorklistUI"].applicationDefinition ){
+				activeWorkList = "HelpDesk CommWorklistUI";
+			}else
+			if ( allTasks["CommSchedulerWorklistUI"].applicationDefinition && optumUI.getUser().currentGroupCode != "CM"){        
+				activeWorkList = "CommSchedulerWorklistUI";
+				}else 
+			if ( allTasks["CRQS CommWorklistUI"].applicationDefinition && optumUI.getUser().currentGroupCode == "CM" ){
+				activeWorkList = "CRQS CommWorklistUI";
+			}else if ( allTasks["WorkList"].applicationDefinition ){
+				activeWorkList = "WorkList";
+			}else{
+				//to avoid script errors.. it wont load
+				activeWorkList = "CommSchedulerWorklistUI";
+			} 
+	
+			if ( ! allTasks["GCMChartDashboard"].applicationDefinition && ! allTasks["CommChartDashboardUI"].applicationDefinition
+				&& ! allTasks["CRQS Dashboard UI"].applicationDefinition)
+				$("#dashboardMainElement").hide();
+			else
+			if ( allTasks["GCMChartDashboard"].applicationDefinition || allTasks["CommChartDashboardUI"].applicationDefinition 
+				|| allTasks["CRQS Dashboard UI"].applicationDefinition)
+			{
+				isTabSet = true;
+				$("#dashboardMainElement").show();
+				prepareDashboardPage();
+			}
+
+			if(!allTasks[activeWorkList].applicationDefinition)
+				$("#worklistMainElement").hide();
+			else
+			{
+				$("#worklistMainElement").show();
+				if(!isTabSet)
+				{
+					prepareWorklistPage();
+					isTabSet=true;
+				}
+			}
+
+			if ( allTasks["CommRetrievalAssignment"].applicationDefinition){        
+				activeWorkList = "CommRetrievalAssignment";
+				
+				$("#retrievalAssignmentMainElement").show();
+				if(!isTabSet)
+				{
+					prepareRetrievalAssignment();
+					isTabSet=true;
+				}
+				
+			}else{
+				$("#retrievalAssignmentMainElement").hide();
+			}
+			
+			if ( allTasks["CommSchedulerWorklistUI"].applicationDefinition){        
+				activeWorkList = "CommSchedulerWorklistUI";
+				
+				$("#worklistMainElement").show();
+				if(!isTabSet)
+				{
+					prepareWorklistPage();
+					isTabSet=true;
+				}
+				
+			}else{
+				$("#worklistMainElement").hide();
+			}
+			if ( allTasks["InventorySearch"].applicationDefinition || allTasks["CRQSInventorySearch"].applicationDefinition){
+				$(".ux-search").show();
+			}
+		}
+
+		function adminTabHideOrShow(isTabs)
+		{
+			$("#userUploadDivElement").show();
+			$("#com_optum_comm_mrm_userupload_frame").show();
+			$("#com_optum_comm_mrm_userupload_frame").prop("src", "../../gcm-app-services/com/optum/comm/admin/administration.htm");
+			
+			if ( ! isTabs ){
+				$("#com_optum_comm_mrm_userupload_frame").height(iframeHeight);
+				$("#com_optum_comm_mrm_userupload_frame").css("top", "90px");
+				$("#com_optum_comm_mrm_userupload_frame").css("bottom", "40px");
+			}		
+		}
+
+		function inventoyTabHideOrShow()
+		{
+			var windowHeight=$( window ).height();
+
+		var iframeHeight=windowHeight-headerHeight;
+			if ( ! allTasks["projects"].applicationDefinition )  $("#projectsElement").hide();
+			else
+			{
+				$("#projectsElement").show();
+				$("#com_optum_cpc_emerald_inventory_retrieval_id").height(iframeHeight);
+			}
+
+			if ((! allTasks["CommInventoryAssignment"].applicationDefinition || ! allTasks["InventoryAssignment"].applicationDefinition) &&
+					 					(! allTasks["InventoryUserAssignment"].applicationDefinition && ! allTasks["CommInventoryUserAssignment"].applicationDefinition)
+					 				)
+			{
+				 $("#workAssignmentsElement").hide();
+			}
+			else
+			{
+				$("#workAssignmentsElement").show();
+
+			}
+			if ( ! allTasks["CommInventoryAssignment"].applicationDefinition && ! allTasks["InventoryAssignment"].applicationDefinition)
+			{
+				$("#locationElement").hide();
+			}
+			else
+			{
+				$("#locationElement").show();
+				$("#com_optum_cpc_emerald_inventory_Inventory_id").height(iframeHeight);
+			}
+			if ( ! allTasks["InventoryUserAssignment"].applicationDefinition && !allTasks["CommInventoryUserAssignment"].applicationDefinition)
+			{
+				$("#workuserElement").hide();
+			}
+			else
+			{
+				$("#workuserElement").show();
+				$("#com_optum_cpc_emerald_inventory_user_config_id").height(iframeHeight);
+
+			}
+			if ( ! allTasks["InventoryUserWorkLoad"].applicationDefinition )
+			{
+				$("#workuserloadElement").hide();
+			}
+			else
+			{
+				$("#workuserloadElement").show();
+				$("#com_optum_cpc_emerald_inventory_userworkload_id").height(iframeHeight);
+
+			}
+			if ( ! allTasks["AutoAssignmentConfigUI"].applicationDefinition )
+			{
+				$("#autoAssignElement").hide();
+			}
+			else
+			{
+				$("#autoAssignElement").show();
+				$("#com_optum_cpc_emerald_inventory_autoAssign_id").height(iframeHeight);
+			}
+
+		}
+
+		function showSearchFrame(){
+			var windowHeight=$( window ).height();
+
+		var iframeHeight=windowHeight-headerHeight;
+			$(".ux-vnav").hide();
+			optumUI.hideMessage();
+			hideAllFrames();
+			hideMenuItems();
+			$("#searchConfigElement").show();
+                        $("#com_optum_cpc_emerald_search_id").show();
+			$("#com_optum_cpc_emerald_search_id").height(iframeHeight);
+			$(".ux-pnav .ux-pnav-selected").removeClass("ux-pnav-selected");
+			if ( allTasks["InventorySearch"].applicationDefinition )
+			{
+				var url = cordys.getNodeText(allTasks["InventorySearch"].applicationDefinition, ".//*[local-name()='url']");
+				$("#com_optum_cpc_emerald_search_id").prop("src", url);
+			}else if (allTasks["CRQSInventorySearch"].applicationDefinition){
+				var url = cordys.getNodeText(allTasks["CRQSInventorySearch"].applicationDefinition, ".//*[local-name()='url']");
+				$("#com_optum_cpc_emerald_search_id").prop("src", url);
+			}
+
+		}
+
+		function hideAllFrames()
+		{
+			$(".ux-tpnl").hide();
+			$("#dashboardMainConfigElement").hide();
+			$("#searchConfigElement").hide();
+			$("#utilityMainConfigElement").hide();
+			$("#workListMainConfigElement").hide();
+			$("#retrievalDivElement").hide();
+			$("#managerUsersDivElement").hide();
+			$("#programAttributeElement").hide();
+			$("#attributeTypeDivElement").hide();
+			$("#chartAttributeElement").hide();
+			$("#inventoryUserConfigElement").hide();
+			$("#autoAssignDivElement").hide();
+			$("#inventoryDivElement").hide();
+			$("#homePageContentElement").hide();
+			$("#hpCodingConfigAttrElement").hide();
+			$("#hpChartSelectionAttrElement").hide();
+			$("#userworkloadDivElement").hide();
+			$("#hpProdConfigDivElement").hide();
+			$("#vendorConfigDivElement").hide();
+			$("#retrievalAssignmentMainConfigElement").hide();
+			$("#retrievalUIMainConfigElement").hide();
+			$("#userUploadDivElement").hide();
+			$("#dataIntakeDivElement").hide();
+		}
+
+		function hideMenuItems()
+		{
+			$("#usersElement").hide();
+			$("#useruploadElement").hide();
+			$("#dataIntakeElement").hide();			
+			$("#programsElement").hide();
+			$("#projectsElement").hide();
+			$("#workAssignmentsElement").hide();
+			$("#inventoryHpElement").hide();
+			$("#reportsPageElement").hide();
+			$("#hpProdConfigElement").hide();
+			$("#vendorConfigElement").hide();
+		}
+
+		function resetHomePage(){
+			$(".ux-tpnl-content iframe").prop("src", "about:blank");
+		}
+
+		function showHomeFrame(){
+			optumUI.hideMessage();
+			hideMenuItems();
+			$(".ux-vnav").hide();			
+			openRetrievalAssignment(false);
+		}
+		function showDashboardFrame(){
+			optumUI.hideMessage();
+			hideMenuItems();
+			$(".ux-vnav").hide();
+			openDashboard(false);
+		}
+		function showUtilityFrame(){
+			optumUI.hideMessage();
+			hideMenuItems();
+			$(".ux-vnav").hide();
+			openUtility(false);
+		}
+		function showWorklistFrame(){
+			optumUI.hideMessage();
+			hideMenuItems();
+			$(".ux-vnav").hide();
+			openWorkList(false);
+		}
+
+		function showRetrievalAssignment(){
+			optumUI.hideMessage();
+			hideMenuItems();
+			$(".ux-vnav").hide();
+			openRetrievalAssignment(false);
+		}
+		
+		function showRetrievalUI(){
+			optumUI.hideMessage();
+			hideMenuItems();
+			$(".ux-vnav").hide();
+			openRetrievalUI(false);
+		}
+		
+		function openDashboard(isTabs){
+
+			var windowHeight=$( window ).height();
+
+		var iframeHeight=windowHeight-headerHeight;
+			var url = "";
+				$("#dashboardMainConfigElement").show();
+
+				$("#com_optum_cpc_emerald_dashboard_frame").show();
+				if(selectedRole == "PNPM") {
+					$("#com_optum_cpc_emerald_dashboard_frame").prop("src", "../../gcm-pnp-web/views/pnpdashboard/pnpdashboard.htm");
+				}else if(selectedRole == "OPNPV") {
+					$("#com_optum_cpc_emerald_dashboard_frame").prop("src", "../../gcm-pnp-web/views/pnpdashboard/pnpdashboard.htm");
+				}else if(selectedRole == "NUQAM"){
+					$("#com_optum_cpc_emerald_dashboard_frame").prop("src", "../../gcm-nuqa-web/views/dashboard/nuqadashboard.htm");
+				}else if(selectedRole == "ONUQAM"){
+					$("#com_optum_cpc_emerald_dashboard_frame").prop("src", "../../gcm-nuqa-web/views/dashboard/nuqadashboard.htm");
+				}
+				else{
+					/////gcm-app-services/com/optum/
+					$("#com_optum_cpc_emerald_dashboard_frame").prop("src", "../../gcm-app-services/com/optum/comm/dashboard/supervisordashboard.htm");
+				}
+				
+				
+				if ( ! isTabs ){
+					 dashboardHeight=windowHeight-headerHeight;
+					$("#com_optum_cpc_emerald_dashboard_frame").height(iframeHeight);
+					$("#com_optum_cpc_emerald_dashboard_frame").css("top", "90px");
+					$("#com_optum_cpc_emerald_dashboard_frame").css("bottom", "40px");
+				}
+		}
+		
+		function openUtility(isTabs){
+
+			
+			var windowHeight=$( window ).height();
+	        var iframeHeight=windowHeight-headerHeight;
+			var url = ""
+			$("#utilityMainConfigElement").show();
+
+			$("#com_optum_comm_mrm_utility_frame").show();
+			{
+				/////
+				if(selectedRole == "SUP" || selectedRole == "IM"){
+					$("#com_optum_comm_mrm_utility_frame").prop("src", "../../gcm-app-services/com/optum/comm/utilities/utility.htm");
+				}else if(selectedRole == "PDM") {
+					$("#com_optum_comm_mrm_utility_frame").prop("src", "../../gcm-app-services/com/optum/comm/utilities/utility.htm");
+				}else if(selectedRole == "PNPM" || selectedRole == "PNPP") {
+					$("#com_optum_comm_mrm_utility_frame").prop("src", "../../gcm-pnp-web/views/pnputility/pnputilitytabs.html");
+				}else if(selectedRole == "OPNPV") {
+					$("#com_optum_comm_mrm_utility_frame").prop("src", "../../gcm-pnp-web/views/pnputility/pnputilitytabs.html");
+				}else if(selectedRole == "NUQAM"){
+					$("#com_optum_comm_mrm_utility_frame").prop("src", "../../gcm-nuqa-web/views/utility/utilitytabs.html");
+				}else if(selectedRole == "ONUQAM"){
+					$("#com_optum_comm_mrm_utility_frame").prop("src", "../../gcm-nuqa-web/views/utility/utilitytabs.html");
+				}else {
+					$("#com_optum_comm_mrm_utility_frame").prop("src", "../../gcm-app-services/com/optum/comm/utilities/utility.htm");
+				}
+			}
+			if ( ! isTabs ){
+				$("#com_optum_comm_mrm_utility_frame").height(iframeHeight);
+				$("#com_optum_comm_mrm_utility_frame").css("top", "90px");
+				$("#com_optum_comm_mrm_utility_frame").css("bottom", "40px");
+			}			
+		}
+
+		function openWorkList(isTabs){
+			if(allTasks["HelpDesk CommWorklistUI"].applicationDefinition)
+				activeWorkList="HelpDesk CommWorklistUI";
+				
+		var url = "";
+			if ( isTabs ){
+				$("#worklistMainElement").addClass("ux-tpnl-active");
+				$("#dashboardTabElement").removeClass("ux-tpnl-active");
+			}
+			$("#workListMainConfigElement").show();
+			$("#com_optum_cpc_emerald_worklist_frame").show();
+			workListHeight=windowHeight-headerHeight;
+			if(selectedRole == "SH") {
+				$("#com_optum_cpc_emerald_worklist_frame").prop("src", "../../gcm-app-services/com/optum/comm/worklist/schedulerworklist.htm");
+			}else if(selectedRole == "COU"){
+				$("#com_optum_cpc_emerald_worklist_frame").prop("src", "../../gcm-app-services/com/optum/comm/worklist/coder/codingworklist.html");
+			}else if(selectedRole == "QA"){
+				$("#com_optum_cpc_emerald_worklist_frame").prop("src", "../../gcm-app-services/com/optum/comm/worklist/codingQA/codingQAWorklist.html");
+			}else if(selectedRole == "PDM"){
+				$("#com_optum_cpc_emerald_worklist_frame").prop("src", "../../gcm-app-services/com/optum/comm/worklist/pend/pendWorklist.htm");
+			}else if(selectedRole == "CSP"){
+				$("#com_optum_cpc_emerald_worklist_frame").prop("src", "../../gcm-app-services/com/optum/comm/worklist/codingSupervisor/codingSupervisorWorklist.html");
+			}else if(selectedRole == "OSH"){
+				$("#com_optum_cpc_emerald_worklist_frame").prop("src", "../../gcm-app-services/com/optum/comm/worklist/schedulerworklist.htm");
+			}else if(selectedRole == "ESH"){
+				$("#com_optum_cpc_emerald_worklist_frame").prop("src", "../../gcm-app-services/com/optum/comm/worklist/schedulerworklist.htm");
+			}else if(selectedRole == "OCOU"){
+				$("#com_optum_cpc_emerald_worklist_frame").prop("src", "../../gcm-app-services/com/optum/comm/worklist/coder/codingworklist.html");
+			}else if(selectedRole == "OQA"){
+				$("#com_optum_cpc_emerald_worklist_frame").prop("src", "../../gcm-app-services/com/optum/comm/worklist/codingQA/codingQAWorklist.html");
+			}else if(selectedRole == "OCSP"){
+				$("#com_optum_cpc_emerald_worklist_frame").prop("src", "../../gcm-app-services/com/optum/comm/worklist/codingSupervisor/codingSupervisorWorklist.html");
+			}else  if(selectedRole == "PNPP"){
+				$("#com_optum_cpc_emerald_worklist_frame").prop("src", "../../gcm-pnp-web/views/pnpworklist/pnpworklist.html");
+			}else if(selectedRole == "NUQAUD"){
+				$("#com_optum_cpc_emerald_worklist_frame").prop("src", "../../gcm-nuqa-web/views/coding/nuqatabs.htm");
+			}else if(selectedRole == "NUQASAUD"){
+				$("#com_optum_cpc_emerald_worklist_frame").prop("src", "../../gcm-nuqa-web/views/coding/nuqatabs.htm");
+			}else if(selectedRole == "ONUQAUD"){
+				$("#com_optum_cpc_emerald_worklist_frame").prop("src", "../../gcm-nuqa-web/views/coding/nuqatabs.htm");
+			}
+			if ( ! isTabs ){
+				$("#com_optum_cpc_emerald_worklist_frame").height(iframeHeight);
+				$("#com_optum_cpc_emerald_worklist_frame").css("top", "90px");
+				$("#com_optum_cpc_emerald_worklist_frame").css("bottom", "40px");
+			}
+		}
+		
+		function openRetrievalAssignment(isTabs){
+	       var url = "";
+			if ( isTabs ){
+				$("#retrievalAssignmentMainElement").addClass("ux-tpnl-active");
+				$("#dashboardTabElement").removeClass("ux-tpnl-active");
+			}
+			$("#retrievalAssignmentMainConfigElement").show();
+			$("#com_optum_comm_mrm_retassignment_frame").show();
+			if(rootData.currentRole == "OIM" || rootData.currentRole == "OGIM"){
+				$("#com_optum_comm_mrm_retassignment_frame").prop("src", "../../gcm-app-services/com/optum/comm/retrieval/assignment/optum/optumassignment.html");
+			}else{
+				$("#com_optum_comm_mrm_retassignment_frame").prop("src", "../../gcm-app-services/com/optum/comm/retrieval/assignment/assignment.html");
+			}
+			workListHeight=windowHeight-headerHeight;
+			if ( ! isTabs ){
+				$("#com_optum_comm_mrm_retassignment_frame").height(iframeHeight);
+				$("#com_optum_comm_mrm_retassignment_frame").css("top", "90px");
+				$("#com_optum_comm_mrm_retassignment_frame").css("bottom", "40px");
+                var retrievalAssignmentFrame = document.getElementById('com_optum_comm_mrm_retassignment_frame');
+			}
+		}
+		
+		function openRetrievalUI(isTabs){
+		       var url = "";
+				if ( isTabs ){
+					$("#retrievalUIMainElement").addClass("ux-tpnl-active");
+					$("#dashboardTabElement").removeClass("ux-tpnl-active");
+				}
+				$("#retrievalUIMainConfigElement").show();
+				$("#com_optum_comm_mrm_retui_frame").show();
+				$("#com_optum_comm_mrm_retui_frame").prop("src", "../../gcm-app-services/com/optum/comm/retrieval/optum/retrievalAssignment.html");
+				workListHeight=windowHeight-headerHeight;
+				if ( ! isTabs ){
+					$("#com_optum_comm_mrm_retui_frame").height(iframeHeight);
+					$("#com_optum_comm_mrm_retui_frame").css("top", "90px");
+					$("#com_optum_comm_mrm_retui_frame").css("bottom", "40px");
+	                var retrievalAssignmentFrame = document.getElementById('com_optum_comm_mrm_retui_frame');
+				}
+			}
+		
+		function openPage(taskReference)
+		{
+		//	var url = "";
+			var url = cordys.getNodeText(allTasks[taskReference].applicationDefinition, ".//*[local-name()='url']");
+			hideAllFrames();
+			var windowHeight=$( window ).height();
+			var headerHeight="130";
+			var iframeHeight=windowHeight-headerHeight;
+			if ( ! allTasks[taskReference].applicationDefinition )
+			{
+				$("#" + taskReferenceHtmlId).hide();
+			}
+			else
+			{
+				var containerId = allTasks[taskReference].containerId;
+				$("#" + containerId).show();
+				var frameID = allTasks[taskReference].frameId;
+				$("#"+frameID).height(iframeHeight);
+				$("#"+frameID).prop("src", url);		
+			}		
+
+		}
+		
+		function checkForModifications(callBackHandler){
+			recordEvent("CLOSE");
+			callBackHandler();
+			return;
+		}
+		
+		function isDataExists(dataModel){
+			if ( dataModel && dataModel.selectedChart && dataModel.selectedChart.projContentKey ) return true;
+			else return false;
+		}
+		
+		function barcodeExists(dataModel)
+		{
+		if ( dataModel &&  dataModel.dataModel && dataModel.dataModel.getNextResult ) return true;
+			else return false;
+		}
+		function releaseBarcode(eventType) {
+			var deferred = $.Deferred();
+			if ( ! window.rootData ||  ! barcodeExists(window.rootData.dataModel) || ! eventType){
+				 deferred.resolve({});
+				 return deferred;
+			}
+			var dataServiceModel = window.rootData.dataModel;
+			var barcodeInfo = {
+					groupKey : dataServiceModel.currentGroupKey,
+					vendorKey : dataServiceModel.vendorKey,
+					roleCode : dataServiceModel.dataModel.roleCode,
+					releaseVendorKey : dataServiceModel.dataModel.getNextResult.gcmProjContBusFuncVenKey
+				};
+			
+		 var deferred = $.Deferred();
+ 
+			$.ajax({
+	        type: "post",
+	        url: "/gcm-nuqa-web/secure/nuqa/chart/release",
+	        async : false,
+	        timeout: 30000,
+	        data: jQuery.param(barcodeInfo),
+	        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+	        crossDomain: true,
+	        dataType: "json"
+	    }).done(function(data){
+	    			if ( eventType == "CLOSE" ) window.rootData.dataModel = null;
+	          deferred.resolve(data);
+	    }).fail(function(data){
+	    			if ( eventType == "CLOSE" ) window.rootData.dataModel = null;
+	      		deferred.reject(data);
+	    });
+	    return deferred;
+      
+    }
+
+
+		function recordEvent(eventType) {
+			var deferred = $.Deferred();
+			if ( ! window.rootData ||  ! isDataExists(window.rootData.dataModel) || ! eventType){
+				 deferred.resolve({});
+				 return deferred;
+			}
+			var dataServiceModel = window.rootData.dataModel;
+			var chartInputInfo = {
+					 projContentKey : dataServiceModel.selectedChart.projContentKey,
+					 busFuncVenKey	: dataServiceModel.selectedChart.busFuncVenKey,
+					 projKey		: dataServiceModel.chartDetailsObj.projKey,
+					 requestedUserId: dataServiceModel.loginUserId,
+					 userKey		: dataServiceModel.loginUserKey,
+					 groupKey 		: dataServiceModel.currentGroupKey,
+					 eventType		: eventType,
+					 busFuncKey : dataServiceModel.selectedChart.busFuncKey,
+					 chartId : dataServiceModel.selectedChart.chartId,
+					 currentSessionId : dataServiceModel.currentSessionId,
+					 worklistActivityKey : dataServiceModel.worklistActivityKey
+			 };
+			
+		 var deferred = $.Deferred();
+ 
+			$.ajax({
+	        type: "POST",
+	        url: "/gcm-app-services/coding/workflow/makeEntryforCoderProductivity",
+	        async : false,
+	        timeout: 30000,
+	        data: JSON.stringify(chartInputInfo),
+	        contentType: "application/json; charset=utf-8",
+	        crossDomain: true,
+	        dataType: "json"
+	    }).done(function(data){
+	    			if ( eventType == "CLOSE" ) window.rootData.dataModel = null;
+	          deferred.resolve(data);
+	    }).fail(function(data){
+	    			if ( eventType == "CLOSE" ) window.rootData.dataModel = null;
+	      		deferred.reject(data);
+	    });
+	    return deferred;
+      
+    }
+
+		function closeTaskView(callBackHandler){
+			try{
+				var taskView = system.windows["com_optum_cpc_emerald_inbox_WorkListTaskView"];
+				if ( taskView ) taskView.application.container.close();
+				closeTask();
+				if ( callBackHandler ) callBackHandler();
+				$("#com_optum_cpc_emerald_inbox_WorkListTaskView").hide();
+			}
+			catch(e){
+			}
+		}
+
+		function checkForModificationsCallBack(callBackHandler){
+			return function(e){
+				if  ( e == 1 ){
+					closeTaskView(callBackHandler);
+				}
+			}
+		}
+
+		function showInventoryFrame(){
+			optumUI.hideMessage();
+			$("#usersElement").hide();
+			$("#useruploadElement").hide();
+			$("#dataIntakeElement").hide();
+			$("#programsElement").hide();
+			$("#inventoryHpElement").hide();
+			$("#reportsPageElement").hide();
+			$("#hpProdConfigElement").hide();
+			$("#vendorConfigElement").hide();
+			inventoyTabHideOrShow();
+
+			//if user assignment exists make it as default
+			if ( allTasks["CommInventoryAssignment"].applicationDefinition || allTasks["InventoryAssignment"].applicationDefinition)
+			{
+				$("#workAssignmentsElement").click();
+				$("#locationElement").click();
+			}
+			//else location
+			else if ( allTasks["InventoryUserAssignment"].applicationDefinition || allTasks["CommInventoryUserAssignment"].applicationDefinition)
+			{
+				$("#workAssignmentsElement").click();
+				$("#workuserElement").click();
+			}
+			else if ( allTasks["InventoryUserWorkLoad"].applicationDefinition )
+			{
+				$("#workAssignmentsElement").click();
+				$("#workuserloadElement").click();
+			}
+			else if ( allTasks["AutoAssignmentConfigUI"].applicationDefinition )
+			{
+				$("#workAssignmentsElement").click();
+				$("#autoAssignElement").click();
+			}
+			//else projects
+			else if (  allTasks["projects"].applicationDefinition )
+			{
+				$("#projectsElement").click();
+			}
+		}
+
+		function closeTask()
+		{
+			var blankDef = document.getElementById("BlankApplicationXML").XMLDocument.documentElement.cloneNode(true);
+			application.select(blankDef);
+		}
+		/**
+			taskReference is key in allTasks
+			taskReferenceHtmlId is html menu id
+		**/
+		function openTask(taskReference, taskReferenceHtmlId)
+		{
+			hideAllFrames();
+			if ( taskReference == "ReportsApplication" ) {       
+				var containerId = allTasks[taskReference].containerId;  
+				$("#" + containerId).show();   
+				var windowHeight=$( window ).height();  
+				var iframeHeight=windowHeight-headerHeight;	  
+				 $("#com_optum_reports_content_frame").prop("src", optumUI.getUser().getSpotLightURL());
+				 
+				$("#com_optum_reports_content_frame").height(iframeHeight); 
+				$("#com_optum_reports_content_frame").css("top", "90px");
+				$("#com_optum_reports_content_frame").css("bottom", "40px");
+				return;
+			}
+			//com_optum_reports_content_frame
+			if ( ! allTasks[taskReference].applicationDefinition )
+			{
+				//hide projects
+				$("#" + taskReferenceHtmlId).hide();
+			}
+			else
+			{
+				var containerId = allTasks[taskReference].containerId;
+				$("#" + containerId).show();
+				//load projects
+				var applicationDef = allTasks[taskReference].applicationDefinition.cloneNode(true);
+				var dataObject = {};
+				dataObject.srcApplication = application;
+				dataObject.workListFrame = document.getElementById("com_optum_cpc_emerald_worklist_id");
+				dataObject.workListTaskFrame =document.getElementById("com_optum_cpc_emerald_inbox_WorkListTaskView");
+				if ( taskReference == "ReportsApplication" )
+				{
+					if ( ! getReportsURL() )
+					{
+						optumUI.showError("Reports is not configured. Please contact Administrator.", false);
+						return;
+					}
+					cordys.setNodeText(applicationDef, ".//*[local-name()='url']", getReportsURL());
+				}
+				var forceReload = true;
+				var loadUITask = false;
+				if ( optumUI.getUser().currentGroupCode == "CM" || taskReference=='projects' || taskReference=='CommInventoryAssignment' || taskReference == 'CommInventoryUserAssignment'){
+					$("#" + allTasks[taskReference].frameId).prop("src", system.getQualifiedURL(cordys.getNodeText(applicationDef, ".//*[local-name()='url']")));
+				}else{
+					optumUI.loadApplication( prepareApplicationObject(applicationDef,
+								allTasks[taskReference].frameId , containerId) , dataObject, forceReload);
+				}
+
+			}
+		}
+
+		function showReportsFrame(){
+			$(".ux-vnav").hide();
+			optumUI.hideMessage();
+			$("#usersElement").hide();
+			$("#useruploadElement").hide();	
+			$("#dataIntakeElement").hide();
+			$("#programsElement").hide();
+			$("#projectsElement").hide();
+			$("#workAssignmentsElement").hide();
+			$("#inventoryHpElement").hide();
+			$("#hpProdConfigElement").hide();
+			$("#vendorConfigElement").hide();
+			//$("#reportsPageElement").show();
+			openTask("ReportsApplication", "reportsPageElement");
+
+		}
+		
+		function isOverread(businessFunctionKey){
+			return businessFunctionKey == 13 || businessFunctionKey == 14 || businessFunctionKey == 15 || businessFunctionKey == 16;
+		}
+		
+		function isNewUI(businessFunctionKey){
+			if ( ! businessFunctionKey ) return false;
+		
+			var isNewUIMode = false;
+			
+			isNewUIMode  = optumUI.getUser().currentGroupCode == "CM" || businessFunctionKey == 24 ;
+					
+			if ( isNewUIMode ) return isNewUIMode;
+			
+			isNewUIMode = application.getParameter("codingui") != "old";// && !isOverread(businessFunctionKey );
+					
+			return isNewUIMode;
+		
+		}
+
+		
+		function openWorkItem(workItemID, dataObj, workItemFrame, dataFrame)
+		{
+			var windowHeight=$( window ).height();
+
+		var iframeHeight=windowHeight-headerHeight;
+			//always use this wireframe
+			if(($(window).height()>591) && (dataFrame=="com_optum_cpc_emerald_search_id"))
+				$("#com_optum_cpc_emerald_inbox_WorkListTaskView").height(iframeHeight*1+20*1);
+			else
+				$("#com_optum_cpc_emerald_inbox_WorkListTaskView").height(iframeHeight);
+			workItemFrame = "com_optum_cpc_emerald_inbox_WorkListTaskView";
+			if( !workItemFrame && !dataFrame)
+			{
+				optumUI.showError("Provide all details to open the work item", false);
+				return;
+			}
+			if ( ! workItemID  && ! dataObj ){
+				optumUI.showError("Provide all details to open the work item", false);
+				return;
+			}
+			if(!dataObj)
+			{
+				dataObj = new Object();
+				dataObj.isDisableForm = true ;
+			}
+
+
+			var workListFrame = document.getElementById(dataFrame);
+			var workListTaskFrame = document.getElementById(workItemFrame);
+			$(workListTaskFrame).show();
+			var gApplicationDefinition = document.getElementById("BlankApplicationXML").XMLDocument.documentElement.cloneNode(true);
+	
+
+
+			dataObj.onCommitCallBack = closeCallBack(gApplicationDefinition, dataObj.appCallback, workListFrame, workListTaskFrame);
+
+			
+			var url = "";
+			if ( dataObj.isHMWorkItem ){
+                                 if (optumUI.getUser().currentGroupCode != "CM") {
+				         url = "com/optum/cpc/emerald/helpdesk/NewUserPage.caf" ;
+                                }else {
+                                          url = "com/optum/cpc/emerald/helpdesk/NewUserPage_CRQS.caf" ;
+                                }
+			}else  if (optumUI.getUser().currentGroupCode == "CM"){
+					dataObj.isDisableForm = typeof(dataObj.isDisableForm) == "undefined" ? true : dataObj.isDisableForm;
+					CordysRoot.CODING_UI_DATA = {};
+					$.extend(CordysRoot.CODING_UI_DATA, dataObj.workItemData ? dataObj.workItemData : dataObj, CordysRoot.CODING_UI_DATA);
+					CordysRoot.CODING_UI_DATA.onCommitCallBack = dataObj.onCommitCallBack;
+					url = "com/optum/cpc/emerald/dxcode/ui/crqscodingui.htm";
+			}else  if (isNewUI( dataObj.workItemData ?   dataObj.workItemData.businessFunctionKey : dataObj.BusFuncKey )){
+					dataObj.isDisableForm = typeof(dataObj.isDisableForm) == "undefined" ? true : dataObj.isDisableForm;
+					CordysRoot.CODING_UI_DATA = {};
+					$.extend(CordysRoot.CODING_UI_DATA, dataObj.workItemData ? dataObj.workItemData : dataObj, CordysRoot.CODING_UI_DATA);
+					CordysRoot.CODING_UI_DATA.onCommitCallBack = dataObj.onCommitCallBack;
+					url = "com/optum/cpc/emerald/dxcode/ui/codingui.htm";
+			}
+			else if ( ! workItemID ) {
+			    dataObj.ProjectContentKey  = dataObj.ProjectContentKey;
+			    dataObj.BusFuncKey = dataObj.BusFuncKey;
+			    dataObj.BarCode = dataObj.BarCode;
+                dataObj.iteration = dataObj.iteration;
+                dataObj.dosYear= dataObj.dosYear;
+			    dataObj.isDisableForm = typeof(dataObj.isDisableForm) == "undefined" ? true : dataObj.isDisableForm;
+				url = "com/optum/cpc/emerald/inventorymanagement/LaunchWorkFlowItem.caf";
+			}else{
+				url = "com/optum/cpc/emerald/inbox/xform.caf" ;
+				dataObj.TaskId = workItemID;
+			}
+			cordys.setNodeText(gApplicationDefinition,".//url", url);
+			cordys.setNodeText(gApplicationDefinition,".//frame", workItemFrame);
+			application.select(gApplicationDefinition, dataObj);
+			$(workListFrame).hide();
+		}
+		
+		function recordWorkItemEvent(){
+					var deferred = $.Deferred();
+					
+					if ( CordysRoot.currentWorkItem && CordysRoot.currentWorkItem.projectBusFunctionVendorKey  ){
+							CordysRoot.recordEvent(CordysRoot.currentWorkItem.projectBusFunctionVendorKey , "Close").done(function(response){
+              		deferred.resolve(response);
+              }).fail(function(response){
+              		deferred.reject(response);
+              });					
+						
+					}
+			    else{
+	             setTimeout(function(){
+								
+								deferred.resolve({});
+								
+						  }, 500);
+			    	
+			    }
+          
+          return deferred;
+		}
+		
+		//this function gets called from Work Item Page.. It's proper close like exit/escalate/accept/reject after all confirmations from user		
+		function closeWorkItem(){
+	
+			recordWorkItemEvent().done(function(){
+							try{
+									if(CordysRoot.CODING_UI_DATA) CordysRoot.CODING_UI_DATA.onCommitCallBack();
+								}catch(e){
+							}
+							closeTask();
+							$("#com_optum_cpc_emerald_search_WorkListTaskView").show();
+							$("#com_optum_cpc_emerald_inbox_WorkListTaskView").hide();
+			}).fail(function(){
+						optumUI.showError("Error occurred while logging Close event. Please try again or contact administrator.");
+			});
+
+
+		}
+		
+		function closeCallBack(gApplicationDefinition, appCallback, workListFrame, workListTaskFrame)
+		{
+			return function()
+			{
+				try{
+					if(appCallback) appCallback();
+				}catch(e){
+				}
+				$(workListFrame).show();
+				$(workListTaskFrame).hide();
+				if(gApplicationDefinition)
+				{
+					cordys.setNodeText(gApplicationDefinition,".//url","emerald/blank.htm");
+					application.select(gApplicationDefinition);
+				}
+			}
+		}
+		
+		function getReportsURL(){
+		}
+
+		function showAdminFrame(){
+			optumUI.hideMessage();
+			$("#projectsElement").hide();
+			$("#workAssignmentsElement").hide();
+			$("#reportsPageElement").hide();
+			$("#dataIntakeElement").hide();
+			adminTabHideOrShow(false);
+		}
+
+		function openMenuItem(srcElement){
+			$(srcElement).removeClass("ux-vnav-submenu-open");
+			$(srcElement).addClass("ux-vnav-has-selected");
+			$(srcElement).addClass("ux-vnav-submenu-open");
+		}
+
+		function closeMenuItem(srcElement){
+				$(srcElement).addClass("ux-vnav-submenu-closed");
+				$(srcElement).removeClass("ux-vnav-submenu-open");
+				$(srcElement).removeClass("ux-vnav-has-selected");
+		}
+
+		function prepareDashboardPage(){
+			handlePNavSelection(document.getElementById("dashboardMainElement"));
+			hideAllFrames();
+			showDashboardFrame();
+		}
+		
+		function prepareUtilityPage(){
+			handlePNavSelection(document.getElementById("utilityMainElement"));
+			hideAllFrames();
+			showUtilityFrame();
+		}
+		
+		function prepareWorklistPage(){
+			handlePNavSelection(document.getElementById("worklistMainElement"));
+			hideAllFrames();
+			showWorklistFrame();
+		}
+		
+		function prepareRetrievalAssignment(){
+			handlePNavSelection(document.getElementById("retrievalAssignmentMainElement"));
+			hideAllFrames();
+			showRetrievalAssignment();
+		}
+		
+		function prepareRetrievalUI(){
+			handlePNavSelection(document.getElementById("retrievalUIMainElement"));
+			hideAllFrames();
+			showRetrievalUI();
+		}
+		
+		function prepareHomePage(){
+			handlePNavSelection(document.getElementById("homeMainElement"));
+			hideAllFrames();
+			showHomeFrame();
+		}
+
+		function prepareInventoryPage(){
+			resetHomePage();
+			$(".ux-vnav").show();
+			handlePNavSelection(document.getElementById("inventoryMainElement"));
+			hideAllFrames();
+			showInventoryFrame();
+		}
+
+		function prepareReportsPage(){
+			resetHomePage();
+			handlePNavSelection(document.getElementById("reportsMainElement"));
+			hideAllFrames();
+			showReportsFrame();
+		}
+
+		function prepareAdminPage(){
+			resetHomePage();
+			handlePNavSelection(document.getElementById("adminMainElement"));
+			hideAllFrames();
+			showAdminFrame();
+		}
+
+		function prepareForSearch(){
+			showSearchFrame();
+		}
+
+		function openDefaultPage(lNavMainElement){
+              var lNavMainElementSelected = $(".ux-vnav-has-selected").attr("id");
+              var pageElementSelected = $(".ux-vnav-selected").attr("id");
+              if (lNavMainElement=="programsElement" && !(pageElementSelected=="attrCatElement"||pageElementSelected=="supplFileAttElement"||pageElementSelected=="programAttrElement"))
+              {
+                  if ( allTasks["ManageAttributeList"].applicationDefinition )
+                  {
+                      $("#supplFileAttElement").click();
+                  }
+                  else if ( allTasks["ManageAttributeType"].applicationDefinition )
+                  {
+                      $("#attrCatElement").click();
+                  }
+                  else if ( allTasks["ManageProgramAttributes"].applicationDefinition )
+                  {
+                      $("#programAttrElement").click();
+                  }
+              }
+              else if (lNavMainElement=="inventoryHpElement" && !(pageElementSelected=="hpChartSelElement"||pageElementSelected=="hpCodingConfigElement"))
+              {
+                  if ( allTasks["CommHealthPlanConfiguration"].applicationDefinition )
+                  {
+                      $("#hpCodingConfigElement").click();
+                  }
+                  else if ( allTasks["HealthPlanChartSelection"].applicationDefinition )
+                  {
+                      $("#hpChartSelElement").click();
+                  }
+              }
+              else if (lNavMainElement=="workAssignmentsElement" && !(pageElementSelected=="locationElement"||pageElementSelected=="workuserElement"||pageElementSelected=="workuserloadElement"||pageElementSelected=="autoAssignElement"))
+              {
+                  if ( allTasks["CommInventoryAssignment"].applicationDefinition || allTasks["InventoryAssignment"].applicationDefinition )
+                  {
+                      $("#locationElement").click();
+                  }
+                  //else location
+                  else if ( allTasks["InventoryUserAssignment"].applicationDefinition || allTasks["CommInventoryUserAssignment"].applicationDefinition)
+                  {
+                      $("#workuserElement").click();
+                  }
+				  else if ( allTasks["InventoryUserWorkLoad"].applicationDefinition )
+                  {
+                      $("#workuserloadElement").click();
+                  }
+                  else if ( allTasks["AutoAssignmentConfigUI"].applicationDefinition )
+                  {
+                      $("#autoAssignElement").click();
+                  }						
+             }
+		}
+
+		//any variables used in onready event has to be defined above this function. When page loaded through cache, it results script error
+
+         function initializeHandlers()
+         {
+			hideAllMainTabs();
+			hideAllFrames();
+			$("#dashboardMainElement").click(
+				function(event){
+					event.preventDefault();
+					checkForModifications(prepareDashboardPage);
+				}
+			);
+			$("#utilityMainElement").click(
+					function(event){
+						event.preventDefault();
+						checkForModifications(prepareUtilityPage);
+					}
+				);
+			$("#worklistMainElement").click(
+				function(event){
+					event.preventDefault();
+					checkForModifications(prepareWorklistPage);
+				}
+			);
+			$("#retrievalAssignmentMainElement").click(
+					function(event){
+						event.preventDefault();
+						checkForModifications(prepareRetrievalAssignment);
+					}
+				);
+			$("#retrievalUIMainElement").click(
+					function(event){
+						event.preventDefault();
+						checkForModifications(prepareRetrievalUI);
+					}
+				);
+			$("#contactUsElement").click(
+					function(event){
+						event.preventDefault();
+						$(".js_view_contactus_popup").show();						
+					}
+				);
+			$("#cpcUrlElement").click(
+					function(event){
+						event.preventDefault();
+						redirectToCPC();						
+					}
+				);			
+			
+			$("#inventoryMainElement").click(
+				function(event){
+					event.preventDefault();
+					checkForModifications(prepareInventoryPage);
+				}
+			);
+
+
+			$("#reportsMainElement").click(
+				function(event){
+					event.preventDefault();
+					checkForModifications(prepareReportsPage);
+				}
+			);
+
+			$("#adminMainElement").click(
+				function(event){
+					event.preventDefault();
+					checkForModifications(prepareAdminPage);
+				}
+			);
+			$("#locationElement").click(
+				function(event){
+					//apply ux-vnav-submenu-open
+					openMenuItem(document.getElementById("workAssignmentsElement"));
+					event.preventDefault();
+					handleVNavSelection(document.getElementById("locationElement"));	
+					if(optumUI.getUser().currentGroupCode=="CM")					
+					openTask("InventoryAssignment", "locationElement");
+					else
+					openTask("CommInventoryAssignment", "locationElement");
+				}
+			);
+			$("#workuserElement").click(
+				function(event){
+					//apply ux-vnav-submenu-open
+					openMenuItem(document.getElementById("workAssignmentsElement"));
+					event.preventDefault();
+					handleVNavSelection(document.getElementById("workuserElement"));
+					if(allTasks["CommInventoryUserAssignment"].applicationDefinition)
+					{
+						openTask("CommInventoryUserAssignment", "workuserElement");
+					}
+					else 
+					{
+						openTask("InventoryUserAssignment", "workuserElement");
+					}
+				}
+			);
+			
+			$("#workuserloadElement").click(
+				function(event){
+					//apply ux-vnav-submenu-open
+					openMenuItem(document.getElementById("workAssignmentsElement"));
+					event.preventDefault();
+					handleVNavSelection(document.getElementById("workuserloadElement"));
+					openTask("InventoryUserWorkLoad", "workuserloadElement");
+				}
+			);
+			$("#hpProdConfigElement").click(
+				function(event){
+						closeMenuItem(document.getElementById("programsElement"));
+						closeMenuItem(document.getElementById("inventoryHpElement"));
+					//apply ux-vnav-submenu-open
+					event.preventDefault();
+					handleVNavSelection(document.getElementById("hpProdConfigElement"));
+					openPage("CommHPProductConfigurationUI", "hpProdConfigElement");
+				}
+			);
+			$("#vendorConfigElement").click(
+				function(event){
+						closeMenuItem(document.getElementById("programsElement"));
+						closeMenuItem(document.getElementById("inventoryHpElement"));
+					//apply ux-vnav-submenu-open
+					event.preventDefault();
+					handleVNavSelection(document.getElementById("vendorConfigElement"));
+					openPage("Vendor Configuration UI", "vendorConfigElement");
+				}
+			);
+
+			$("#autoAssignElement").click(
+				function(event){
+					//apply ux-vnav-submenu-open
+					openMenuItem(document.getElementById("workAssignmentsElement"));
+					event.preventDefault();
+					handleVNavSelection(document.getElementById("autoAssignElement"));
+					openTask("AutoAssignmentConfigUI", "autoAssignElement");
+				}
+			);
+
+			$("#projectsElement").click(
+				function(event){
+						event.preventDefault();
+					closeMenuItem(document.getElementById("workAssignmentsElement"));
+					handleVNavSelection(document.getElementById("projectsElement"));
+					openTask("projects", "projectsElement");
+				}
+			);
+			$("#workAssignmentsElement").click(
+				function(event){
+					event.preventDefault();
+					$("#workAssignmentsElement").addClass("ux-vnav-has-selected");
+					openDefaultPage("workAssignmentsElement");
+				}
+			);
+			$("#usersElement").click(
+				function(event){
+					event.preventDefault();
+						closeMenuItem(document.getElementById("programsElement"));
+						closeMenuItem(document.getElementById("inventoryHpElement"));
+						handleVNavSelection(document.getElementById("usersElement"));
+						openTask("ManageUsers", "usersElement");
+				}
+			);
+			$("#useruploadElement").click(
+					function(event){
+						closeMenuItem(document.getElementById("programsElement"));
+						closeMenuItem(document.getElementById("inventoryHpElement"));
+						event.preventDefault();
+						handleVNavSelection(document.getElementById("useruploadElement"));
+						openPage("CommUserUploadUI", "useruploadElement");
+					}
+				);
+			$("#dataIntakeElement").click(
+					function(event){
+						event.preventDefault();
+						handleVNavSelection(document.getElementById("dataIntakeElement"));
+						openPage("CommDataIntakeUI", "dataIntakeElement");
+					}
+				);
+			$("#programsElement").click(
+				function(event){
+					closeMenuItem(document.getElementById("inventoryHpElement"));
+					closeMenuItem(document.getElementById("usersElement"));
+					event.preventDefault();
+					$("#programsElement").addClass("ux-vnav-has-selected");
+                    openDefaultPage("programsElement");
+				}
+			);
+
+			$("#attrCatElement").click(
+					function(event){
+						//apply ux-vnav-submenu-open
+						openMenuItem(document.getElementById("programsElement"));
+						event.preventDefault();
+							handleVNavSelection(document.getElementById("attrCatElement"));
+							openTask("ManageAttributeType", "attrCatElement");
+					}
+			);
+
+			$("#supplFileAttElement").click(
+					function(event){
+						openMenuItem(document.getElementById("programsElement"));
+						event.preventDefault();
+						//apply ux-vnav-submenu-open
+							handleVNavSelection(document.getElementById("supplFileAttElement"));
+							openTask("ManageAttributeList", "supplFileAttElement");
+					}
+			);
+
+			$("#programAttrElement").click(
+					function(event){
+						//apply ux-vnav-submenu-open
+						openMenuItem(document.getElementById("programsElement"));
+						event.preventDefault();
+							handleVNavSelection(document.getElementById("programAttrElement"));
+							openTask("ManageProgramAttributes", "programAttrElement");
+					}
+			);
+
+			$("#inventoryHpElement").click(
+								function(event){
+									event.preventDefault();
+									closeMenuItem(document.getElementById("programsElement"));
+									closeMenuItem(document.getElementById("usersElement"));
+									$("#inventoryHpElement").addClass("ux-vnav-has-selected");
+                                    openDefaultPage("inventoryHpElement");
+								}
+			);
+
+			$("#hpCodingConfigElement").click(
+								function(event){
+									openMenuItem(document.getElementById("inventoryHpElement"));
+									event.preventDefault();
+									handleVNavSelection(document.getElementById("hpCodingConfigElement"));
+									//openTask("CommHealthPlanConfiguration", "hpCodingConfigElement");
+									openPage("CommHealthPlanConfiguration", "hpCodingConfigElement");
+								}
+			);
+
+			$("#hpChartSelElement").click(
+								function(event){
+									openMenuItem(document.getElementById("inventoryHpElement"));
+									event.preventDefault();
+									handleVNavSelection(document.getElementById("hpChartSelElement"));
+									openTask("HealthPlanChartSelection", "hpChartSelElement");
+								}
+			);
+
+			$(".ux-search").click(
+				function(event){
+					checkForModifications(prepareForSearch);
+				}
+			);
+			
+			$("#signoutElement").click(
+					function(){
+						if((bulkUploadLookup) && (!bulkUploadLookup.closed)){							
+							$(".js_bulk_upload_popup").show();
+						}
+						else
+							logOut("SignOut");
+					}
+			);
+			
+			
+			$("#lbl_search").click(
+					function(){				
+							$(".js_user_popup").show();
+					}
+			);
+			
+			$(".js_yes_button").click(function(){
+				closeHandler();
+				$(".js_view_description_popup").hide();
+			});
+			$(".js_cancel_button").click(function(){
+
+				$(".js_view_description_popup").hide();
+			});
+			
+			$(".js_yes_autosignout_button").click(function(){
+				cofirmHandler({isOK:true});
+				$(".js_sign_out_popup").hide();
+			});
+			$(".js_cancel_autosignout_button").click(function(){	
+				cofirmHandler({isOK:false});
+			
+				$(".js_sign_out_popup").hide();
+			});
+			
+			$(".js_close_button").click(function(){
+				$(".js_view_contactus_popup").hide();
+			});
+			
+			$(".js_nuqa_confirm_popup").hide();
+			
+			$(".js_cancel_bulkupload_button").click(function(){
+				closeBulkUploadLookup();
+				$(".js_bulk_upload_popup").hide();
+				$(".js_sign_out_popup").show();
+			});
+			$(".js_yes_bulkupload_button").click(function(){	
+				$(".js_bulk_upload_popup").hide();
+			});
+			 $(".js_cancel_user_button").click(function(){
+				closeBulkUploadLookup();
+				$(".js_user_popup").hide();
+			});
+			$(".js_yes_user_button").click(function(){
+				if($("#userName") && $("#userName")[0] && !$("#userName")[0].value){
+					//optumUI.showError("Enter Valid User Name.", false);
+					return false;
+				}
+				$(".js_user_popup").hide();
+			});
+			
+         }
+
+		 function handlePNavSelection(srcElement)
+		 {
+		 	$(".ux-pnav-selected").removeClass("ux-pnav-selected");
+		 	$(srcElement).addClass("ux-pnav-selected");
+		 	$(srcElement).removeClass("ux-pnav-active");
+		}
+
+		function signOutUser(eventObject)
+		{
+			hideUserSection();
+		}
+
+		function hideAllMainTabs()
+		{
+			$("#dashboardMainElement").hide();
+			$("#worklistMainElement").hide();
+			$("#worklistMainElement a").hide();
+			$("#inventoryMainElement").hide();
+			$("#reportsMainElement").hide();
+			$("#adminMainElement").hide();
+			$("#adminMainElement a").hide();
+			$("#utilityMainElement").hide();
+			$("#retrievalUIMainElement").hide();
+			$("#retrievalAssignmentMainElement").hide();
+			hideOrDisplayNavigations();
+		}
+
+
+	
+		function logOut(logOffType)
+		{
+			//clear snowbound
+			$.ajax({
+			  type: "POST",
+			  url: "/gcm-imr-viewer/deleteImagesByUser",
+			  async : false
+			})
+			  .done(function( msg ) {
+			  });
+
+			//IsDataToSave is no need to check, every time when user tries do sign out, user will prompted with sign out confirmation.
+			if(logOffType == undefined || logOffType == "SignOut")
+			{
+				$(".js_view_description_popup").show();
+				return;
+			}
+			else
+			{
+				hideAllMainTabs();
+				releaseImageLock();
+				onBeforeLogOff(logOffType);
+
+				
+				var tenantID = optumUI.getUser().currentGroupCode;
+				if(logOffType == "timeOut"){
+					replaceWithLogOff("#e_m=T");
+				}
+				else if(logOffType == "optumSessionTimeout"){
+					replaceWithLogOff("#e_m=S");
+				}
+			}
+			
+			closeImage();
+		}
+
+
+
+		function handleVNavSelection(srcElement)
+		 {
+		 	$(".ux-vnav-selected").removeClass("ux-vnav-selected");
+		 	$(srcElement).addClass("ux-vnav-selected");
+		 	$(srcElement).removeClass("ux-vnav-active");
+		}
+		
+
+
+		function onBeforeLogOff(logOffType)
+		{
+			recordEvent("CLOSE");
+			releaseBarcode("CLOSE");
+			recordLogOff(logOffType);
+			closeImage();
+
+			hideUserSection();
+
+			//Clearing the session continuation intervals
+			clearInterval(signOutInterval);
+			clearInterval(interval);
+			if(logOffType == 'SignOut'){
+				if(pnpTab && !pnpTab.closed){
+					pnpTab.close();
+				}
+			}
+
+		}
+		
+		function initiateLogOff(){
+			if ( typeof(sessionStorage) == 'undefined' ) return false;
+			if (  sessionStorage.getItem("IsLogOffRecorded") != "YES" ){
+				sessionStorage.setItem("IsLogOffRecorded", "YES");
+				return false;
+			}
+			sessionStorage.removeItem("IsLogOffRecorded");
+			return true;
+		}
+
+		function recordLogOff(logOffType){
+			//userRecordLogOff
+			if ( initiateLogOff() ) return;
+			var logOffTypeFlag = "U";
+			if(logOffType == "timeOut"){
+					logOffTypeFlag = "T";
+			}
+			else if(logOffType == "optumSessionTimeout"){
+				logOffTypeFlag = "S";
+			}
+			else if (logOffType == "directCloseAll"){
+					logOffTypeFlag = "C";
+			}
+			else if (logOffType == "SignOut"){
+					logOffTypeFlag = "L";
+			}
+			
+			var reqObj = {};
+			reqObj.userId = optumUI.getAuthUser();
+			reqObj.logOffMode = logOffTypeFlag;
+			
+			$.ajax({
+	            type: "POST",
+	            url: "/gcm-app-services/useradmin/recordUserLogOff",
+	            async : false,
+	            timeout: 30000,
+	            data: jQuery.param({ "userId": reqObj.userId, "logOffMode" : reqObj.logOffMode}) ,
+	            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+	            crossDomain: true,
+	            dataType: "json",
+	            success: function (data, status, jqXHR) {
+	               console.log(""+data);
+	            },
+	            error : function( jqXHR,  textStatus,  errorThrown ){
+	            	console.log(textStatus + "error" + errorThrown);
+	            }
+	        });
+		}
+
+		function onBeforeApplicationClose(eventObject)
+		{
+
+			recordEvent("CLOSE");
+				releaseBarcode("CLOSE");
+			logOut("directCloseAll");
+		}
+
+	function onHttpError(eventObject)
+	{
+		isHttpError = true;
+		eventObject.returnValue = false;
+		optumUI.showError("Connection failed. Please check Connection.", false);
+	}
+
+
+
+	function onRequestHandler(eventObject)
+	{
+		if ( isHttpError ) optumUI.hideMessage();
+		eventObject.baseURL   = gatewayURL;
+		isHttpError = false;
+	}
+
+	$(document).ready(
+		function onApplicationReady()
+		{
+		if($('li.ux-unav-has-submenu')){
+			$('li.ux-unav-has-submenu').hover(
+				function(){ $(this).addClass('ux-unav-hover') },
+				function(){ $(this).removeClass('ux-unav-hover') }
+			);
+		}
+		//userObject = optumUI.preLogin(null, null, false)
+		
+		showUserSection();
+		showRoles();
+		initializeSessionCounters(20);
+		initializeHandlers();
+		
+		// Show role based UI
+		if(selectedRole != ""){
+			changeTabs(selectedRole, selectedRoleName);
+		}
+	}
+	);
+	
+	$(document).ready(function() {
+		$("#utilityMainElement").click(
+				function(event){
+					event.preventDefault();
+					checkForModifications(prepareUtilityPage);
+				}
+			);
+		});
+	
+	var roleId;
+	var roleCode;
+	function showRoles(){
+		var userRoles = optumUI.getUserRoles();
+		var defaultRole = "";
+		var defaultRoleName = "";
+		if ( userRoles )
+		{
+				var rolesElement =document.getElementById('rolesElement');
+				var rolesString = "";
+				var count = 0;
+				for(var userRole in userRoles)
+				{
+					count++;
+					var roleName = userRoles[userRole].roleName;
+					// creating role list dynamically 
+					rolesString += "<li id='"+roleName+"' style='width:100%;'><a id= '"+userRole+"' style='cursor:pointer;'>"+roleName+"</a></li>";
+					if(count == 1) {
+						defaultRole = userRole;
+						defaultRoleName = roleName;
+					}				
+				}
+				rolesElement.innerHTML = rolesString;
+				
+				
+				rolesElement.onclick = function(event) {
+					var target = getEventTarget(event);
+					roleId = target.id;
+					roleCode = target.innerHTML
+					if(rootData.dataModel && rootData.dataModel.dataModel && (rootData.dataModel.dataModel.workItemFlag || rootData.dataModel.dataModel.saveEncounterFlag) && (rootData.currentRole == 'NUQAUD' || rootData.currentRole == 'NUQASAUD' 
+							|| rootData.currentRole == 'ONUQAUD')){
+						showPopUpForRoleChange(true);
+					}else if(roleId == 'PNPM' || roleId == 'PNPP'){
+						if(!pnpTab || pnpTab.closed){
+							pnpTab = window.open(rootData.userData.pnpURL, '_blank');
+						}
+						return;
+					}
+					else{
+						handleRoleElementClick();
+					}
+					
+				};
+				// set role based on highest precedence		
+				selectedRole = defaultRole;	
+				selectedRoleName = defaultRoleName;
+		}
+	}
+	
+	function handleRoleElementClick(){
+		releaseBarcode("CLOSE");
+		closeImage();
+		changeTabs(roleId, roleCode);
+	}
+	
+	function handleRolePopUpOkClick(){
+		showPopUpForRoleChange(false);
+		handleRoleElementClick();
+	}
+	
+	function showPopUpForRoleChange(flag) {
+		if(flag){
+			$(".js_nuqa_confirm_popup").show();
+		}
+		else
+		{
+			$(".js_nuqa_confirm_popup").hide();
+		} 
+	}
+	
+	function closeImage(){
+		 if ((winLookup) && (!winLookup.closed)){
+			 winLookup.close();
+		 }
+		 closeRapsLookup();
+	 }
+	
+	function closeRapsLookup(){
+		if((rapsLookup) && (!rapsLookup.closed)){
+			rapsLookup.close();
+		}
+	}
+		
+	function closeBulkUploadLookup(){
+		if((bulkUploadLookup) && (!bulkUploadLookup.closed)){
+			bulkUploadLookup.close();
+		}
+	}
+	
+	function addClass(elementId){
+		document.getElementById(elementId).className = 'ux-unav-hover';
+	}
+	
+	function getEventTarget(e) {
+	    e = e || window.event;
+	    return e.target || e.srcElement; 
+	}
+	
+	
+	function changeTabs(roleCode, roleName){
+		if($("#li_switch_user") && $("#li_switch_user")[0]){
+			$("#li_switch_user")[0].style.display = 'none';
+		}
+		rootData.currentRole = roleCode;
+		rootData.currentRoleName = roleName;
+		selectedRole = roleCode;
+		optumUI.setUserSelectedRole(roleCode);
+		hideAllMainTabs();
+		var rolePortion = document.getElementById('lbl_userrole');
+		rolePortion.innerHTML="Role: "+roleName;
+		if(roleCode == "COU") {
+			// Coding work list
+			$("#worklistMainElement").show();
+			$("#worklistMainElement a").hide();
+			prepareWorklistPage();
+			$("#workListMainConfigElement").show();
+		}else if(roleCode == "SUP"){
+			// Supervisor work list
+			$("#dashboardMainElement").show();
+			$("#retrievalAssignmentMainElement").show();
+			$("#reportsMainElement a").show();
+			$("#reportsMainElement").show();
+			$("#utilityMainElement").show();
+			$("#dashboardMainElement").click();
+			prepareDashboardPage();
+			//prepareRetrievalAssignment();
+		}else if(roleCode == "IM"){
+			// Inventory Manager tabs
+			prepareRetrievalAssignment();
+		}else if(roleCode == "RU"){
+			// Optum User Admin role
+			$("#reportsMainElement").show();
+			$("#reportsMainElement a").hide();
+			prepareReportsPage();
+		}else if(roleCode == "QA"){
+			// QA work list
+			$("#worklistMainElement").show();			
+			$("#worklistMainElement a").hide();
+			prepareWorklistPage();
+		}else if(roleCode == "SH"){
+			// Scheduler work list
+			$("#worklistMainElement").show();
+			prepareWorklistPage();			
+		}else if(roleCode == "ESH") {
+			//EMR Scheduler work list
+			$("#worklistMainElement").show();
+			prepareWorklistPage();
+		}else if(roleCode == "OSH") {
+			//Onsite Scheduler work list
+			$("#worklistMainElement").show();
+			prepareWorklistPage();
+		}else if(roleCode == "PDM") {
+			//Pend Manager work list
+			$("#worklistMainElement").show();
+			prepareWorklistPage();
+			$("#workListMainConfigElement").show();
+		}else if(roleCode == "CSP") {
+			// Coding Supervisor work list
+			$("#worklistMainElement").show();
+			$("#worklistMainElement").click();
+			prepareWorklistPage();			
+		}else if(roleCode == "SA") {
+			if($("#li_switch_user") && $("#li_switch_user")[0]){
+				$("#li_switch_user")[0].style.display = '';
+			}
+			$("#adminMainElement").show();
+			$("#adminMainElement a").show();
+			$("#utilityMainElement").show();
+			$("#adminMainElement").click();
+			prepareDashboardPage();
+		}else if(roleCode == "OCOU") {
+			//Optum Coding work list
+			$("#worklistMainElement").show();
+			prepareWorklistPage();
+			$("#workListMainConfigElement").show();
+		}else if(roleCode == "OQA"){
+			//Optum QA work list
+			$("#worklistMainElement").show();
+			prepareWorklistPage();
+		}else if(roleCode == "OPM"){
+			//Optum Project Manager tabs
+			$("#dashboardMainElement").show();
+			$("#retrievalUIMainElement").show();
+			$("#dashboardMainElement").click();
+		}else if(roleCode == "OIM"){
+			//Optum Inventory Manager tabs
+			$("#dashboardMainElement").show();
+			$("#retrievalAssignmentMainElement").show();
+			$("#dashboardMainElement").click();
+		}else if(roleCode == "OGIM"){
+			//Optum Inventory Manager tabs
+			$("#dashboardMainElement").show();
+			$("#retrievalAssignmentMainElement").show();
+			$("#dashboardMainElement").click();
+		}else if(roleCode == "OCSP"){
+			// Optum Coding Supervisor work list
+			$("#worklistMainElement").show();
+			prepareWorklistPage();	
+		}else if(roleCode == "OUA" || roleCode == "OCUA"){
+			// Optum User Admin role
+			$("#adminMainElement").show();
+			$("#adminMainElement").click();
+		}else if(roleCode == "PNPP"){
+			$("#worklistMainElement").show();
+			$("#worklistMainElement a").show();
+			$("#worklistMainElement").click();
+			prepareWorklistPage();
+			$("#workListMainConfigElement").show();
+			$("#utilityMainElement").show();
+		}else if(roleCode == "PNPM"){
+			$("#dashboardMainElement").show();
+			$("#utilityMainElement").show();
+			$("#dashboardMainElement").click();
+			prepareDashboardPage();
+		}
+		//new role chart ops
+		else if(roleCode == "OPNPV"){	
+			$("#dashboardMainElement").show();
+			$("#utilityMainElement").show();
+			$("#utilityMainElement").click();
+			prepareUtilityPage();
+		}else if (roleCode == 'CUA'){
+			// Client User Admin role
+			$("#adminMainElement").show();
+			$("#adminMainElement").click();
+		}else if(roleCode == "NUQAUD"){
+            $("#worklistMainElement").show();
+            prepareWorklistPage();
+            $("#workListMainConfigElement").show();
+		}else if(roleCode == "NUQASAUD"){          
+            $("#worklistMainElement").show();
+            prepareWorklistPage();
+            $("#workListMainConfigElement").show();
+		}else if(roleCode == "ONUQAUD"){             
+            $("#worklistMainElement").show();
+            prepareWorklistPage();
+            $("#workListMainConfigElement").show();
+		}else if(roleCode == "NUQAM"){
+			$("#dashboardMainElement").show();
+			$("#utilityMainElement").show();
+			$("#dashboardMainElement").click();
+		}else if(roleCode == "ONUQAM"){
+			$("#dashboardMainElement").show();
+			$("#utilityMainElement").show();
+			$("#dashboardMainElement").click();
+		}else if(roleCode == "ONUQASUP"){
+			// Future scope.
+		} 
+	}
+	
+	function changeOrg(groupName){
+		return function(event){
+			// If chart ops user then redirect to different URL 
+			var url = "";
+			if(groupName == "CHARTOPS") {
+				url = "/home/CPC/emerald/default.htm"
+			}else {
+				url = "/home/comm/mrm/default.htm";
+			}
+			CordysRoot.window.location.replace(url);
+		}
+	
+	}
+	
+	function redirectToCPC(){
+		var url = window.location.href.split("/comm")[0] + "/home/CPC/emerald/default.htm";
+		window.open(url, "_self");
+	}
+
+	function onTaskCallBackHandler(e){
+		var response = e.response;
+		var tasks = cordys.selectXMLNodes(response, ".//*[local-name()='Task']");
+		if ( tasks.length == 0 ){
+			hideAllMainTabs();
+			optumUI.showError("There are no activities assigned to user. Please contact Administrator.", false);
+			return;
+		}
+		for(var t=0, length = tasks.length; t < length; t++)
+		{
+
+			var description = cordys.getNodeText(tasks[t], "*[local-name()='Description']");
+
+			var applicationDefinition = cordys.selectXMLNode(tasks[t], ".//*[local-name()='Application']");
+			if ( applicationDefinition )
+			{
+				if ( allTasks[description] ) allTasks[description].applicationDefinition = applicationDefinition.cloneNode(true);
+			}
+		}
+		hideOrDisplayNavigations();
+	}
+
+	function getUserTasks()
+	{
+		if ( ! application.organization ) return false;
+		var userDN = system.getUser().organizations[application.organization].userDN;
+		var requestXmlDoc = cordys.cloneXMLDocument(document.getElementById("userTasksXml").XMLDocument);
+
+		var bdi = document.getElementById("_userTasks_bdi");
+		bdi.clear();
+		bdi.request = requestXmlDoc;
+		bdi.async = true;
+		bdi.addListener("onresponse", onTaskCallBackHandler)
+		bdi.reset();
+
+	}
+
+
+	function onApplicationStateChange(eventObject)
+	{
+		if ( eventObject.applicationState == "loaded"  &&  system.windows["artifact_Taskbar"] && !  system.windows["artifact_Taskbar"].__isHidden )
+		{
+			 system.windows["artifact_Taskbar"].application.container.hide();
+			 system.windows["artifact_Taskbar"].__isHidden = true;
+		}
+	}
+
+	function isAnonymous()
+	{
+		if ( system.getUser().name && ( system.getUser().name == "anonymous" || system.getUser().name.indexOf("anonymous") >= 0 ) )
+		{
+			return true;
+		}
+		return false;
+	}
+
+	function showDisplayMessage(message, messageType)
+	{
+	   optumUI.showError(message, false);
+	}
+
+	function setUserName(){
+		var profilePortion=document.getElementById('lbl_username');
+		//re-look this line
+        var displayName = optumUI.getUserDisplayName();
+		if( typeof(displayName) != "undefined")	
+		{
+			profilePortion.innerHTML="<img id='userIcon'  src='../../gcm-app-services/com/optum/comm/lib/images/user.png' /> Welcome, "+displayName+" ";
+		}
+		
+		var helpPortion = document.getElementById('lbl_userhelp');
+		helpPortion.innerHTML="<img id='userHelpIcon'  src='../../gcm-app-services/com/optum/comm/lib/images/userhelp.png' /> Help";
+		
+		if(! optumUI.getUser().isExternalUser()) {
+			var chartOpsLink=document.getElementById('cpcUrlElement');
+			chartOpsLink.style.display="";
+		}
+	}
+	
+	function setUserRoles() {
+		var rolePortion = document.getElementById('lbl_userrole');
+		rolePortion.innerHTML="Role:";
+	}
+
+	function onAfterLogin(eventObject)
+	{
+	}
+
+
+	function removeSelection( liNode )
+	{
+		return function()
+		{
+			$(liNode).removeClass("ux-pnav-active");
+		}
+	}
+
+	function prepareApplicationObject( taskXml, frameId, containerId )
+	{
+		var windowHeight=$( window ).height();
+
+		var iframeHeight=windowHeight-headerHeight;
+		var appObject = {};
+		appObject.frameContainer = document.getElementById(containerId);
+		appObject.applicationId = cordys.getNodeText(taskXml, ".//*[local-name()='id']");
+		appObject.url = cordys.getNodeText(taskXml, ".//*[local-name()='url']");
+		appObject.caption = cordys.getNodeText(taskXml, ".//*[local-name()='caption']");
+		appObject.frameId = frameId ? frameId : appObject.applicationId;
+		$("#"+appObject.frameId).height(iframeHeight);
+		return appObject;
+	}
+
+	function hideUserSection()
+	{
+		var userSectionElement =document.getElementById('userSection');
+		userSectionElement.style.display="none";
+		var userTasksHeaderElement = document.getElementById("userTasksHeader");
+		if ( userTasksHeaderElement ) userTasksHeaderElement.innerHTML = "";
+	}
+
+	function showUserSection()
+	{
+		setUserName();
+		setUserRoles();		
+		if(! optumUI.getUser().isExternalUser()) {
+			
+		}
+	}
+
+		function releaseImageLock()
+		{
+			try{
+				system.raiseEvent("onreleaseimagelock");
+			}catch(e){
+				//ignore
+			}
+		}
+		function closeHandler(confirmValue)
+		{
+			releaseImageLock();
+			onBeforeLogOff("SignOut");
+			//hide all top elements
+			hideAllMainTabs();			
+			replaceWithLogOff("e_m=S");	
+		}
+		
+		function replaceWithLogOff(queryString){
+			if(window.location.host.indexOf("backup")==-1)
+			{
+				window.location.replace(optumUI.getQualifiedURL("signout.htm"));
+			}
+			else
+			{
+				window.location.replace(optumUI.getQualifiedURL("/crp/logoff.htm"));
+			}
+		}
+		// code for session timeout-- Added by Sanchit		
+		function showOptum2HoursPrompt(promptTimerValue){
+			promptInterval = setInterval(
+				function()
+				{
+					clearInterval(promptInterval);
+					openOptumSessionTimeoutConfirm();
+				}, promptTimerValue*1000);
+		}
+
+		function startOptumSessionTimer(timeoutTimerValue)
+		{
+			interval = setInterval(
+				function()
+				{
+					clearInterval(signOutInterval);
+					logOut("optumSessionTimeout");
+					clearInterval(interval);
+				}, timeoutTimerValue*1000);
+		}
+
+		function startOptumSessionAlertTimer(timeoutTimerValue)
+		{
+			interval = setInterval(
+				function()
+				{
+					clearInterval(interval);
+					openOptumSessionTimeoutConfirm();
+				}, timeoutTimerValue*1000);
+		}
+
+		function startMainTimer(newSessionValue,restart)
+		{
+			if (restart == 'yes') {
+				clearInterval(interval);
+			}
+			interval = setInterval(
+				function()
+				{
+					signOutInterval = setInterval(
+							function()
+							{
+								clearInterval(signOutInterval);
+								//clearInterval(interval);
+								logOut("timeOut");
+							},
+						sessionTimeoutAlertBefore*60*1000);
+						clearInterval(interval);
+						openTimeoutConfirm();
+						$(".js_sign_out_yes_button").click(function(){
+							closeHandler();
+							$(".js_sign_out_popup").hide();
+						});
+						$(".js_sign_out_cancel_button").click(function(){
+							$(".js_sign_out_popup").hide();
+						});
+			}, newSessionValue*1000);
+		}
+
+		var s18minsInterval = null;
+		function start18MinsTimer(timerValue)
+		{
+			s18minsInterval = setInterval( function()
+										  {
+										  	if(isTouch)
+											{
+												optumUI.renewSession();
+
+												//Send signal to chart or HCC Tracker windows.
+												system.raiseEvent("onrenewsession", {});
+												isTouch = false;
+												clearInterval(s18minsInterval);
+												start18MinsTimer(timerValue);
+											}
+										  } , timerValue*1000);
+		}
+
+		function cofirmHandler(confirmValue)
+		{
+			if (confirmValue.isOK)
+			{
+				//Trigger HTTP Request to server for renew session.
+				optumUI.renewSession();
+
+				clearInterval(signOutInterval);
+				resetTimer({} , true);
+				isTouch = false;
+			}
+			else
+			{
+				clearInterval(signOutInterval);
+				clearInterval(interval);
+				logOut("timeOut");
+			}
+			confirmValue.isOK = false;
+		}
+
+		function openTimeoutConfirm()
+		{
+			$(".js_sign_out_popup").show();			
+		}
+
+		function openOptumSessionTimeoutConfirm()
+		{
+			
+		}
+
+		var isTouch = false;
+		function resetTimer(eventObject , isFlag)
+		{
+			isTouch = true;
+			startMainTimer(newSessionValue * 60, 'yes');
+		}
+
+		function closeAllOpenedDialogs()
+		{
+			if(system.containers['com_optum_cpc_emerald_homepage_signoutconfirm'] != null)
+			{
+				system.containers['com_optum_cpc_emerald_homepage_signoutconfirm'].applicationWindow.resetBoolButtonClick();
+				system.containers['com_optum_cpc_emerald_homepage_signoutconfirm'].close();
+			}
+		}
+
+		// To hide IE context menu from getting displayed on the left-most corner
+		document.oncontextmenu = function(){return false};
+
+		var prefetchURLs = [];
+
+		loadBaseFile();
+
+		function loadBaseFile()
+		{
+			for(var u=0, length = prefetchURLs.length; u < length; u++)
+			{
+				var url = prefetchURLs[u];
+				var res= new XMLHttpRequest();
+				try
+				{
+					res.open("GET",	optumUI.getQualifiedURL(url), true);
+					res.send();
+				}
+				catch(e)
+				{
+					onHttpError({});
+				}
+			}
+		}
+
+		function downloadFile(requestString, searchPath, fileName){
+			if ( ! requestString || ! searchPath ){
+				optumUI.showError("Download failed as required inputs not passed.", false);
+			}
+			//add type of not exists
+			var downloadLib = $("#_optum_download_util")[0];
+			if ( ! application.hasType(downloadLib, "wcp.library.util.Download") ){
+				application.addType(downloadLib, "wcp.library.util.Download");
+			}
+
+			var requestXml = cordys.loadXMLDocument(requestString);
+			optumUI.hideMessage();
+			downloadLib.request = requestXml;
+			downloadLib.searchPath = searchPath;
+			downloadLib.fileName = fileName;
+			downloadLib.dispositionType="attachment";
+            downloadLib.timeOut='240000';
+			downloadLib.setAttribute("timeOut", "240000");
+			downloadLib.downloadFile();
+		}
+
+		function onDownLoadError(){
+			optumUI.showError(window.application.event.response, false);
+		}
+		
+
+      </script>
+      <div id="_userTasks_bdi" style="display:none" cordysType="wcp.library.data.BusDataIsland" async="false" automatic="false"></div>
+	  <div  id="_optum_download_util" style="display:none"  ondownloaderror='onDownLoadError()' ></div>
+	  <div class="ux-lbox ux-padding-top-15t ux-util-hidden js_view_description_popup">
+		<div class="ux-modl ux-modl ux-width-29t ux-height-15t">
+			<div class="ux-modl-header">
+				<h6>Sign Out</h6>
+			</div>
+			<div style="padding: 10px;">
+				<div class="ux-bold-lbl ux-padding-bottom-min" id="longDescriptionPopup" style="line-height: 150%;">You are signing out of the system. All unsaved work will be lost.
+				Are you sure you want to continue?</div>
+				<div style="text-align: center;padding-top: 30px;">
+					<button class="ux-btn ux-width-7t ux-margin-right-1t ux-margin-bottom-1t js_yes_button">Ok</button>
+					<button class="ux-btn ux-width-7t ux-margin-right-1t ux-margin-bottom-1t js_cancel_button">Cancel</button>
+			
+				</div>
+			</div>
+		</div>
+		</div>
+		<div class="ux-lbox ux-padding-top-15t ux-util-hidden js_sign_out_popup">
+		<div class="ux-modl ux-modl ux-width-29t ux-height-18t">
+			<div class="ux-modl-header">
+				<h6>Time Out</h6>
+			</div>
+			<div style="padding: 10px;">
+				<div class="ux-bold-lbl ux-padding-bottom-min" id="signOutPopup" style="line-height: 150%;">
+					<p style="padding:10px">
+					Your session will end in 2 minutes due to inactivity.All unsaved work will be lost.<br>
+					</p>
+					<p style="padding:10px">
+						Click OK to continue the current session.<br>
+					</p>
+
+				</div>
+				<div style="text-align: center;padding-top: 30px;">
+					<button class="ux-btn ux-width-7t ux-margin-right-1t ux-margin-bottom-1t js_yes_autosignout_button">Ok</button>
+					<button class="ux-btn ux-width-7t ux-margin-right-1t ux-margin-bottom-1t js_cancel_autosignout_button">Cancel</button>
+			
+				</div>
+			</div>
+		</div>
+		</div>
+
+	<div
+		class="ux-lbox ux-padding-top-15t ux-util-hidden js_bulk_upload_popup">
+		<div class="ux-modl ux-modl ux-width-29t ux-height-22t">
+			<div class="ux-modl-header">
+				<h6>Chart upload in progress</h6>
+			</div>
+			<div style="padding: 10px;">
+				<div class="ux-bold-lbl ux-padding-bottom-min" id="signOutPopup"
+					style="line-height: 150%;">
+					<p style="padding: 10px">
+						Chart upload window is open.<br>
+					</p>
+					<p style="padding: 10px">
+						Click OK to continue the session and stay in the application.<br>
+					</p>
+					<p style="padding: 10px">Click Cancel to sign out and close the
+						upload session.</p>
+				</div>
+				<div style="text-align: center; padding-top: 30px;">
+					<button
+						class="ux-btn ux-width-7t ux-margin-right-1t ux-margin-bottom-1t js_yes_bulkupload_button">OK</button>
+					<button
+						class="ux-btn ux-width-7t ux-margin-right-1t ux-margin-bottom-1t js_cancel_bulkupload_button">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div ng-app="defaultApp" class="ux-lbox ux-padding-top-15t ux-util-hidden js_user_profile_popup" >
+		<div ng-controller="defaultAppCtrl" id="onLastNameClick" class="ux-modl ux-modl ux-width-60t ux-height-40t tk-lbox-dialog" style="overflow: auto;overflow-x: hidden;">
+			<div>
+			</div>
+			<div>
+				<div>
+					<div ng-include
+						src="'../../gcm-app-services/com/optum/comm/admin/userprofile.htm'"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="ux-lbox ux-padding-top-15t ux-util-hidden js_user_popup">
+		<div class="ux-modl ux-modl ux-width-35t ux-height-8t">
+			<div class="ux-modl-header" style="padding-right:1px;">
+				<span class="tk-icon ng-isolate-scope js_cancel_user_button " icon="cux-icon-close" hidden-text="Close"
+					style="float:right; font-size:24px;">
+					<span aria-hidden="true" class="tk-icon-glyph">
+						<span class="cux-icon-close" style= "cursor: default;"></span>
+					</span>
+				</span>
+			</div>
+			<div style="padding: 10px;">
+				<div class="ux-bold-lbl ux-padding-bottom-min" id="userPopup"
+					style="line-height: 150%;">
+					<form action="../gcm-app-services/switchuser" method="post">
+						<table>
+							<tr>
+								<td><label
+									class="tk-labl ux-margin-left-2t ux-margin-right-2t">User Name</label></td>
+								<td><input type="text" id="userName" name="userId" /></td>
+								<td>
+									<button
+										class="ux-btn ux-width-5t ux-margin-left-3t js_yes_user_button">Go</button>
+								</td>
+							</tr>
+						</table>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="ux-lbox ux-padding-top-30t ux-util-hidden js_view_contactus_popup">
+		<div class="ux-modl ux-modl ux-width-29t ux-height-10t">
+			<div class="ux-modl-header">
+				<h6>Contact Us</h6>
+			</div>
+			<div style="padding: 10px;">
+				<div class="ux-bold-lbl ux-padding-bottom-min" id="ShortDescriptionPopup" style="line-height: 150%;">Help Desk : 1-844-752-9438</div>
+				<div style="text-align: center;padding-top: 30px;">
+					<button class="ux-btn ux-width-7t ux-margin-right-1t ux-margin-bottom-1t js_close_button">Close</button>			
+				</div>
+			</div>
+		</div>
+		</div>
+		<div class="ux-lbox ux-padding-top-15t ux-util-hidden js_nuqa_confirm_popup">
+	<div class="ux-modl ux-modl ux-width-23t ux-height-13t" style="margin-top:15%">
+		<div class="ux-modl-header ux-height-2t">
+	<a style="cursor pointer;margin-bottom: 30px;" onclick="showPopUpForRoleChange(false)">Close</a>
+		<h6 style="margin-top:5px;padding-bottom:5px;">Confirm Message</h6>
+	</div>
+	<div style="padding: 7pt;">
+		<div class="ux-bold-lbl ux-padding-bottom-min" id="roleChangePopup" style="line-height: 150%;">
+			<p style="padding:7pt">
+	Are you sure you switch roles? All changes will be lost and chart will be returned to the queue.
+	</p>
+	</div>
+	<div style="text-align: center;padding-top: 9pt;">
+		<button class="ux-btn ux-width-7t ux-margin-right-1t ux-margin-bottom-1t" onclick="handleRolePopUpOkClick()">Ok</button>
+		<button class="ux-btn ux-width-7t ux-margin-right-1t ux-margin-bottom-1t" onclick="showPopUpForRoleChange(false)">Cancel</button>
+	</div>
+		</div>
+			</div>
+				</div>
+   </body>
+</html>

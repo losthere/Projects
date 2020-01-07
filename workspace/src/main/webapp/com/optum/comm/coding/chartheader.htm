@@ -1,0 +1,75 @@
+<div style="position:relative">
+			<div class="ux-msg-error" ng-show='barCodeErrorMessage'  id="__xbody_msg_group_element" style="position:relative;line-height: 15px; display: block;" >
+								{{barCodeErrorMessage}}
+			</div>
+		<div style="position:relative">
+			<div style='width:50%;left:-25px;position:relative'>	
+					<h1 style='position:relative;left:28px;margin-top:10px;'>{{chartDetails.GCM_BUSS_FUNC_NAME}}</h1>
+					<h1 style='position:relative;left:28px;margin-top:10px;'>{{chartDetails.HealthPlanMemberProvider.MEMBER_NAME}}</h1>		
+					<table class="ux-tabl-form-multicol" style="margin-top:16px">
+						<tbody>
+							<tr ng-hide='isCRQS()'>
+								<td><label>DOB:</label></td>
+								<td><div style="white-space:nowrap; width:40em; overflow:hidden; text-overflow:ellipsis;">{{formatEncounterDate(chartDetails.HealthPlanMemberProvider.MBR_DOB, '/')}}<label style='margin-right:5%; margin-left:5%;'>ID #:</label><span ng-attr-title='{{chartDetails.MBR_HIC}}'>{{chartDetails.MBR_HIC}}</span></div></td>
+							</tr>
+							<tr ng-show='isCRQS()'>
+								<td><label>DOB:</label></td>
+								<td>{{formatEncounterDate(chartDetails.HealthPlanMemberProvider.MBR_DOB, '/')}}</td>
+							</tr>
+							<tr>
+								<td><label>Health Plan:</label></td>
+								<td>{{chartDetails.HP_DESC}}</label></td>
+							</tr>
+							<tr>
+								<td><label>Provider:</label></td>
+								<td>{{chartDetails.HealthPlanMemberProvider.PROVIDER_NAME}}</td>
+							</tr>
+							<tr>
+								<td><label>Provider Group Name:</label></td>
+								<td>{{chartDetails.PROV_GRP_NAME}}</td>
+							</tr>
+							<tr>
+								<td><label>Chart Request ID:</label></td>
+								<td>{{chartDetails.GCMCompositeKey.GCM_PROJ_CONTENT_BARCODE}}</td>
+							</tr>
+						</tbody>
+					</table>
+			</div>
+			<div style='width:50%;left:50%;top:20px;position:absolute'>
+					<div style="text-align:right" ng-hide='isNewCodingUI()'>
+						<input type='button' value='Next' class='ux-btn' style="margin-left:10px" ng-click='move2Next()' ng-show="isWorkItemActive() && !isEscalatedItem() && isOverreadCoding() && !isOverreadIntermediateStep()" ng-disabled="isAcceptInProgress || isEncounterSaveInProgress"></input>
+						<input type='button' value='Accept' class='ux-btn' style="margin-left:10px" ng-click='acceptWorkItem()' ng-show="(isWorkItemActive() && !isEscalatedItem() && !isOverreadCoding()) ||  isOverreadIntermediateStep() " ng-disabled="isAcceptInProgress || isEncounterSaveInProgress" accesskey="5"></input>
+						<input type='button' value='Agree' class='ux-btn' style="margin-left:10px" ng-click='agreeWorkItem()' ng-show="isWorkItemActiveStatus() && isEscalatedItem() && !isReplyMode()"></input>
+						<input type='button' value='Reply' class='ux-btn' style="margin-left:10px" ng-click='replyWorkItem()' ng-show="isWorkItemActiveStatus() && isEscalatedItem() && isReplyMode()"></input>
+						<input type='button' value='Escalate' class='ux-btn' style="margin-left:10px" ng-click='escalateWorkItem()' ng-show='!isCRQS() && isWorkItemActive() && !isEscalatedItem() && !isOverreadDiscrepancy() && !isOverreadIntermediateStep() && !isOverreadQA()' accesskey="7"></input>
+						<input type='button' value='Disagree' class='ux-btn' style="margin-left:10px" ng-click='disAgreeWorkItem()' ng-show='isWorkItemActiveStatus() && isEscalatedItem() && !isReplyMode()' ng-disabled="encounters.length == 0 && isImageQA()"></input>
+						<input type='button' value='Exit' class='ux-btn' style="margin-left:10px" ng-click='exitWorkItem()'></input>
+					</div>
+					<div class="ux-panl" style="margin-top: 10px;">
+
+						<div class="ux-panl-content">
+							<div><h3>Coding Instructions:</h3></div>
+							<div style="margin-top: 5px;">
+								<p ng-if="chartDetails.ChartItem.GCM_CONT_BUS_FUNC_INSTRUCTION && chartDetails.ChartItem.GCM_CONT_BUS_FUNC_INSTRUCTION.indexOf(',') == -1">			{{chartDetails.ChartItem.GCM_CONT_BUS_FUNC_INSTRUCTION}}
+								</p>
+								<p ng-if="chartDetails.ChartItem.GCM_CONT_BUS_FUNC_INSTRUCTION && chartDetails.ChartItem.GCM_CONT_BUS_FUNC_INSTRUCTION.indexOf(',') > -1">				<label>{{formatInstruction(chartDetails.ChartItem.GCM_CONT_BUS_FUNC_INSTRUCTION, 0)}}</label>
+											  <br/>
+											  <label>{{formatInstruction(chartDetails.ChartItem.GCM_CONT_BUS_FUNC_INSTRUCTION, 1)}}</label>
+								</p>
+							</div>
+							<div ng-show="isMediCaid()" style="padding-top:2px">Reporting Period: {{chartDetails.REPORTING_PERIOD}}</div>
+						</div>
+
+					</div>
+					<div class="ux-panl" style="margin-top: 10px;">
+				
+						<div class="ux-panl-content" style="padding:8px">
+							<div><h3>Program Directions:</h3></div>
+							<div style="margin-top: 5px;"><label>{{chartDetails.PROGRAM_INSTRUCTION}}</label></div>
+						</div>
+
+					</div>
+			</div>
+		</div>
+</div>
+		

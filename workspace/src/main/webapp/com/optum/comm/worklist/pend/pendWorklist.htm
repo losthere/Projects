@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="robots" content="noindex, nofollow" />
+<title>Worklist</title>
+<script src="../../lib/js/common/jquery.js" type="text/javascript"></script>
+<script src="../../lib/js/common/angular.min.js" type="text/javascript"></script>
+<script src="../../lib/js/common/optumui.js" type="text/javascript"></script>
+
+<script type="text/javascript" src="../../lib/js/common/ng-csv.js"></script>
+<script type="text/javascript" src="../../lib/js/common/angular-sanitize.js"></script>
+<script type="text/javascript" src="../../lib/js/common/angular-touch.js"></script>
+<script type="text/javascript" src="../../lib/js/common/angular-translate/angular-translate.js"></script>
+<script type="text/javascript" src="../../lib/js/common/lodash.js"></script>
+<script type="text/javascript" src="../../lib/js/common/ngDialog.min.js"></script>
+<script src="../../lib/js/common/uitk.min.js"></script>
+<script src="../../lib/js/common/uitk-auto-complete.js"></script>
+
+<script type="text/javascript" src="../../lib/js/modules/retrieval/lookup.js"></script>
+<script type="text/javascript" src="../../lib/js/modules/retrieval/staticDataService.js"></script>
+<script type="text/javascript" src="../../lib/js/modules/worklist/pend/pendWorklistViewModel.js"></script>
+<script type="text/javascript" src="../../lib/js/modules/worklist/pend/pendWorklist.js"></script>
+
+<link rel="stylesheet" href="../../lib/css/uitk.min.css" type="text/css" />
+
+<style>
+
+.scrollable {
+  width: 100%;
+}
+.oui-type-like-h3, h3 {
+				color: #c25608;
+			}
+			.chartStatusul {
+				list-style-type: none;
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+			}
+
+			.chartStatusli {
+				float: left;
+			}
+			.chartStatuslidiv {
+				display: block;
+				text-align: center;
+				padding-left: 20px;
+				padding-right: 20px;
+			}
+			.size {
+				width: 180px;
+				height: 25px;
+			}
+
+			.ux-btn-width {
+				width: 90px;
+				height: 22px;
+			}
+			.fontcolor {
+				color: #C36121 !important;
+			}
+			.ux-a11y-hidden {
+				display: none;
+			}
+			.anchor-padding{
+				padding-right :15px;
+			}
+		   .ux-tabl-form-multicol > tbody > tr > td{
+				 padding-right: 13px;
+				 padding-bottom: 13px;
+		   }
+		   .tk-col-1-5{
+		   width:20%
+		   }
+		   .divPadding{
+		   padding-top:20px;
+		   padding-left:10px;
+		   }
+		   #addCommentField_textarea{
+		   		min-height: 6rem;
+		   }
+		   #pendFiltersDialogId_headerId,#pendMyWorklistDialogId_headerId, #availableWorkItemsDialogId_headerId, #commentsDialogId_headerId, #retrievalInfoDialogId_headerId{
+    			display: none
+			}
+			#pendFiltersDialogId_closeLink,#pendMyWorklistDialogId_closeLink, #availableWorkItemsDialogId_closeLink, #commentsDialogId_closeLink, #retrievalInfoDialogId_closeLink{
+    			display: none
+			}			
+			#pendFiltersDialogId,#pendMyWorklistDialogId, #availableWorkItemsDialogId, #commentsDialogId,#retrievalInfoDialogId{
+				border-width:unset;
+				border-style: none
+			}	
+		   
+</style>
+</head>
+<body ng-app="pendWorklistApp">
+	<div ng-controller="pendWorklistCtrl" ng-cloak>
+		<uitk:message model="errorMessageModel"></uitk:message>
+	<div ng-if="dataModel.isWorklist">
+		<h1 id='worklistHeader'>Worklist</h1>
+		
+		<uitk:panel model="pendWorklistFilters"></uitk:panel>
+			<uitk:dialog  dialog-id='pendFiltersDialogId' dialog-role='dialog' show="dataModel.showPendFiltersLoadingDialog"
+			                 header-text='' confirm-dialog="false" default-width="auto" tk-aria-describedby="dialogInsTextId">
+			      			<img src="../../lib/images/loader.gif"/>
+    					</uitk:dialog>
+		<uitk:tabs tk-model="pendWorklistTabsModel"></uitk:tabs>
+	
+			<script type="text/ng-template" id="myworklist.html">
+				<div ng-controller="myWorklistCtrl" style="padding: 10px;" id="myworklist">
+					<h2 class='fontcolor'>My Worklist</h2>	
+					<div class='scrollable' ng-if="worklistViewModel">
+						<div ng-if="showPendMyWorklistLoadingDialog">
+						<uitk:dialog  dialog-id='pendMyWorklistDialogId' dialog-role='dialog' 
+			                 header-text='' confirm-dialog="false" default-width="auto" tk-aria-describedby="dialogInsTextId">
+			      			<img src="../../lib/images/loader.gif"/>
+    					</uitk:dialog>
+						</div>
+						<uitk:dynamic-table id="myworklistTable" model="worklistViewModel"></uitk:dynamic-table>
+					</div>
+				</div>
+			</script>
+			<script type="text/ng-template" id="availableworkitems.html">
+				<div ng-controller="availableWorkItemsCtrl" style="padding: 10px;" id="availableworkitems">
+					<h2 class='fontcolor'>Available Work Items</h2>	
+					<div class='scrollable' ng-if="worklistViewModel">
+						<div ng-if="showAvailableWorklistLoadingDialog">
+						<uitk:dialog  dialog-id='availableWorkItemsDialogId' dialog-role='dialog' 
+			                 header-text='' confirm-dialog="false" default-width="auto" tk-aria-describedby="dialogInsTextId">
+			      			<img src="../../lib/images/loader.gif"/>
+    					</uitk:dialog>
+						</div>
+						<uitk:dynamic-table id="availableworkitemsTable" model="worklistViewModel"></uitk:dynamic-table>
+					</div>
+				</div>
+			</script>
+			</div>
+			<div ng-if="!dataModel.isWorklist" class="divPadding">
+				<h2>Pended Appointment</h2>
+                <uitk:panel model="chartStatusModel"></uitk:panel>
+                <uitk:panel model="faxStatusModel"></uitk:panel>
+                <uitk:panel model="commentHistoryModel"></uitk:panel>
+		
+				<div id="retreivalInfo">
+					<div ng-if = "dataModel.showRetrievalInfoLoadingDialog">			
+					<uitk:dialog  dialog-id='retrievalInfoDialogId' dialog-role='dialog' 
+			                 header-text='' confirm-dialog="false" default-width="auto" tk-aria-describedby="dialogInsTextId">
+			      			<img src="../../lib/images/loader.gif"/>
+    				</uitk:dialog>				
+    				</div>
+					<div>
+						<uitk:panel style="padding-left:5px" id="retrievalInfoId" model="retrievalInfoModel"></uitk:panel>
+					</div>
+				</div>
+		
+			</div>
+	</div>
+</body>
+</html>

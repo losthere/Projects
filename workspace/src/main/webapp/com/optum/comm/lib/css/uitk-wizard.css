@@ -1,0 +1,205 @@
+/**
+ * Copyright (c) Optum 2015 - All Rights Reserved.
+ */
+
+.oui-wzrd h1 {
+    margin-bottom: 2.167rem;
+}
+
+.oui-wzrd-header {
+    display: table;
+    margin-bottom: 2.75rem;
+    width: 100%;
+}
+
+.oui-wzrd-nav {
+    display: table-row;
+}
+
+.oui-wzrd-nav > li {
+    display: table-cell;
+    text-align: center;
+    vertical-align: top;
+    position: relative;
+    padding-bottom: 1.917rem;
+    font-size: 1.167rem;
+    color: #63666a;
+}
+
+.oui-wzrd-steps-2 .oui-wzrd-nav > li {
+    width: 50%;
+}
+
+.oui-wzrd-steps-3 .oui-wzrd-nav > li {
+    width: 33.333%;
+}
+
+.oui-wzrd-steps-4 .oui-wzrd-nav > li {
+    width: 25%;
+}
+
+.oui-wzrd-steps-5 .oui-wzrd-nav > li {
+    width: 20%;
+}
+
+.oui-wzrd-steps-6 .oui-wzrd-nav > li {
+    width: 16.667%;
+}
+
+.oui-wzrd-nav > li.oui-wzrd-nav-current {
+    font-weight: bold;
+}
+
+.oui-wzrd-nav > li.oui-wzrd-nav-current > a {
+    color: #63666a;
+}
+
+.oui-wzrd-nav > li > a {
+    text-decoration: none;
+}
+
+.oui-wzrd-nav-index {
+    display: block;
+}
+
+.oui-wzrd-nav-progress {
+    height: 3px;
+    width: 100%;
+    background-color: #d0d0ce;
+    position: absolute;
+    bottom: 0;
+}
+
+.oui-wzrd-nav-completed .oui-wzrd-nav-progress {
+    background-color: #e87722;
+}
+
+.oui-wzrd-nav-current .oui-wzrd-nav-progress {
+    background: linear-gradient(to right, #e87722, #e87722 50%, #d0d0ce 50%, #d0d0ce);
+}
+
+.oui-wzrd-nav .oui-wzrd-nav-progress:before {
+    content: "";
+    display: inline-block;
+    border: 0.25rem solid #d0d0ce;
+    box-sizing: border-box;
+    width: 1.667rem;
+    height: 1.667rem;
+    border-radius: 0.833rem;
+    background-color: white;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translateY(-50%) translateX(-50%);
+    -ms-transform: translateY(-50%) translateX(-50%);
+    transform: translateY(-50%) translateX(-50%);
+    position: absolute;
+}
+
+.oui-wzrd-nav-completed .oui-wzrd-nav-progress:before {
+    border-color: #e87722;
+    background-color: #e87722;
+}
+
+.oui-wzrd-nav-current .oui-wzrd-nav-progress:before {
+    border-color: #e87722;
+}
+
+.oui-wzrd-nav-hover .oui-wzrd-nav-progress:before {
+    border-color: #e87722;
+    background-color: white;
+}
+
+.oui-wzrd-nav-completed .oui-wzrd-nav-progress:before {
+    border-color: #e87722;
+    background-color: #e87722;
+}
+
+.oui-wzrd-nav-current .oui-wzrd-nav-progress:before {
+    border-color: #e87722;
+}
+
+.oui-wzrd-nav-hover .oui-wzrd-nav-progress:before {
+    border-color: #e87722;
+    background-color: white;
+}
+
+.oui-wzrd-content {
+    margin-bottom: 2.167rem;
+}
+
+.oui-wzrd-buttons {
+    margin-top: 2.167rem;
+}
+
+.oui-wzrd-buttons .oui-butn {
+    margin: 0 1.08333333rem 0 0;
+}
+
+.oui-wzrd-vertical {
+    display: table;
+    border-spacing: 0;
+}
+
+.oui-wzrd-vertical .oui-wzrd-positioner {
+    display: table-row;
+}
+
+.oui-wzrd-vertical .oui-wzrd-header {
+    display: table-cell;
+    width: 1%;
+    padding-right: 2.167rem;
+    vertical-align: top;
+}
+
+.oui-wzrd-vertical .oui-wzrd-nav {
+    display: block;
+}
+
+.oui-wzrd-vertical .oui-wzrd-nav > li {
+    display: block;
+    padding: 1.08333333rem 0;
+    text-align: left;
+    padding-left: 2.167rem;
+    line-height: 1.667rem;
+    vertical-align: middle;
+    box-sizing: border-box;
+    white-space: nowrap;
+}
+
+.oui-wzrd-vertical .oui-wzrd-nav > li > a {
+    text-decoration: none;
+    display: block;
+}
+
+.oui-wzrd-vertical .oui-wzrd-nav-index {
+    display: inline;
+}
+
+.oui-wzrd-vertical .oui-wzrd-nav-progress {
+    bottom: 0;
+    top: 0;
+    left: 0.833rem;
+    width: 0.25rem;
+    height: 100%;
+}
+
+.oui-wzrd-vertical .oui-wzrd-nav-current .oui-wzrd-nav-progress {
+    background: linear-gradient(to bottom, #e87722, #e87722 50%, #d0d0ce 50%, #d0d0ce);
+}
+
+.oui-wzrd-vertical .oui-wzrd-content {
+    display: table-cell;
+    width: 99%;
+    vertical-align: top;
+}
+
+.oui-wzrd-nonlinear .oui-wzrd-nav-completed .oui-wzrd-nav-progress,
+.oui-wzrd-nonlinear .oui-wzrd-nav-current .oui-wzrd-nav-progress {
+    background: #d0d0ce;
+}
+.oui-wzrd input.tk-btn{
+    vertical-align: baseline;
+}
+.oui-wzrd .oui-rfrm-field-validation-container{
+    padding-top:0.333rem;
+}

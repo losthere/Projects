@@ -1,0 +1,83 @@
+<p id="{{tkWizardCtrl.viewModel.id}}_description" class="wizard-description oui-a11y-hidden" >This is a wizard which is completed in steps. Use Next and Previous buttons or step buttons to move between steps. Buttons for some steps may be disabled until other steps are successfully completed.</p>
+<div role="group" id="{{tkWizardCtrl.viewModel.id}}" class="oui-wzrd" ng-class="{'oui-wzrd-vertical':tkWizardCtrl.viewModel.enableVerticalLayout}" tabindex="-1" aria-roledescription="Wizard" ng-attr-aria-labelledby="{{tkWizardCtrl.wizardDescriptionId}}" ng-attr-aria-describedby="{{tkWizardCtrl.viewModel.id}}_description" tk-focus-wizard-main-container="{{tkWizardCtrl.isWizardCompleted}}">
+    <p id="{{tkWizardCtrl.viewModel.id}}_wizardComplete" class="wizard-completed oui-a11y-hidden" ng-if="tkWizardCtrl.isWizardCompleted">All the steps of Wizard are completed</p>
+    <div class="oui-wzrd-header" aria-roledescription="Wizard Steps">
+        <ul role="toolbar" class="oui-wzrd-nav" ng-keydown="tkWizardCtrl.onStepsKeyPressEvent($event)">
+            <li role="button" id="{{tkWizardCtrl.viewModel.id}}_{{$index}}" ng-class="tkWizardCtrl.getClass($index+1)" tabindex="{{tkWizardCtrl.getTabIndex($index)}}" aria-disabled="{{tkWizardCtrl.isStepDisabled($index)}}" aria-controls="{{tkWizardCtrl.viewModel.id}}_content_container" ng-repeat="step in tkWizardCtrl.viewModel.wizardSteps">
+                <a ng-if="($index+1) < tkWizardCtrl.viewModel.currentStep" ng-click="tkWizardCtrl.selectStep($index)">
+                    <span class="oui-a11y-hidden">Step </span>
+                    <span class="oui-wzrd-nav-index" ng-if="tkWizardCtrl.viewModel.renderNavIndexes">{{$index+1}}</span>
+                    <span class="oui-a11y-hidden"> of {{tkWizardCtrl.viewModel.wizardSteps.length}}</span>
+                    <span>{{step.label}}</span>
+                    <span class="oui-a11y-hidden"> Completed</span>
+                </a>
+                <a ng-if="($index+1) >= tkWizardCtrl.viewModel.currentStep" class="tk-pending-nav">
+                    <span class="oui-a11y-hidden">Step </span>
+                    <span class="oui-wzrd-nav-index" ng-if="tkWizardCtrl.viewModel.renderNavIndexes">{{$index+1}}</span>
+                    <span class="oui-a11y-hidden"> of {{tkWizardCtrl.viewModel.wizardSteps.length}}</span>
+                    <span>{{step.label}}</span>
+                    <span class="oui-a11y-hidden" ng-if="tkWizardCtrl.isStepSelected($index)">Current</span>
+                </a>
+                <div class="oui-wzrd-nav-progress" aria-hidden="true"></div>
+            </li>
+        </ul>
+    </div>
+    <div id="{{tkWizardCtrl.viewModel.id}}_content_container" class="oui-wzrd-content" aria-roledescription="Content Panel" aria-labelledby="{{tkWizardCtrl.getContentDescriptionId()}}">
+        <h3 class="oui-a11y-hidden" ng-if="!tkWizardCtrl.isWizardCompleted">{{tkWizardCtrl.viewModel.wizardSteps[tkWizardCtrl.viewModel.currentStep -1].label}} : Step {{tkWizardCtrl.viewModel.currentStep}} of {{tkWizardCtrl.viewModel.wizardSteps.length}}</h3>
+        <div id="{{tkWizardCtrl.viewModel.id}}_content" tabindex="-1" onload="tkWizardCtrl.onloadComplete()" ng-include="templateUrl" tk-focus-wizard-content="{{tkWizardCtrl.isWizardContentToBeFocussed}}"></div>
+        <div class="oui-wzrd-buttons" ng-if="!tkWizardCtrl.viewModel.buttonsTemplateUrl && !tkWizardCtrl.viewModel.hasCompletedAllSteps">
+            <uitk:button
+                    id="{{tkWizardCtrl.viewModel.id}}_previousBtn"
+                    ng-if="(tkWizardCtrl.viewModel.currentStep != 1) && tkWizardCtrl.viewModel.previousButton.render"
+                    value="{{tkWizardCtrl.viewModel.previousButton.label}}"
+                    ng-click="tkWizardCtrl.viewModel.previousButton.action()"
+                    uitk-btn-disabled="tkWizardCtrl.viewModel.previousButton.disabled"
+                    type="button"
+                    custom-class="tk-btn-secondary">
+            </uitk:button>
+
+            <uitk:button
+                    id="{{tkWizardCtrl.viewModel.id}}_nextBtn"
+                    ng-if="(tkWizardCtrl.viewModel.currentStep != tkWizardCtrl.viewModel.wizardSteps.length) && tkWizardCtrl.viewModel.nextButton.render"
+                    value="{{tkWizardCtrl.viewModel.nextButton.label}}"
+                    ng-click="tkWizardCtrl.viewModel.nextButton.action()"
+                    uitk-btn-disabled="tkWizardCtrl.viewModel.nextButton.disabled"
+                    type="button"
+                    custom-class="tk-btn-secondary">
+            </uitk:button>
+			
+			<uitk:button
+                    id="{{tkWizardCtrl.viewModel.id}}_extraBtn1"
+                    ng-if="tkWizardCtrl.viewModel.extraBtn1.show"
+                    value="{{tkWizardCtrl.viewModel.extraBtn1.label}}"
+                    ng-click="tkWizardCtrl.viewModel.extraBtn1.action()"
+                    uitk-btn-disabled="tkWizardCtrl.viewModel.extraBtn1.disabled"
+                    type="button"
+                    custom-class="tk-btn-secondary">
+            </uitk:button>
+
+			<uitk:button
+                    id="{{tkWizardCtrl.viewModel.id}}_extraBtn2"
+                    ng-if="tkWizardCtrl.viewModel.extraBtn2.show"
+                    value="{{tkWizardCtrl.viewModel.extraBtn2.label}}"
+                    ng-click="tkWizardCtrl.viewModel.extraBtn2.action()"
+                    uitk-btn-disabled="tkWizardCtrl.viewModel.extraBtn2.disabled"
+                    type="button"
+                    custom-class="tk-btn-secondary">
+            </uitk:button>
+			
+            <uitk:button
+                    id="{{tkWizardCtrl.viewModel.id}}_finishBtn"
+                    ng-if="(tkWizardCtrl.viewModel.currentStep == tkWizardCtrl.viewModel.wizardSteps.length) && tkWizardCtrl.viewModel.finishButton.render "
+                    value="{{tkWizardCtrl.viewModel.finishButton.label}}"
+                    ng-click="tkWizardCtrl.viewModel.finishButton.action()"
+                    uitk-btn-disabled="tkWizardCtrl.viewModel.finishButton.disabled"
+                    type="button"
+                    custom-class="tk-btn-secondary">
+            </uitk:button>
+            <a href="javascript:void(0)" id="{{tkWizardCtrl.viewModel.id}}_cancelLink" ng-click="tkWizardCtrl.viewModel.cancelLink.action()" ng-if="tkWizardCtrl.viewModel.cancelLink.render">{{tkWizardCtrl.viewModel.cancelLink.label}}</a>
+
+        </div>
+        <div ng-include="tkWizardCtrl.viewModel.buttonsTemplateUrl" ng-if="tkWizardCtrl.viewModel.buttonsTemplateUrl"></div>
+    </div>
+</div>

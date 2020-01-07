@@ -1,0 +1,20 @@
+<div ng-controller='schedulingEmrCtrl'>
+	<div ng-if="dataModel.emrShowChart && dataModel.schedulingEmrCounts.totalCnt > 0" class="chartStyle">
+		<uitk-pie-chart view-model="dataModel.schedulingEmrPieChartModel"></uitk-pie-chart>
+	</div>
+	<div ng-if="dataModel.schedulingEmrCounts.totalCnt == 0" style="width: 60%; height: 370px;">
+		<h1><span style="color: #f20202; font-size: 15px;">No Data Found</span><br/>
+	</div>
+	<div ng-if="dataModel.emrShowChart && dataModel.schedulingEmrCounts.totalCnt > 0" class="valuesStyle">
+	<br/><br/>
+		<span><span style="font-size: 15px; font-weight: bold;">Total Charts = {{dataModel.schedulingEmrCounts.totalCnt}}</span></span><br/><br/>
+		<div style="padding-left:5px;"><div class="symbolStyle" style="background-color: #748C41;"></div><span style="width: 55%;" class="labelStyle">Unassigned</span><span style="width: 30%;" class="labelValuesStyle">{{dataModel.schedulingEmrCounts.unassingedCnt}}</span></div><br/><br/>
+		<div style="padding-left:5px;"><div class="symbolStyle" style="background-color: #89A54E;"></div><span style="width: 55%;" class="labelStyle">Assigned</span><span style="width: 30%;" class="labelValuesStyle">{{dataModel.schedulingEmrCounts.assignedCnt}}</span></div><br/><br/>
+		<div style="padding-left:5px;"><div class="symbolStyle" style="background-color: #9BBB59;"></div><span style="width: 55%;" class="labelStyle">Scheduled</span><span style="width: 30%;" class="labelValuesStyle">{{dataModel.schedulingEmrCounts.scheduledCnt}}</span></div><br/><br/>
+		<div style="padding-left:5px;"><div class="symbolStyle" style="background-color: #B9CD96;"></div><span style="width: 55%;" class="labelStyle">Past Due</span><span style="width: 30%;" class="labelValuesStyle">{{dataModel.schedulingEmrCounts.pastDueCnt}}</span></div><br/><br/>
+		<div style="padding-left:5px;"><div class="symbolStyle" style="background-color: #D1DEBE;"></div><span style="width: 55%;" class="labelStyle">Completed</span><span style="width: 30%;" class="labelValuesStyle">{{dataModel.schedulingEmrCounts.completedCnt}}</span></div><br/><br/>
+		<div style="padding-left:5px;"><div class="symbolStyle" style="background-color: #d5e0c4;"></div><span style="width: 55%;" class="labelStyle">Cancelled</span><span style="width: 30%;" class="labelValuesStyle">{{dataModel.schedulingEmrCounts.canceledCnt}}</span></div><br/><br/>
+		<div style="padding-left:5px;"><div class="symbolStyle" style="background-color: #E8EEDF;"></div><span style="width: 55%;" class="labelStyle">Pend</span><span style="width: 30%;" class="labelValuesStyle">{{dataModel.schedulingEmrCounts.pendCnt}}</span></div><br/><br/>
+		<div style="padding-left:5px;"><div class="symbolStyle" style="background-color: #f3f6ee;"></div><span style="width: 55%;" class="labelStyle">CNA</span><span style="width: 30%;" class="labelValuesStyle">{{dataModel.schedulingEmrCounts.cnaCnt}}</span></div><br/><br/>
+	</div>
+</div>

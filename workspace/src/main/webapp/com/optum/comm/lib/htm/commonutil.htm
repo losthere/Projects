@@ -1,0 +1,177 @@
+<HTML><HEAD>
+<SCRIPT type="text/javascript">
+
+setPublic(CommonUtil,"com.optum.cpc.emerald.library");
+with(window)
+{
+	eval(CordysRoot.system.getScript("com/optum/cpc/emerald/js/constants.js"));
+}
+
+importType("wcp.library.util.LocaleFormat");
+importType("wcp.library.util.DateFormat");
+
+
+var gDateFormat = "DD MMM YYYY HH:mm";
+var gCordysDateFormat = "YYYY-mm-DDTHH:mm:SS";
+var gDBDateFormat = "YYYY-MM-DD";
+var gAmountFormat = '$';
+var grefDateFormat = "MMM DD YYYY";
+var gCaseDetailsDateFormat = "DD MMM YYYY";
+var gCaseDetailsDateTimeFormat = "DD MMM YYYY HH:mm:SS";
+var dueDateFormat = "DD MMM YYYY";
+var chartDetailsDateFormat = "MM/DD/YYYY";
+
+function CommonUtil()
+{
+}
+
+CommonUtil.prototype.attachArtifactLibrary = function(artifactViewer)
+{
+	var l_ArtifactFactory = artifactViewer.addArtifactFactoryType(lib_ArtifactViewer);
+	var g_artifactSchemaDoc = cordys.cloneXMLDocument(document.getElementById("ArtifactSchema").XMLDocument);
+	l_ArtifactFactory.artifactSchema = g_artifactSchemaDoc.documentElement.cloneNode(true);
+	return l_ArtifactFactory;
+}
+/*Prepares data for the user and role data accroding to the artifact schema*/
+CommonUtil.prototype.prepareModelData = function(artifactNodes, artifacID, artifactName, iconType)
+{
+    var ArtifactModelsDataNode = cordys.cloneXMLDocument(document.getElementById("ArtifactModelsData").XMLDocument);
+    var ArtifactModelsNodes = cordys.selectXMLNode(ArtifactModelsDataNode, xpath_artifactModel);
+    for(var i=0;i<artifactNodes.length;i++)
+    {
+        var artifactmodelNode = cordys.cloneXMLDocument(document.getElementById("skeletonArtifactNode").XMLDocument);
+        artifactmodelNode = cordys.selectXMLNode(artifactmodelNode, xpath_artifactModel);
+        
+        var userDNvalue = cordys.getNodeText(artifactNodes[i], ".//*[local-name()='"+ artifacID +"']");
+        cordys.setNodeText(artifactmodelNode, xpath_artifactID, userDNvalue);
+        
+        var displayname = cordys.getNodeText(artifactNodes[i], ".//*[local-name()='"+ artifactName +"']");
+        cordys.setNodeText(artifactmodelNode, xpath_artifactname, displayname);
+        if(iconType == "User")
+            cordys.setNodeText(artifactmodelNode, xpath_Icon, img_organizationaluser);
+        if(iconType == "Role")
+            cordys.setNodeText(artifactmodelNode, xpath_Icon, img_functionalrole);
+        if(iconType == "OrganizationUnit")
+            cordys.setNodeText(artifactmodelNode, xpath_Icon, img_organizationunit);
+
+        cordys.appendXMLNode(artifactmodelNode, ArtifactModelsNodes);
+    }
+    return ArtifactModelsNodes;
+}
+CommonUtil.prototype.handleOnKeyUp = function(callBackFunction)
+{
+	return function(eventObject)
+	{
+		if ( ! eventObject ) {
+			eventObject = window.event;
+		}
+		var keyCode = eventObject.keyCode ? eventObject.keyCode : eventObject.which ? eventObject.which : eventObject.charCode;
+
+		if (keyCode == 13 ) {
+			callBackFunction();
+			cordys.stopPropagation(eventObject);
+		}
+	}
+}
+CommonUtil.prototype.setPriorityImage = function(currentValue)
+{
+	var dataObject = new Object();
+	if(currentValue)
+	{
+		if(currentValue == "High")
+		{
+			dataObject.imgURL = "wcp/theme/default/icon/feedback/priority-high_eb.gif";
+			dataObject.value = currentValue;
+			return dataObject;
+		}
+		else if(currentValue == "Medium")
+		{
+			dataObject.imgURL = "wcp/theme/default/icon/feedback/priority_eb.gif";
+			dataObject.value = currentValue;
+			return dataObject;
+		}
+		else if(currentValue == "Low")
+		{
+			dataObject.imgURL = "wcp/theme/default/icon/feedback/priority-low_eb.gif";
+			dataObject.value = currentValue;
+			return dataObject;
+		}
+	}
+	return null;
+}
+CommonUtil.prototype.formatDate = function(dateTime, isCordysTime,isRefdate,isCaseDetailsFormat, isCordysDateFormat,isCaseDetailsDateTime, isChartDetailsFormat)
+{
+	var dateFormat = gDateFormat;
+	if(isCordysTime)
+	{
+		dateFormat = gDBDateFormat;
+	}
+	if(isRefdate)
+	{
+		dateFormat =  grefDateFormat ;
+	}
+        if(isCaseDetailsFormat)
+	{
+		dateFormat =  gCaseDetailsDateFormat ;
+	}
+	if(isCordysDateFormat)
+	{
+		dateFormat = gCordysDateFormat;
+	}
+       if(isCaseDetailsDateTime)
+	{
+		dateFormat = gCaseDetailsDateTimeFormat ;
+	}
+       if(isChartDetailsFormat)
+	{
+		dateFormat = chartDetailsDateFormat;
+	}
+
+	if (dateTime)
+	{
+		if(dateTime.indexOf("T") > 0)
+		{
+			if (dateTime.indexOf("T00:00:00.0") >= 0)
+			{
+				var df = new DateFormat(dateFormat);
+				df.setTimezone("GMT");
+				return df.format(dateTime);
+			}
+			if (dateTime.indexOf("T23:59:59.0") >= 0)
+			{
+				var df = new DateFormat(dateFormat);
+				df.setTimezone("GMT");
+				return df.format(dateTime);
+			}
+			return new DateFormat(dateFormat).format(dateTime);
+		}
+		else
+		{
+			return new DateFormat(dateFormat).format(dateTime);
+		}
+	}
+	return "";
+}
+</SCRIPT>
+<script type="cordys/xml" id="skeletonArtifactNode">
+	<artifactModel>
+		<artifactID/>
+		<artifactname/>
+		<Icon>/cordys/wcp/theme/default/icon/authorization/organizationaluser.png</Icon>
+	</artifactModel>
+</script>
+<script type="cordys/xml" id="ArtifactModelsData">
+	<artifactModel/>
+</script>
+<script type="cordys/xml" id="ArtifactSchema">
+	<artifact:schema
+		xmlns:artifact="http://schemas.cordys.com/eibus/artifact/1.0">
+		<artifact:id>artifactID</artifact:id>
+		<artifact:name>artifactname</artifact:name>
+		<artifact:description/>
+		<artifact:icon>Icon</artifact:icon>
+		<artifact:applicationDefinition>.</artifact:applicationDefinition>
+	</artifact:schema>
+</script>
+</HEAD>
+</HTML>

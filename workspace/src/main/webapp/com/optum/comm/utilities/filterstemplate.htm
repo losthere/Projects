@@ -1,0 +1,24 @@
+<div ng-controller="dataintakeUIFilterController">
+		<div>
+		<uitk-label for="fileName" style="float:left;padding-right:30px;">File name</uitk-label>
+		<uitk-input id="fileNameId" name="fileName" model="filter.fileName" size="2" style-class=""></uitk-input>
+		</div>
+	</br>
+	<div>
+		<uitk-label for="createdDate" style="float:left;padding-right:12px;">Created date</uitk-label>
+		<uitk:calendar id="createdDateId" name="createdDate" ng-model="filter.createdDate"  view-model="model.createdDate" style="float:left;"></uitk:calendar>
+	</div>		
+	<div>
+	<span ng-if="regionsList.length > 1"><label class="tk-labl">Region</label>
+			<span class="cux-icon-asterisk"></span>
+	</span>
+		<select  ng-if="regionsList.length > 1"  style="width: 175px;" ng-model="filter.region">
+			<option value="" selected="">Select</option>
+			<option ng-repeat="region in regionsList" value="{{region.key}}">{{region.value}}</option>
+		</select>
+	</div>
+	<div style="display:block;clear:both;margin-top:55px;padding-left:13px;">
+		<uitk:button style="width:7%"  ng-click="filterRecords()">Filter</uitk:button>
+		<uitk:button style="width:7%" ng-click="filter.clearFilters()">Clear</uitk:button>		
+	</div>	
+</div>

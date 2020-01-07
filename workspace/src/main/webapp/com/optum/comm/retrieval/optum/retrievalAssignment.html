@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html ng-app="retrieval-assignment-app">
+<head>
+<meta name="robots" content="noindex, nofollow" />
+<title>Optum Retrieval</title>
+<link rel="stylesheet" href="../../lib/css/general2.css" type="text/css" />
+<link rel="stylesheet" href="../../lib/css/cdefault.css" type="text/css" />
+<script src="../../lib/js/common/jquery.js" type="text/javascript"></script>
+<script src="../../lib/js/common/angular.js" type="text/javascript"></script>
+<script src="../../lib/js/common/optumui.js" type="text/javascript"></script>
+<script src="../../lib/js/common/ux.js" type="text/javascript"></script>
+
+<script type="text/javascript" src="../../lib/js/common/ng-csv.js"></script>
+<script type="text/javascript" src="../../lib/js/common/angular-sanitize.js"></script>
+<script type="text/javascript" src="../../lib/js/common/angular-touch.js"></script>
+<script type="text/javascript" src="../../lib/js/common/angular-translate/angular-translate.js"></script>
+<script type="text/javascript" src="../../lib/js/common/lodash.js"></script>
+<script src="../../lib/js/common/uitk.js"></script>
+<script src="../../lib/js/common/uitk-auto-complete.js"></script>
+
+<script src="../../lib/js/modules/retrieval/lookup.js"></script>
+<script src="../../lib/js/modules/retrieval/staticDataService.js" type="text/javascript"></script>
+<script src="../../lib/js/modules/retrieval/optum/projectInfoModel.js"></script>
+<script src="../../lib/js/modules/retrieval/optum/retrievalAssignment.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../lib/css/uitk.min.css" type="text/css" />
+
+	<style>
+			.fontcolor {
+				color: #C36121 !important;
+			}
+			#mainView {
+				border: 0.5px solid #E6E6E6;
+				clear: both;
+				padding :10px;
+			
+			}
+			#codingAssignDialog h5{
+			    background-color: #f2f2f2;
+			    height: 30px;
+			    padding: 5px;
+			    font-size: small;
+			}
+			.scrollable {
+			  width: 100%;
+			}
+			#loadingDialogId_headerId,#assignFiltersDialog_headerId{
+				display: none
+			}
+			#loadingDialogId_closeLink,#assignFiltersDialog_closeLink{
+				display: none
+			}
+			#loadingDialogId,#assignFiltersDialog{
+				border-width:unset;
+				border-style: none
+			}
+			.tk-lbox-dialog {
+				overflow: hidden;
+			}
+			.tk-dtbl span.overflow {
+				vertical-align: bottom;
+			}
+			.tk-dtbl td.tk-dtbl-cell td.tk-dtbl-cell {
+				vertical-align: middle;
+			}
+			.tk-lbox-content{
+				background-color: #fff;
+			}
+			#statusCountDialogId_contentId{
+				height : 100% !important;
+			}
+			.not-allowed {
+				 cursor: not-allowed; 
+			}
+	</style>
+</head>
+<body>
+	<div style="margin-left:26px;" ng-controller="retrievalAssignmentCtrl" ng-cloak>
+		<div>
+			<table class="ux-padding-bottom-1t"
+				style="margin-top:13px;">
+				<tr>
+					<td>
+						<h1 class="ux-margin-top-none ux-margin-bottom-none">Optum Retrieval Assignment</h1>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<uitk:message model="errorMessageModel"> </uitk:message>
+						<uitk:message model="successMessageModel"> </uitk:message>  
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div>
+			<div class="ux-acrd">
+				<div class="ux-panl ux-panl-open" panel-directive>
+					<div class="ux-panl-header">
+						<h2 class='fontcolor'>Filters</h2>
+					</div>
+					<div class="ux-panl-content" style="padding-top: 10px">
+						<filter-directive></filter-directive>
+						<uitk:dialog  dialog-id='assignFiltersDialog' dialog-role='dialog' show="showAssignFiltersLoadingDialog"
+			                 header-text='' confirm-dialog="false" default-width="auto" tk-aria-describedby="dialogInsTextId">
+			      			<img src="../../lib/images/loader.gif"/>
+    					</uitk:dialog>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="ux-tpnl">
+			<div>
+					<ul>
+						<li ng-repeat="tab in tabs"
+							ng-class="{active: currentTab === tab}"
+							style="float: left; border: 1px solid #E6E6E6; border-bottom-width: 0; padding: 10px; background-color: #efefee; cursor: pointer;"
+							ng-click="onClickTab(tab)">{{tab}}</li>
+					</ul>
+					<div id="mainView" ng-include="url"></div>
+				</div>
+	
+				<div style="padding: 10px;" id="assign">
+					<div class='scrollable' ng-if="projectTableModel">
+						<uitk:dynamic-table id="projectInfoTable" model="projectTableModel"></uitk:dynamic-table>
+						<uitk:dialog  dialog-id='loadingDialogId' dialog-role='dialog' show="showLoadingDialog"
+			                 header-text='' confirm-dialog="false" tk-aria-describedby="dialogInsTextId" default-width="7%" >
+			      			<img src="../../lib/images/loader.gif"/>
+	   				</uitk:dialog>
+				</div>
+			</div>
+		</div>
+		<div>
+			<uitk:dialog dialog-id='statusCountDialogId' dialog-role='dialog' header-text='Status Counts' show='showStatusCountDialog' default-width='50%' default-height="51%">
+				<div>
+					<table class="tk-dtbl tk-dtbl-reorderable-columns" style='margin-bottom:25px;'>
+						<thead>
+							<tr>
+								<th class='tk-dtbl-non-reorderable-column-cursor'>Status</th>
+								<th class='tk-dtbl-non-reorderable-column-cursor'>Count</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class='tk-row-order' ng-repeat="statusCnt in getStatusCount()">
+								<td class='tk-dtbl-cell'><span ng-bind='statusCnt.key'></span></td>
+								<td class='tk-dtbl-cell'><span ng-bind='statusCnt.value'></span></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</uitk:dialog>
+		</div>
+		<div>
+			<uitk:dialog dialog-id="assignDialogId" dialog-role='dialog' header-text='Assign Vendor' show='showAssignDialog' 
+				default-width='30%' default-height="45%" style="overflow:unset;">
+				<table>
+					<tr>
+						<td style="width:125px;">
+							<uitk:label id="assignableQuantityLabel" for='assignableQuantity'>Assignable Quantity</uitk:label>
+						</td>
+						<td>
+							<uitk:label id="assignableQuantityValue" for='assignableQuantityVal'><span ng-bind="assignAmount.totalBarcodes"></span></uitk:label>
+						</td>
+					</tr>
+					<tr style="height:15px;">
+						<td/>
+					</tr>
+					<tr>
+						<td>
+							<uitk:label id="assignAmountLabel" for='assignAmount'>Assign Amount</uitk:label>
+						</td>
+						<td>
+							<input style="height:25px;" type="radio" ng-model="assignAmount.type" name="assignAmt" value="All"><span>All</span>
+						</td>
+					</tr>
+					<tr>
+						<td style="vertical-align: top;">&nbsp;</td>
+						<td>
+							<span><input style="height:25px;" type="radio" ng-model="assignAmount.type" name="assignAmt" value="Small"><span>Small Quantity</span>
+					  		<input style="width:60px;margin-left:10px;" type="text" ng-disabled="assignAmount.type == 'All'" ng-model="assignAmount.quantityVal" id="smallQuantityId"></span>
+						</td>
+					</tr>
+					<tr style="height:40px;">
+						<td>
+							<uitk:label id="assignVendorLabel" for='assignVendor'>Vendor</uitk:label>
+						</td>
+						<td>
+							<select ng-model="assignAmount.selectedVendor" id='selectedVendorId' 
+								ng-options='vendor.key as vendor.value for vendor in assignableVendorList'">
+								<option value="">Select Vendor</option>
+							</select>
+						</td>
+					</tr>
+				</table>
+				<div style="display:block;">
+					<uitk:button type="button" value="Confirm" enable-default="true" ng-click="assignVendor()"
+						custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+					<uitk:button type="button" value="Cancel" enable-default="true" onclick="document.getElementById('assignDialogId_closeLink').click();"
+						custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+				</div>		
+			</uitk:dialog>
+			<uitk:dialog dialog-id="releaseDialogId" dialog-role='dialog' default-width='25%' default-height="30%" 
+				header-text='Confirm Message' show="showReleaseDialog" style="overflow:unset;">
+				<div style="margin-bottom:15px;">
+				<span>Please Confirm the Release Request</span>
+				</div>
+				<div style="display:block;">
+					<uitk:button type="button" value="Confirm" enable-default="true" ng-click="releaseChart()"
+						custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+					<uitk:button type="button" value="Cancel" enable-default="true" onclick="document.getElementById('releaseDialogId_closeLink').click();"
+						custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+				</div>					 
+			</uitk:dialog>
+			<uitk:dialog dialog-id="extractDialogId" dialog-role='dialog' default-width='25%' default-height="35%" 
+				header-text='Extract By' show="showExtractDialog" style="overflow:unset;">
+				<div>
+					<uitk:button type="button" value="New" enable-default="true" ng-click="extractByNew()" style="height:40px;width:70px;"></uitk:button>
+					<uitk:button type="button" value="All" enable-default="true" ng-click="extractByAll()" style="height:40px;width:70px;"></uitk:button>
+					<uitk:button type="button" value="Cancel" enable-default="true" onclick="document.getElementById('extractDialogId_closeLink').click();" style="height:40px;width:70px;"></uitk:button>
+				</div>				 
+			</uitk:dialog>
+			<uitk:dialog dialog-id="cancelDialogId" dialog-role='dialog' default-width='25%' default-height="30%" 
+				header-text='Confirm Message' show="showCancelDialog" style="overflow:unset;">
+				<div style="margin-bottom:15px;">
+					<span>Please Confirm the Cancel Request</span>
+				</div>
+				<div style="display:block;">
+					<uitk:button type="button" value="Confirm" enable-default="true" ng-click="cancelChart()"
+						custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+					<uitk:button type="button" value="Cancel" enable-default="true" onclick="document.getElementById('cancelDialogId_closeLink').click();"
+						custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+				</div>					 
+			</uitk:dialog>
+			<uitk:dialog dialog-id="inactivateDialogId" dialog-role='dialog' default-width='25%' default-height="30%" 
+				header-text='Confirm Message' show="showInactivateDialog" style="overflow:unset;">
+				<div style="margin-bottom:15px;">
+					<span>Please Confirm the Inactivate Request</span>
+				</div>
+				<div style="display:block;">
+					<uitk:button type="button" value="Confirm" enable-default="true" ng-click="inactivateChart()"
+						custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+					<uitk:button type="button" value="Cancel" enable-default="true" onclick="document.getElementById('inactivateDialogId_closeLink').click();"
+						custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+				</div>					 
+			</uitk:dialog>
+			<uitk:dialog dialog-id="cancelBarcodesDialogId" dialog-role='dialog' default-width='30%' default-height="55%" 
+				header-text='Cancel Barcodes' show="showCancelBarcodesDialog" style="overflow:unset;">
+				<div style="margin-bottom:10px;">
+					<uitk:label>Enter Barcodes <span style="color: red;">*</span></uitk:label>
+				</div>
+				<div>
+					<span><uitk:textarea  id='cancelBarcodesId' name='cancelBarcodes' width='100%' height='110px' model='dataModel.barcodesToCancel'></uitk:textarea></span>
+				</div>
+				<div><h6 style="color: blue;">Note:100 barcodes max. Should be semicolon separated.</h6></div>
+				<div style="margin-top:10px;margin-bottom:10px;">
+					<uitk:label id="selectedCancelReasonLabel" for='selectedCancelReason' required="true">Cancel Reason <span style="color: red;">*</span></uitk:label>
+					<select ng-model="dataModel.selectedCancelReason" id='cancelReasonSelectId' 
+						ng-options='cancelReason.key as cancelReason.value for cancelReason in cancelReasons'">
+						<option value="">Select</option>
+					</select> 
+				</div>
+				<div style="display:block;">
+					<uitk:button type="button" value="Confirm" enable-default="true" ng-click="cancelBarcodes()"
+						custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+					<uitk:button type="button" value="Cancel" enable-default="true" onclick="document.getElementById('cancelBarcodesDialogId_closeLink').click();"
+						custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+					<uitk:button type="button" value="Clear" enable-default="true" ng-click="clearBarcodes()"
+						custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+				</div>					 
+			</uitk:dialog>
+		</div>
+	</div>
+</body>
+</html>

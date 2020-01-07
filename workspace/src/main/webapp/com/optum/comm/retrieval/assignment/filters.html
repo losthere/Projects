@@ -1,0 +1,392 @@
+<style>
+span.overflow-needed {
+	display: block;
+}
+
+span.overflow-needed div {
+	width: fit-content;
+}
+
+span.overflow-needed input {
+	width: 180px;
+	height: 25px;
+}
+
+</style>
+<div ng-controller='lookupCtrl'>
+	
+	<span style="color : red; margin-left:10px;">* Required</span><br><br>
+	<table class="ux-tabl-form-multicol ux-margin-left-1t ux-padding-bottom-none ux-margin-top-none">
+		<tbody class="tbllabel">
+			<tr>
+				<td>
+					<label class="tk-labl">Business segment</label>
+				</td>
+				<td>
+					<select class="size" ng-model="filters.busSegment" ng-change="onBusSegmentChange()">
+						<option ng-if="filters.currentTab != 'Coding'" value="">All</option>
+						<option ng-repeat="busSegments in lookup.businessSegments" value="{{busSegments.key}}">{{busSegments.value}}</option>
+					</select>
+				</td>
+				<td>
+					<label class="tk-labl">Health plan</label>
+				</td>
+				<td>
+					<select class="size" ng-model="filters.client" ng-change="onClientChange()">
+						<option value="">All</option>
+						<option ng-repeat="client in lookup.clients" value="{{client.key}}">{{client.value}}</option>
+					</select>
+				</td>
+				<td>
+					<span ng-if="filters.currentTab != 'Coding' && filters.currentTab != 'codingMyWorklist' && filters.currentTab != 'codingCompletedWorkItems' && 
+						filters.currentTab != 'codingQAFeedback'  && filters.currentTab != 'codingSupervisorMyWorklist' && 
+						filters.currentTab != 'codingSupervisorAvailableWorkItems' && filters.currentTab != 'codingSupervisorCompletedWorkItems' &&
+						filters.currentTab != 'codingQAMyWorklist' && filters.currentTab != 'codingQAAvailableWorkItems' && 
+						filters.currentTab != 'codingQACompletedWorkItems'"><label class="tk-labl">Provider ID</label></span>
+					<span ng-if="filters.currentTab == 'Coding' || filters.currentTab == 'codingQAMyWorklist' || 
+						filters.currentTab == 'codingQAAvailableWorkItems' || filters.currentTab == 'codingQACompletedWorkItems'"><label class="tk-labl">Program</label></span>
+					<span ng-if="filters.currentTab == 'codingMyWorklist' || filters.currentTab == 'codingCompletedWorkItems' || filters.currentTab == 'codingQAFeedback' || filters.currentTab == 'codingSupervisorMyWorklist' || filters.currentTab == 'codingSupervisorAvailableWorkItems' || filters.currentTab == 'codingSupervisorCompletedWorkItems'"><label class="tk-labl">Chart ID</label></span>
+				</td>
+				<td>
+					<span class="overflow-needed" ng-if="filters.currentTab != 'Coding' && filters.currentTab != 'codingMyWorklist' && 
+						filters.currentTab != 'codingCompletedWorkItems' && filters.currentTab != 'codingQAFeedback' && 
+						filters.currentTab != 'codingSupervisorMyWorklist' && filters.currentTab != 'codingSupervisorAvailableWorkItems' && 
+						filters.currentTab != 'codingSupervisorCompletedWorkItems' && filters.currentTab != 'codingQAMyWorklist' && 
+						filters.currentTab != 'codingQAAvailableWorkItems' && filters.currentTab != 'codingQACompletedWorkItems'">
+						 <uitk:auto-complete id="providerId" items="providerIds" min-length="3"	disable-input="false" read-only="false" model="filters.provId" on-refresh-items="fetchproviderIds"></uitk:auto-complete>
+					</span>
+					<select ng-if="filters.currentTab == 'Coding' || filters.currentTab == 'codingQAMyWorklist' || 
+						filters.currentTab == 'codingQAAvailableWorkItems' || filters.currentTab == 'codingQACompletedWorkItems'"  ng-disabled="filters.busSegment==''" class="size" ng-model="filters.program" ng-change="onProgramChange()">
+							<option value="" selected="selected">All</option>
+							<option ng-repeat="program in lookup.programs" value="{{program.key}}">{{program.value}}</option>
+					</select>
+					<span class="overflow-needed" ng-if="filters.currentTab == 'codingMyWorklist' || filters.currentTab == 'codingCompletedWorkItems' || filters.currentTab == 'codingQAFeedback' || filters.currentTab == 'codingSupervisorMyWorklist' || filters.currentTab == 'codingSupervisorAvailableWorkItems' || filters.currentTab == 'codingSupervisorCompletedWorkItems'">
+						 <uitk:input tk-type="text" novalidate id="chartId" style-class="tk-width-14t" model="filters.chartId" name="chartId"></uitk:input>
+					</span>
+				</td>
+				<td ng-if="filters.currentTab == 'myAppTab' || filters.currentTab == 'pendMyWorklist' || filters.currentTab == 'pendAvailableWorkItems'">
+					<label class="tk-labl">Appointment ID</label>
+					
+					</td>
+					
+				
+				<td ng-if="filters.currentTab == 'myAppTab' || filters.currentTab == 'pendMyWorklist' || filters.currentTab == 'pendAvailableWorkItems'"><uitk:input tk-type="text" novalidate id="appId" model="filters.apptId" name="appId"></uitk:input>
+				</td>
+					
+				<td>
+					<span ng-if="filters.currentTab == 'Outreach' || filters.currentTab == 'Onsite' || filters.currentTab == 'EMR' || filters.currentTab == 'Coding' || filters.currentTab == 'codingSupervisorAvailableWorkItems' " >
+						<label class="tk-labl">Status</label>
+					</span>
+					<span ng-if="filters.currentTab == 'codingQAAvailableWorkItems'">
+						<label class="tk-labl">Coder</label>
+					</span>
+					<span ng-if="filters.currentTab == 'codingCompletedWorkItems' || filters.currentTab == 'codingQACompletedWorkItems' || filters.currentTab == 'codingSupervisorCompletedWorkItems'">
+						<label class="tk-labl">Accepted date</label>
+					</span>
+				</td>
+				<td>
+					<span ng-if="(filters.currentTab == 'Outreach' || filters.currentTab == 'Onsite' || filters.currentTab == 'EMR' || filters.currentTab == 'codingSupervisorAvailableWorkItems') && (filters.currentRole!='IM')">
+						<select class="size" ng-model="filters.status" ng-change="onStatusChange()">
+							<option value="" selected="selected">Unassigned</option>
+							<option value="1">Assigned to User</option>
+						</select>
+					</span>
+					<span ng-if="(filters.currentRole == 'SUP') && (filters.currentTab == 'Coding') && lookup.organizations.length == 1" >
+						<select class="size" ng-model="filters.status" ng-change="onStatusChange()">
+							<option value="" selected="selected">Unassigned</option>
+							<option value="1">Assigned to User</option>
+						</select>
+					</span>
+					<span ng-if="(filters.currentRole == 'SUP') && (filters.currentTab == 'Coding') && lookup.organizations.length > 1">
+						<select class="size" ng-model="filters.status" ng-change="onStatusChange()" ng-disabled= "filters.organization==''">
+							<option value="" selected="selected">Unassigned</option>
+							<option value="1">Assigned to User</option>
+						</select>
+					</span>
+					<span ng-if="filters.currentTab == 'Coding' && filters.currentRole == 'IM'">
+						<select class="size" ng-model="filters.status" ng-change="onStatusChange()">
+							<option value="" selected="selected">Assigned to Location</option>
+							<option value="1">Assigned to User</option>
+						</select>
+					</span>		
+					<span ng-if="filters.currentTab == 'codingQAAvailableWorkItems'">
+						<select class="size" ng-model="filters.user">
+							<option value=''>Select</option>
+							<option ng-repeat="user in lookup.coders" value="{{user.key}}">{{user.value}}</option>
+						</select>
+					</span>
+					<span ng-if="filters.currentTab == 'codingCompletedWorkItems' ||  filters.currentTab == 'codingQACompletedWorkItems' || filters.currentTab == 'codingSupervisorCompletedWorkItems'">
+						<select class="size" ng-model="filters.acceptedDate" ng-change="onAcceptedDateChange()">
+							<option ng-repeat="date in acceptedDates" value="{{date.key}}">{{date.value}}</option>
+						</select>
+					</span>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label class="tk-labl">Project name</label>
+				</td>
+				<td colspan='1'>
+					<select class="size" ng-model="filters.projectKey" ng-disabled="filters.busSegment==''">
+						<option selected="selected" value="">All</option>
+						<option ng-repeat="project in lookup.projects" value="{{project.key}}">{{project.value}}</option>
+					</select>
+				</td>
+				<td>
+					<label class="tk-labl">Health plan name</label>
+				</td>
+				<td>
+					<select class="size" ng-model="filters.hp" ng-disabled="filters.client==''" ng-change="onHPChange()">
+						<option value="">All</option>
+						<option ng-repeat="healthPlan in lookup.healthPlans" value="{{healthPlan.key}}">{{healthPlan.value}}</option>
+					</select>
+				</td>
+				<td>
+					<span ng-if="filters.currentTab != 'Coding' && filters.currentTab != 'codingMyWorklist' && 
+						filters.currentTab != 'codingCompletedWorkItems' && filters.currentTab != 'codingQAFeedback'  && 
+						filters.currentTab != 'codingSupervisorMyWorklist' && filters.currentTab != 'codingSupervisorAvailableWorkItems' && 
+						filters.currentTab != 'codingSupervisorCompletedWorkItems' && filters.currentTab != 'codingQAMyWorklist' && 
+						filters.currentTab != 'codingQAAvailableWorkItems' && filters.currentTab != 'codingQACompletedWorkItems'"><label class="tk-labl">Group name</label></span>
+					<span ng-if="filters.currentTab === 'Coding'" ng-hide="true"><label class="tk-labl">Coding Location</label></span>
+					<span ng-if="filters.currentTab == 'codingMyWorklist' || filters.currentTab == 'codingSupervisorMyWorklist'"><label class="tk-labl">Status</label></span>
+					<span ng-if="filters.currentTab == 'codingQAAvailableWorkItems'">
+						<label class="tk-labl">Number of charts</label>
+						<span style="color : red;">*</span>
+					</span>
+					<span ng-if="filters.currentTab == 'codingQAMyWorklist'">
+						<label class="tk-labl">Status</label>
+					</span>
+					<span ng-if="filters.currentTab == 'Coding' && lookup.organizations.length > 1">
+						<label class="tk-labl">Organization</label>
+						<span style="color : red;">*</span>
+					</span>
+				</td>
+				<td>
+					<span class="overflow-needed" ng-if="filters.currentTab != 'Coding' && filters.currentTab != 'codingMyWorklist' && 
+						filters.currentTab != 'codingCompletedWorkItems' && filters.currentTab != 'codingQAFeedback' && 
+						filters.currentTab != 'codingSupervisorMyWorklist' && filters.currentTab != 'codingSupervisorAvailableWorkItems' && 
+						filters.currentTab != 'codingSupervisorCompletedWorkItems' && filters.currentTab != 'codingQAMyWorklist' && 
+						filters.currentTab != 'codingQAAvailableWorkItems' && filters.currentTab != 'codingQACompletedWorkItems'">
+						<uitk:auto-complete id="providerGrpNm" items="providerGrpNms" min-length="3" disable-input="false" read-only="false" model="filters.provgrpNm" on-refresh-items="fetchproviderGrpNms"></uitk:auto-complete>
+					</span>
+					<select ng-if="filters.currentTab ==='Coding'" ng-hide="true" class="size" ng-model="filters.codingLoc">
+						<option value="" selected="selected">All</option>
+						<option ng-repeat="codingLoc in lookup.codingLocs" value="{{codingLoc.key}}">{{codingLoc.value}}</option>
+					</select>
+					<select ng-if="filters.currentTab =='Coding' && lookup.organizations.length > 1" class="size" ng-model="filters.organization" ng-change="onOrganizationChange()">
+						<option value="" selected="">Select</option>
+						<option ng-repeat="organization in lookup.organizations" value="{{organization.key}}">{{organization.value}}</option>
+					</select>
+					<select ng-if="filters.currentTab == 'codingMyWorklist' || filters.currentTab == 'codingSupervisorMyWorklist'" class="size" ng-model="filters.status">
+						<option value="" selected="selected">All</option>
+						<option value="1">Assigned</option>
+						<option value="2">In-Progress</option>
+					</select>
+					<select ng-if="filters.currentTab == 'codingQAAvailableWorkItems'" class="size" ng-model="filters.noOfCharts">
+						<option value="10">10%</option>
+						<option value="20">20%</option>
+						<option value="30">30%</option>
+						<option value="40">40%</option>
+						<option value="50">50%</option>
+						<option value="60">60%</option>
+						<option value="70">70%</option>
+						<option value="80">80%</option>
+						<option value="90">90%</option>
+						<option value="100" selected="selected">100%</option>
+					</select>
+					<select ng-if="filters.currentTab == 'codingQAMyWorklist'" class="size" ng-model="filters.status">
+						<option value="" selected="selected">All</option>
+						<option value="1">Assigned</option>
+						<option value="2">In-Progress</option>
+					</select>
+				</td>
+				<td>
+				<span ng-if="filters.currentTab == 'myAppTab'">
+					<label class="tk-labl">Fax status</label>
+					</span>
+					<span ng-if="filters.currentTab == 'pendAvailableWorkItems'">
+					
+						<label class="tk-labl">Status</label>
+					
+					</span>
+				
+					<span ng-if="(filters.currentTab == 'Outreach' || filters.currentTab == 'Onsite' || filters.currentTab == 'EMR' || filters.currentTab == 'Coding' || filters.currentTab == 'codingSupervisorAvailableWorkItems')">
+						<label class="tk-labl">User</label>
+						<span ng-show="filters.status=='1'" style="color : red;">*</span>
+					</span>
+					<span ng-if="(filters.currentTab == 'codingCompletedWorkItems' || filters.currentTab == 'codingQAFeedback' || 
+						filters.currentTab == 'codingQACompletedWorkItems' || filters.currentTab == 'codingSupervisorCompletedWorkItems') && filters.acceptedDate === '4'">
+						<label class="tk-labl">From</label>
+						<span style="color : red;">*</span>
+					</span>
+				</td>
+				<td>
+				<span ng-if="filters.currentTab == 'myAppTab'">
+					<select class="size" ng-model="filters.faxStatus">
+						<option value="" selected="selected">All</option>
+						<option value="FAILED">Failure</option>
+						<option value="NEW">New</option>
+						<option value="SENT">Sent</option>
+						<option value="SUCCESS">Success</option>
+					</select>
+					</span>
+					<span ng-if="filters.currentTab == 'pendAvailableWorkItems'">
+						<select class="size" ng-model="filters.status" ng-change="onStatusChange()">
+							<option value="" selected="selected">Unassigned</option>
+							<option value="1">Assigned to User</option>
+						</select>
+					</span>		
+				
+					<span ng-if="(filters.currentRole!='IM') && (filters.currentTab == 'Outreach' || filters.currentTab == 'Onsite' || filters.currentTab == 'EMR')">
+						<select class="size" ng-model="filters.user" ng-disabled="!filters.status || filters.status=='0'">
+							<option value=''>Select</option>
+							<option ng-repeat="user in lookup.users" value="{{user.key}}">{{user.value}}</option>
+						</select>
+					</span>
+					<span ng-if="(filters.currentTab == 'Coding')">
+						<select class="size" ng-model="filters.user" ng-disabled="!filters.status || filters.status== 0">
+							<option value=''>Select</option>
+							<option ng-repeat="user in lookup.users" value="{{user.key}}">{{user.value}}</option>
+						</select>
+					</span>
+					<!-- <span ng-if="filters.currentTab == 'Coding' && lookup.organizations.length == 1">
+						<select class="size" ng-model="filters.user" ng-disabled="filters.status=='0'">
+							<option value=''>Select</option>
+							<option ng-repeat="user in lookup.users" value="{{user.key}}">{{user.value}}</option>
+						</select>
+					</span> -->
+					
+					<span ng-if="filters.currentTab == 'codingSupervisorAvailableWorkItems'">
+						<select class="size" ng-model="filters.supervisor" ng-disabled="!filters.status || filters.status=='0'">
+							<option value=''>Select</option>
+							<option ng-repeat="supervisor in lookup.supervisors" value="{{supervisor.loginUserKey}}">{{supervisor.fullName}}</option>
+						</select>
+					</span>
+					<span ng-if="(filters.currentTab == 'codingCompletedWorkItems' || filters.currentTab == 'codingQAFeedback' || 
+						filters.currentTab == 'codingQACompletedWorkItems' || filters.currentTab == 'codingSupervisorCompletedWorkItems') && filters.acceptedDate === '4'">
+							<uitk:calendar id="fromDate" name="fromDate" ng-model="filters.fromDate" view-model="fromDateCalendarViewModel" />
+					</span>
+				</td>
+			</tr>
+			<tr>
+				<td><span ng-if="lookup.organizations.length > 1 && (filters.currentRole=='QA' || filters.currentRole=='COU' || filters.currentRole=='CSP')">
+						<label class="tk-labl">Organization</label>
+							<span style="color : red;">*</span>
+					</span></td>
+				<td>
+				<select ng-if="lookup.organizations.length >1 && (filters.currentRole=='QA' || filters.currentRole=='COU' || filters.currentRole=='CSP')" ng-change="onRegionOrgChange()" class="size" ng-model="filters.organization">
+						<option value="" selected="">Select</option>
+						<option ng-repeat="vendor in lookup.vendors" value="{{vendor.key}}">{{vendor.value}}</option>
+					</select></td>
+				<td>
+					<label class="tk-labl">Health plan product</label>
+				</td>
+				<td>
+					<select class="size" ng-model="filters.hpp" ng-disabled="filters.hp==''">
+						<option value="">All</option>
+						<option ng-repeat="hpp in lookup.healthPlanProds" value="{{hpp}}">{{hpp}}</option>
+					</select>
+				</td>
+				<td>
+					<span ng-if="filters.currentTab != 'Coding' && filters.currentTab != 'codingMyWorklist' && filters.currentTab != 'codingCompletedWorkItems' && 
+						filters.currentTab != 'codingQAFeedback' && filters.currentTab != 'codingSupervisorMyWorklist' && 
+						filters.currentTab != 'codingSupervisorAvailableWorkItems' && filters.currentTab != 'codingSupervisorCompletedWorkItems' &&
+						filters.currentTab != 'codingQAMyWorklist' && filters.currentTab != 'codingQAAvailableWorkItems' && filters.currentTab != 'codingQACompletedWorkItems'">
+						<label class="tk-labl">Provider last name</label>
+					</span>
+					<span ng-if="filters.currentTab == 'codingQAAvailableWorkItems'">
+						<label class="tk-labl">Date range</label>
+						<span style="color : red;">*</span>
+					</span>
+				</td>
+				<td>
+					<span class="overflow-needed" ng-if="filters.currentTab != 'Coding' && filters.currentTab != 'codingMyWorklist' && 
+						filters.currentTab != 'codingCompletedWorkItems' && filters.currentTab != 'codingQAFeedback' && 
+						filters.currentTab != 'codingSupervisorMyWorklist' && filters.currentTab != 'codingSupervisorAvailableWorkItems' && 
+						filters.currentTab != 'codingSupervisorCompletedWorkItems' && filters.currentTab != 'codingQAMyWorklist' && 
+						filters.currentTab != 'codingQAAvailableWorkItems' && filters.currentTab != 'codingQACompletedWorkItems'">
+						<uitk:auto-complete id="provLastNm" items="providerLastNms" min-length="3" disable-input="false" read-only="false" model="filters.provLastNm" on-refresh-items="fetchproviderLastNms"></uitk:auto-complete>
+					</span>
+					<span ng-if="filters.currentTab == 'codingQAAvailableWorkItems'">
+							<span>From</span><br>
+							<uitk:calendar style="margin-top:5px;" id="fromDate" name="fromDate" ng-model="filters.fromDate" view-model="fromDateCalendarViewModel" />
+					</span>
+				</td>
+				<td>
+					<span ng-if="filters.currentTab == 'myAppTab'">
+						<label class="tk-labl">Appointment status</label>
+					</span>
+					<span ng-if="filters.currentTab == 'pendAvailableWorkItems'">
+					
+						<label class="tk-labl">User</label>
+					<span ng-show="filters.status=='1'" style="color : red;">*</span>
+					</span>
+					<span ng-if="(filters.currentTab == 'codingCompletedWorkItems' || filters.currentTab == 'codingQAFeedback' || 
+						filters.currentTab == 'codingQACompletedWorkItems' || filters.currentTab == 'codingSupervisorCompletedWorkItems') && filters.acceptedDate === '4'">
+						<label class="tk-labl">Through</label>
+						<span style="color : red;">*</span>
+					</span>
+				</td>
+				<td>
+					<span ng-if="filters.currentTab == 'myAppTab'">
+						<select class="size" ng-model="filters.appStatus">
+							<option value="" selected="selected">All</option>
+							<option value="INPROGRESS">In Progress</option>
+							<option value="PASTDUE">Past Due</option>
+							<option value="PEND RELEASED">Pend Released</option>
+							<option value="SCHEDULED">Scheduled</option>
+						</select>
+					</span>
+					<span  ng-if="filters.currentTab == 'pendAvailableWorkItems'">
+						<select class="size" ng-model="filters.user" ng-disabled="!filters.status || filters.status=='0'">
+							<option value=''>Select</option>
+							<option ng-repeat="user in lookup.users" value="{{user.key}}">{{user.value}}</option>
+						</select>
+					</span>
+					<span ng-if="(filters.currentTab == 'codingCompletedWorkItems' || filters.currentTab == 'codingQAFeedback' || 
+						filters.currentTab == 'codingQACompletedWorkItems' || filters.currentTab == 'codingSupervisorCompletedWorkItems') && filters.acceptedDate === '4'">
+							<uitk:calendar id="throughDate" name="throughDate" ng-model="filters.throughDate" view-model="throughDateCalendarViewModel" />
+					</span>
+					<span ng-if="filters.currentTab == 'codingQAAvailableWorkItems'">
+							<span>To</span><br>
+							<uitk:calendar style="margin-top:5px;" id="throughDate" name="throughDate" ng-model="filters.throughDate" view-model="throughDateCalendarViewModel" />
+					</span>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td colspan='1'></td>
+				<td></td>
+				<td></td>
+				<td>
+					<span ng-if="filters.currentTab != 'Coding' && filters.currentTab != 'codingMyWorklist' && filters.currentTab != 'codingCompletedWorkItems' && 
+						filters.currentTab != 'codingQAFeedback' && filters.currentTab != 'codingSupervisorMyWorklist' && 
+						filters.currentTab != 'codingSupervisorAvailableWorkItems' && filters.currentTab != 'codingSupervisorCompletedWorkItems' &&
+						filters.currentTab != 'codingQAMyWorklist' && filters.currentTab != 'codingQAAvailableWorkItems' && 
+						filters.currentTab != 'codingQACompletedWorkItems'">
+						<label class="tk-labl">Provider first name</label>
+					</span>
+				</td>
+				<td>
+					<span class="overflow-needed" ng-if="filters.currentTab != 'Coding' && filters.currentTab != 'codingMyWorklist' && 
+						filters.currentTab != 'codingCompletedWorkItems' && filters.currentTab != 'codingQAFeedback' && 
+						filters.currentTab != 'codingSupervisorMyWorklist' && filters.currentTab != 'codingSupervisorAvailableWorkItems' && 
+						filters.currentTab != 'codingSupervisorCompletedWorkItems' && filters.currentTab != 'codingQAMyWorklist' && 
+						filters.currentTab != 'codingQAAvailableWorkItems' && filters.currentTab != 'codingQACompletedWorkItems'">
+						<uitk:auto-complete id="provFstNm" items="providerFstNms" min-length="3" disable-input="false" read-only="false" model="filters.provFstNm" on-refresh-items="fetchproviderFstNms"></uitk:auto-complete>
+					</span>
+				</td>
+				<td></td>
+				<td></td>
+			</tr>
+		</tbody>
+	</table>
+	<div style="padding-left: 20px">
+		<span>
+			<input type="button" value="Filter" ng-click="filter()" class="tk-btn-default-action   ux-btn-width" />
+		</span> 
+		<span>
+			<input type="button" value="Clear" ng-click="clear()" class="tk-btn-default-action   ux-btn-width" />
+		</span>
+	</div>
+</div>

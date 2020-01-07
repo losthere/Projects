@@ -1,0 +1,23 @@
+<div ng-controller="codingCommentsUIController">
+	<div ng-if='dataModel.comments.length > 0'>
+		<div style="margin-top:20px;margin-bottom:20px;">
+			<div ng-repeat='commentObj in dataModel.comments'>
+				<div style="margin-top:5px;">
+					<span ng-bind="commentObj.contentCommentDt"></span>
+				</div>
+				<div style="margin-top:5px;">
+					<span ng-bind="commentObj.userName"></span>
+				</div>
+				<div style="margin-top:5px;">
+					<span ng-bind="commentObj.contentComment"></span>
+				</div>
+				<div style="margin-top:5px;">
+					<span ng-if='dataModel.currentRole == "SUP"'>
+					<img src='../lib/images/user_line.png'/> </span>
+					<span ng-if="dataModel.currentRole!='SUP'">
+					<img src='../../lib/images/user_line.png'/> </span>
+				</div>	
+			</div>
+		</div>
+	</div>
+</div>

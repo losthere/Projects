@@ -1,0 +1,24 @@
+<div ng-controller='retrievalCtrl'>
+	<div ng-if="dataModel.retrievalShowChart && dataModel.retrievalCounts[0].totalCnt > 0" style="width: 75%;float: left;height: 431px;">
+		<uitk-pie-chart view-model="dataModel.retrievalPieChartModel"></uitk-pie-chart>
+	</div>
+	<div ng-if="dataModel.retrievalCounts[0].totalCnt == 0" style="width: 72%;float: left;height: 431px;">
+		<h1><span style="color: #f20202; font-size: 15px;">No Data Found</span><br/>
+	</div>
+	<div ng-if="dataModel.retrievalCounts[0].totalCnt > 0" style="width: 25%;float: right;">
+		<br/><br/>
+		<span><span style="font-size: 15px; font-weight: bold;">Total Charts = {{dataModel.retrievalCounts[0].totalCnt}}</span></span><br/><br/>
+		<span><span style="font-size: 12px; font-weight: bold;">Retrieved = {{dataModel.retrievalCounts[0].totalCnt - dataModel.retrievalCounts[0].notRetrievedCnt}}</span></span><br/><br/><br/>
+		
+		<div style="padding-left:5px;"><div class="symbolStyle" style="background-color: #584470;"></div><span style="width: 60%;" class="labelStyle">Not Retrieved</span><span style="width: 30%;" class="labelValuesStyle">{{dataModel.retrievalCounts[0].notRetrievedCnt}}</span></div><br/><br/>
+		<div style="padding-left:5px;"><div class="symbolStyle" style="background-color: #664f81;"></div><span style="width: 60%;" class="labelStyle">Client Upload</span><span style="width: 30%;" class="labelValuesStyle">{{dataModel.retrievalCounts[0].clientUploadCnt}}</span></div><br/><br/>
+		<div style="padding-left:5px;"><div class="symbolStyle" style="background-color: #71588f;"></div><span style="width: 60%;" class="labelStyle">EMR</span><span style="width: 30%;" class="labelValuesStyle">{{dataModel.retrievalCounts[0].emrCnt}}</span></div><br/><br/>
+		<div style="padding-left:5px;"><div class="symbolStyle" style="background-color: #7b609c;"></div><span style="width: 60%;" class="labelStyle">Fax</span><span style="width: 30%;" class="labelValuesStyle">{{dataModel.retrievalCounts[0].faxCnt}}</span></div><br/><br/>
+		<div style="padding-left:5px;"><div class="symbolStyle" style="background-color: #8e78ab;"></div><span style="width: 60%;" class="labelStyle">Mail</span><span style="width: 30%;" class="labelValuesStyle">{{dataModel.retrievalCounts[0].mailCnt}}</span></div><br/><br/>
+		<div style="padding-left:5px;"><div class="symbolStyle" style="background-color: #9c87b7;"></div><span style="width: 60%;" class="labelStyle">Mail CD/FD</span><span style="width: 30%;" class="labelValuesStyle">{{dataModel.retrievalCounts[0].mailCdFdCnt}}</span></div><br/><br/>
+		<div style="padding-left:5px;"><div class="symbolStyle" style="background-color: #a99bbd;"></div><span style="width: 60%;" class="labelStyle">Onsite</span><span style="width: 30%;" class="labelValuesStyle">{{dataModel.retrievalCounts[0].onsiteCnt}}</span></div><br/><br/>
+		<div style="padding-left:5px;"><div class="symbolStyle" style="background-color: #beb4cc;"></div><span style="width: 60%;" class="labelStyle">Optum Retrieved</span><span style="width: 30%;" class="labelValuesStyle">{{dataModel.retrievalCounts[0].optumRetvdCnt}}</span></div><br/><br/>
+		<div style="padding-left:5px;"><div class="symbolStyle" style="background-color: #d1cbdb;"></div><span style="width: 60%;" class="labelStyle">Provider Upload</span><span style="width: 30%;" class="labelValuesStyle">{{dataModel.retrievalCounts[0].providerUploadCnt}}</span></div><br/><br/>
+	</div>
+
+</div>

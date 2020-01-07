@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:cache="http://www.springframework.org/schema/cache"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd 
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<context:property-placeholder
+		location="file:${app.config.path}gcm-common.properties,file:${app.config.path}dfc.properties,file:${app.config.path}dctm.properties,file:${app.config.path}gcm-fedscan.properties,file:${app.config.path}gcmc-userlogin.properties,file:${app.config.path}gcm-enc-config.properties" />
+
+	<context:annotation-config />
+
+	<tx:annotation-driven />
+
+	<context:component-scan base-package="com.optum.gcm" />
+
+	<mvc:annotation-driven>
+		<mvc:message-converters>
+			<bean
+				class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+				<property name="objectMapper">
+					<bean
+						class="org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean">
+						<property name="dateFormat">
+							<bean class="java.text.SimpleDateFormat">
+								<constructor-arg index="0" value="MM-dd-yyyy HH:mm" />
+							</bean>
+						</property>
+					</bean>
+				</property>
+			</bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+
+	<mvc:resources location="/css/" mapping="/css/**" />
+	<mvc:resources location="/view/" mapping="/view/**" />
+	<mvc:resources location="/js/" mapping="/js/**" />
+	<mvc:resources location="/images/" mapping="/images/**" />
+	<mvc:resources location="/com/optum/" mapping="/com/optum/**" />
+	<mvc:resources location="/mrm/" mapping="/mrm/**" />
+	<mvc:resources location="/gcm/" mapping="/gcm/**" />
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<mvc:exclude-mapping path="/heartbeat"/>
+			<mvc:exclude-mapping path="/css/**" />
+			<mvc:exclude-mapping path="/js/**" />
+			<mvc:exclude-mapping path="/images/**" />
+			<mvc:exclude-mapping path="/com/optum/**" />
+			<mvc:exclude-mapping path="/mrm/**" />
+			<mvc:exclude-mapping path="/gcm/**" />
+			<bean class="com.optum.gcm.common.SecurityInterceptor" />
+		</mvc:interceptor>
+	</mvc:interceptors>
+
+	<jee:jndi-lookup id="dataSource" jndi-name="OracleDS" expected-type="javax.sql.DataSource"/>
+
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
+
+	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate" />
+
+	<bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager"
+		p:cache-manager-ref="ehcache" />
+
+	<!-- EhCache library setup bean -->
+	<bean id="ehcache"
+		class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"
+		p:configLocation="WEB-INF/ehcache.xml" p:shared="true" />
+		
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="${mail.gcm.host}" />
+		<property name="javaMailProperties">
+		<props>
+		<prop key="mail.smtp.auth">false</prop>
+		<prop key="mail.smtp.starttls.enable">true</prop>
+		</props>
+		</property>
+	</bean>
+
+	<cache:annotation-driven />
+
+</beans>

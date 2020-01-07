@@ -1,0 +1,34 @@
+<div ng-controller="userUploadController">
+	<p>
+		<uitk:message model="errorMessageModel"> </uitk:message> 
+	</p>
+	<uitk:dialog dialog-id='userFileUpload' dialog-role='dialog' default-width='65%' default-height="70%"
+		header-text='Upload' show="showUserUploadDialog" confirm-dialog="false">
+		<form name="uploadForm">
+			<div>
+				<uitk:message model="dialogErrorMessageModel"> </uitk:message>		          
+				<input id="csvFileInput" type="file" data-method="ctrlFn" file-reader="fileContent" file-name="fileName"/> <span ng-show="dataModel.showUploadError" style="color: red;">{{dataModel.uploadErrorMsg}}</span><span ng-show="dataModel.errorMsg" style="color: red;">No records to process</span>
+			</div>		   
+			<div ng-if="dataModel.isFileLoaded() && !dataModel.showUploadError" class='table-wrapper'>
+				<uitk:dynamic-table id="uploadFileUserInfoTable" model="uploadUsersTableModel"> </uitk:dynamic-table>
+			</div>
+			<div>
+			   <uitk:button id="saveUser" type="button" value="Submit" ng-show='dataModel.isFileLoaded() && !dataModel.showUploadError' ng-click=saveUserFileRecords()
+	                 custom-class='tk-btn-default-action uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+			   <uitk:button type="button" id="cancelUser" value="Close" ng-show='dataModel.isFileLoaded() && !dataModel.showUploadError' 
+			   	onclick="document.getElementById('userFileUpload_closeLink').click();" custom-class='tk-btn-default-action uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+	    	</div>
+		</form>
+	</uitk:dialog>
+	<div ng-if='showGroupList' style="padding:20px;">
+		<label>Client</label>
+		<select ng-model="dataModel.groupKey" ng-options='group.key as group.value for group in dataModel.groupList'>
+			<option value="">Select</option>
+		</select>
+	</div>
+	<div id="userFileHistoryViewElement" style="z-index:auto">
+		<div ng-if="showRecords" class='table-wrapper' style="overflow:auto">
+			<uitk:dynamic-table id="uploadFileInfoTable" model="userTableModel"> </uitk:dynamic-table>
+		</div>
+	</div>
+</div>

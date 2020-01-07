@@ -1,0 +1,43 @@
+<div>
+	<uitk:dialog  dialog-id='codingSupFiltersDialog' dialog-role='dialog' show="dataModel.showCodingSupFiltersLoadingDialog"
+			                 header-text='' confirm-dialog="false" default-width="auto" tk-aria-describedby="dialogInsTextId">
+			      			<img src="../../lib/images/loader.gif"/>
+    </uitk:dialog>
+	<uitk:tabs tk-model="codingSupervisorWorklistTabsModel"></uitk:tabs>
+	<uitk:message model="errorMessageModel"></uitk:message>
+
+	<script type="text/ng-template" id="myworklist.html">
+				<div ng-controller="myWorklistCtrl" style="padding: 10px;" id="myworklist">
+					<h2 class='fontcolor'>My Worklist</h2>	
+					<div class='scrollable' ng-if="worklistViewModel">
+						<uitk:dialog  dialog-id='codingSupMyWlistLoadingDialog' dialog-role='dialog' show="dataModel.showCodingSupMyWlistLoadingDialog"
+			                 header-text='' confirm-dialog="false" default-width="auto" tk-aria-describedby="dialogInsTextId">
+			      			<img src="../../lib/images/loader.gif"/>
+    					</uitk:dialog>
+						<uitk:dynamic-table id="myworklistTable" model="worklistViewModel"></uitk:dynamic-table>
+					</div>
+				</div>
+	</script>
+	
+	<script type="text/ng-template" id="availableworkitems.html">
+				<div ng-controller="availableWorkItemsCtrl" style="padding: 10px;" id="availableworkitems">
+					<h2 class='fontcolor'>Available Work Items</h2>	
+					<div class='scrollable' ng-if="worklistViewModel">
+						<uitk:dialog  dialog-id='codingSupAvlWlistLoadingDialog' dialog-role='dialog' show="showCodingSupAvlWlistLoadingDialog"
+			                 header-text='' confirm-dialog="false" default-width="auto" tk-aria-describedby="dialogInsTextId">
+			      			<img src="../../lib/images/loader.gif"/>
+    					</uitk:dialog>
+						<uitk:dynamic-table id="availableworkitemsTable" model="worklistViewModel"></uitk:dynamic-table>
+					</div>
+				</div>
+	</script>
+	
+	<script type="text/ng-template" id="completedworkitems.html">
+				<div ng-controller="completedWorkItemsCtrl" style="padding: 10px;" id="completedworkitems">
+					<h2 class='fontcolor'>Completed Work Items</h2>	
+					<div class='scrollable' ng-if="worklistViewModel">
+						<uitk:dynamic-table id="completedworkitemsTable" model="worklistViewModel"></uitk:dynamic-table>
+					</div>
+				</div>
+	</script>
+</div>

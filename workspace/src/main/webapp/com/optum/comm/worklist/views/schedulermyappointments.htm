@@ -1,0 +1,12 @@
+<div ng-controller='myAppointmentsController'>
+	<div>
+		<h3>My Appointments</h3>
+		<div>
+			<uitk:dynamic-table id="myAppointmentsTable" model="dataModel.myAppointmentsModel"> </uitk:dynamic-table>
+			<uitk:dialog  dialog-id='myApptLoadingDialogId' dialog-role='dialog' show="dataModel.showMyApptLoadingDialog"
+			                 header-text='' confirm-dialog="false" default-width="auto" tk-aria-describedby="dialogInsTextId">
+			      			<img src="../lib/images/loader.gif"/>
+    		</uitk:dialog>
+		</div>
+	</div>
+</div>

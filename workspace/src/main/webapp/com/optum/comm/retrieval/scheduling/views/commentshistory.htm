@@ -1,0 +1,47 @@
+<div ng-controller="commentsHitoryCntrl">
+    <div ng-class="{'oui-rfrm-label-container-vertical': layout === 'vertical', 'oui-rfrm-label-container': layout === 'horizontal'}">
+        <div>
+            <uitk:label id='addCommentLbl' name='addCommentLbl' for='addCommentField'>Add Comment</uitk:label>
+        </div>
+    </div>
+    <div>
+        <div class="oui-rfrm-error-container">
+            <uitk:textarea id='addCommentField' name='addCommentField' width='100%' model='addcomments'></uitk:textarea>
+        </div>
+    </div>
+    <div ng-if="dataModel.showCommentsLoadingDialog">
+    <uitk:dialog  dialog-id='commentsDialogId' dialog-role='dialog' 
+			                 header-text='' confirm-dialog="false" default-width="7%" tk-aria-describedby="dialogInsTextId">
+			      			<img src="../lib/images/loader.gif"/>
+    					</uitk:dialog>
+    </div>	
+    <div ng-if="dataModel.showSchCommentsLoadingDialog">
+    <uitk:dialog  dialog-id='schCommentsDialogId' dialog-role='dialog' 
+			                 header-text='' confirm-dialog="false" default-width="7%" tk-aria-describedby="dialogInsTextId">
+			      			<img src="../lib/images/loader.gif"/>
+    					</uitk:dialog>
+    </div>					
+    <div>
+        <uitk:button type='button' value='Save' ng-click='saveComments()' custom-class="tk-btn-secondary"></uitk:button>
+    </div>
+	<div>
+		<div style="margin-top:20px;margin-bottom:20px;">
+			<div ng-repeat='commentObj in dataModel.apptCommentsList'>
+				<div style="margin-top:5px;">
+					<span ng-bind="commentObj.createDate"></span>
+				</div>
+				<div style="margin-top:5px;">
+					<span ng-bind="commentObj.createUserId"></span>
+				</div>
+				<div style="margin-top:5px;">
+					<span ng-bind="commentObj.apptComments"></span>
+				</div>
+				<div style="margin-top:5px;">
+					<img ng-hide='dataModel.showFlag' src='../lib/images/user_line.png'/>
+					<img ng-show='dataModel.showFlag' src='../../lib/images/user_line.png'/>
+				</div>				
+			</div>
+		</div>
+	</div>
+</div>
+

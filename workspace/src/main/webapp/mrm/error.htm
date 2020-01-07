@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--
+
+	 © 2003 Cordys R&D B.V. All rights reserved.
+	 The computer program(s) is the proprietary information of Cordys R&D B.V. and provided
+ 	 under the relevant License Agreement containing restrictions on use and disclosure.
+ 	 Use is subject to the License Agreement.
+
+
+-->
+<html onapplicationready="loadStatus()">
+<head>
+	<title>Clinical Review</title>
+    <link type="image/x-icon" href="../com/optum/comm/lib/images/favicon.ico" rel="icon"></link>
+    <link type="image/x-icon" href="../com/optum/comm/lib/images/favicon.ico" rel="shortcut icon"></link>
+
+<script type="text/javascript" src="../wcp/application.js"></script>
+<script type="text/javascript" src="../com/optum/comm/lib/js/common/optumui.js"></script>
+
+<script type="cordys/xml" id="userStatusAppScript">
+   <Application taskbar="false">
+      <url>com/optum/cpc/emerald/ua/UserValidationStatus.caf</url>
+      <id>com_optum_cpc_emerald_userStatus_id</id>
+      <caption>User Status</caption>
+      <description>User Status</description>
+      <icon>wcp/theme/default/icon/task/generictask.png</icon>
+      <data />
+      <frame>com_optum_cpc_emerald_userStatus_Frame</frame>
+
+    </Application>
+</script>
+	<script type="text/javascript">
+
+		function loadStatus()
+		{
+
+			var userStatusAppScriptDoc = document.getElementById("userStatusAppScript");
+			application.select(cordys.cloneXMLDocument(userStatusAppScriptDoc.XMLDocument).documentElement);
+		}
+		// To hide IE context menu from getting displayed on the left-most corner
+		document.oncontextmenu = function(){return false};
+	</script>
+
+	<link rel="shortcut icon" type="image/ico" href="../com/optum/comm/lib/images/favicon.ico" />
+	<style type="text/css">
+		html, body, iframe {position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; border: 0px; padding: 0px; margin: 0px; overflow: hidden}
+	</style>
+</head>
+<body >
+	<iframe id="com_optum_cpc_emerald_userStatus_Frame" src="about:blank" frameborder="0" framespacing="0" border="0" cellspacing="0" scrolling="no" class="container"></iframe>
+	<noscript>
+		<div cordystype="wcp.library.util.Translator" id="translator_ajaxtoolkit_default" messageBundle="ajaxtoolkit/ajaxtoolkitmessagebundle"></div>
+		<div style="width: 50%; height: 30%; display: block; top: 35%; left: 50%;margin-left:-25%;position:relative">
+			<h1 translatable="true">Javascript is disabled or not supported by this browser.</h1>
+			<p translatable="true">Enable Javascript for full functionality.</p>
+		</div>
+	</noscript>
+</body>
+</html>

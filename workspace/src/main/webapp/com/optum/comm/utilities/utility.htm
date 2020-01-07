@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="robots" content="noindex, nofollow" />
+		<title>Utilities</title>
+		<link rel="stylesheet" href="../lib/css/general2.css" type="text/css" />
+		<link rel="stylesheet" href="../lib/css/cdefault.css" type="text/css" />
+		<script src="../lib/js/common/jquery.js" type="text/javascript"></script>
+		<script src="../lib/js/common/angular.min.js" type="text/javascript"></script>
+		<script src="../lib/js/common/optumui.js" type="text/javascript"></script>
+		<script src="../lib/js/common/ux.js" type="text/javascript"></script>
+		
+		<script type="text/javascript" src="../lib/js/common/ng-csv.js"></script>
+		<script type="text/javascript" src="../lib/js/common/angular-sanitize.js"></script>
+		<script type="text/javascript" src="../lib/js/common/angular-touch.js"></script>
+		<script type="text/javascript" src="../lib/js/common/angular-translate/angular-translate.js"></script>
+		<script type="text/javascript" src="../lib/js/common/lodash.js"></script>
+		<script type="text/javascript" src="../lib/js/common/ngDialog.min.js"></script>
+		
+		<script type="text/javascript" src="../lib/js/common/aes.js"></script>
+		<script type="text/javascript" src="../lib/js/common/AesUtil.js"></script>
+		<script type="text/javascript" src="../lib/js/common/jquery-dateFormat.min.js"></script>
+		<script type="text/javascript" src="../lib/js/common/jquery.base64.min.js"></script>
+		<script type="text/javascript" src="../lib/js/common/pbkdf2.js"></script>		
+		<script src="../lib/js/common/uitk.min.js"></script>
+		
+		<script type="text/javascript" src="../lib/js/modules/utilities/utilities.js"></script>
+		<script type="text/javascript" src="../lib/js/modules/retrieval/lookup.js"></script>
+		<script type="text/javascript" src="../lib/js/modules/utilities/search.js"></script>
+		<script type="text/javascript" src="../lib/js/modules/utilities/dataintake.js"></script>
+		<script type="text/javascript" src="../lib/js/modules/utilities/projectClose.js"></script>
+		<script type="text/javascript" src="../lib/js/modules/retrieval/staticDataService.js"></script>
+		
+		<script type="text/javascript" src="../lib/js/modules/utilities/chartIdViewAppointment.js"></script>
+		<script type="text/javascript" src="../lib/js/modules/utilities/pendAppointmentChart.js"></script>
+		
+		<script type="text/javascript" src="../lib/js/modules/worklist/codingQA/codingQAWorklistViewModel.js"></script>
+		<script type="text/javascript" src="../lib/js/modules/worklist/codingQA/codingQAUIViewModel.js"></script>
+		<script type="text/javascript" src="../lib/js/modules/worklist/codingQA/codingQAui.js"></script>
+		<script type="text/javascript" src="../lib/js/modules/coding/codingui.js"></script>
+		
+		<link rel="stylesheet" href="../lib/css/uitk.min.css" type="text/css" />
+		
+				<style>
+		
+		.template-list-item {
+			float: left;
+			margin-left: 14px;
+			margin-right: 30px;
+		}
+		#filtersTableId{
+			clear: both;
+			margin-top: 30px;
+			
+		}
+		.tk-labl{
+			padding-right: 13px;
+		}
+		.tk-input{
+		    padding-right: 20px;
+			white-space: normal !important;
+		}
+		.size {
+			width: 180px;
+			height: 25px;
+		}
+		#dobId_cal {
+			height: 25px;
+			width: 154px;				
+		}
+		.ux-tabl-form-multicol > tbody > tr > td{
+			 padding-right: 13px;
+			 padding-bottom: 13px;
+		 }
+		 body{
+			padding-left : 15px;
+			padding-top : 5px;
+		}
+		#dataintakeUIFiltersPanelContent{
+			overflow: visible !important;
+		}
+	
+		#dynamicTableProjectDetails{
+			height: 70%;
+			margin-bottom: 3%
+		}
+		.adisabled {
+  			cursor: not-allowed;
+  			opacity: .65;
+		}
+		.adisabled:hover { text-decoration: none; }
+		.adisabled:focus { text-decoration: none; }
+		.adisabled:active { text-decoration: none; }	
+						
+		.fontcolor {
+			color: #C36121 !important;
+		}
+
+		#mainView {
+			border: 0.5px solid #E6E6E6;
+			clear: both;
+			padding: 10px;
+		}
+		
+		#codingAssignDialog h5 {
+			background-color: #f2f2f2;
+			height: 30px;
+			padding: 5px;
+			font-size: small;
+		}
+		
+		.scrollable {
+			width: 100%;
+		}
+		
+		.tk-lbox-dialog {
+			overflow: hidden;
+		}
+		#searchLoadingDialogId_headerId,#loadingDialogId_headerId{
+			display: none
+		}
+		#searchLoadingDialogId_closeLink,#loadingDialogId_closeLink{
+			display: none
+		}
+		#searchLoadingDialogId,#loadingDialogId{
+			border-width:unset;
+			border-style: none
+		}
+		.tk-dtbl .tk-dtbl-as-table-cell{
+			display: block;
+		}
+		
+		.oui-type-like-h3, h3 {
+            color: #c25608;
+        }
+        .chartStatusul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        .chartStatusli {
+            float: left;
+        }
+        .chartStatuslidiv {
+            display: block;
+            text-align: center;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+		
+		.scrollable {
+  width: 100%;
+}
+.oui-type-like-h3, h3 {
+				color: #c25608;
+			}
+			.chartStatusul {
+				list-style-type: none;
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+			}
+
+			.chartStatusli {
+				float: left;
+			}
+			.chartStatuslidiv {
+				display: block;
+				text-align: center;
+				padding-left: 20px;
+				padding-right: 20px;
+			}
+			.size {
+				width: 180px;
+				height: 25px;
+			}
+
+			.ux-btn-width {
+				width: 90px;
+				height: 22px;
+			}
+			.fontcolor {
+				color: #C36121 !important;
+			}
+			.ux-a11y-hidden {
+				display: none;
+			}
+			.anchor-padding{
+				padding-right :15px;
+			}
+		   .ux-tabl-form-multicol > tbody > tr > td{
+				 padding-right: 13px;
+				 padding-bottom: 13px;
+		   }
+		   .tk-col-1-5{
+		   width:20%
+		   }
+		   .divPadding{
+		   padding-top:20px;
+		   padding-left:10px;
+		   }
+		   #addCommentField_textarea{
+		   		min-height: 6rem;
+		   }
+		   #pendFiltersDialogId_headerId,#pendMyWorklistDialogId_headerId, #availableWorkItemsDialogId_headerId, #commentsDialogId_headerId, #retrievalInfoDialogId_headerId{
+    			display: none
+			}
+			#pendFiltersDialogId_closeLink,#pendMyWorklistDialogId_closeLink, #availableWorkItemsDialogId_closeLink, #commentsDialogId_closeLink, #retrievalInfoDialogId_closeLink{
+    			display: none
+			}			
+			#pendFiltersDialogId,#pendMyWorklistDialogId, #availableWorkItemsDialogId, #commentsDialogId,#retrievalInfoDialogId{
+				border-width:unset;
+				border-style: none
+			}
+		</style>		 
+	</head>
+	<body ng-app="utilityApp" ng-controller='utilityCtrl' ng-cloak>
+		<div ng-include="url"></div>
+	</body>
+</html>

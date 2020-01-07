@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html ng-app="assignment-app">
+<head>
+<meta name="robots" content="noindex, nofollow" />
+<title>Assignment</title>
+<link rel="stylesheet" href="../../../lib/css/general2.css" type="text/css" />
+<link rel="stylesheet" href="../../../lib/css/cdefault.css" type="text/css" />
+<script src="../../../lib/js/common/jquery.js" type="text/javascript"></script>
+<script src="../../../lib/js/common/angular.min.js" type="text/javascript"></script>
+<script src="../../../lib/js/common/optumui.js" type="text/javascript"></script>
+<script src="../../../lib/js/common/ux.js" type="text/javascript"></script>
+
+<script type="text/javascript" src="../../../lib/js/common/ng-csv.js"></script>
+<script type="text/javascript" src="../../../lib/js/common/angular-sanitize.js"></script>
+<script type="text/javascript" src="../../../lib/js/common/angular-touch.js"></script>
+<script type="text/javascript" src="../../../lib/js/common/angular-translate/angular-translate.js"></script>
+<script type="text/javascript" src="../../../lib/js/common/lodash.js"></script>
+<script src="../../../lib/js/common/uitk.min.js"></script>
+<script src="../../../lib/js/common/uitk-auto-complete.js"></script>
+
+<script src="../../../lib/js/modules/assignment/optumlookup.js"></script>
+<script src="../../../lib/js/modules/retrieval/staticDataService.js" type="text/javascript"></script>
+<script src="../../../lib/js/modules/assignment/optumAssignViewModel.js"></script>
+<script src="../../../lib/js/modules/assignment/optumAssignment.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../../lib/css/uitk.min.css" type="text/css" />
+
+<style>
+.fontcolor {
+	color: #C36121 !important;
+}
+#mainView {
+	border: 0.5px solid #E6E6E6;
+	clear: both;
+	padding :10px;
+
+}
+#codingAssignDialog h5{
+    background-color: #f2f2f2;
+    height: 30px;
+    padding: 5px;
+    font-size: small;
+}
+.scrollable {
+  width: 100%;
+}
+#loadingDialogId_headerId,#assignFiltersDialog_headerId,#codingAssignLoadingDialogId_headerId{
+	display: none
+}
+#loadingDialogId_closeLink,#assignFiltersDialog_closeLink,#codingAssignLoadingDialogId_closeLink{
+	display: none
+}
+#loadingDialogId,#assignFiltersDialog,#codingAssignLoadingDialogId{
+	border-width:unset;
+	border-style: none
+}
+</style>
+</head>
+<body>
+	<div ng-controller="assignmentGridCtrl" ng-cloak>
+		<div>
+			<table class="ux-padding-bottom-1t"
+				style="margin-left: 9px;">
+				<tr>
+					<td>
+						<h1 class="ux-margin-top-none ux-margin-bottom-none">Assignment</h1>
+					</td>
+				</tr>
+				<tr>
+					<td>
+					<uitk:message model="errorMessageModel"> </uitk:message> 
+
+			</td>
+				</tr>
+			</table>
+		</div>
+		<div>
+			<div class="ux-acrd">
+				<div class="ux-panl ux-panl-open" panel-directive>
+					<div class="ux-panl-header">
+						<h2 class='fontcolor'>Filters</h2>
+					</div>
+					<div class="ux-panl-content" style="padding-top: 10px">
+						<filter-directive></filter-directive>
+						<uitk:dialog  dialog-id='assignFiltersDialog' dialog-role='dialog' show="showAssignFiltersLoadingDialog"
+			                 header-text='' confirm-dialog="false" default-width="auto" tk-aria-describedby="dialogInsTextId">
+			      			<img src="../../../lib/images/loader.gif"/>
+    					</uitk:dialog>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="ux-tpnl">
+		<div>
+				<ul>
+					<li ng-repeat="tab in tabs"
+						ng-class="{active: currentTab === tab}"
+						style="float: left; border: 1px solid #E6E6E6; border-bottom-width: 0; padding: 10px; background-color: #efefee; cursor: pointer;"
+						ng-click="onClickTab(tab)">{{tab}}</li>
+				</ul>
+				<div id="mainView" ng-include="url"></div>
+			</div>
+
+			<script type="text/ng-template" id="codingAssign.html">
+				<div style="padding: 10px;" id="codingAssign">
+					<h2 class='fontcolor'>Coding</h2>
+					<div class='scrollable' ng-if="codingAssignTableModel">
+						<uitk:dynamic-table id="codingAssignTable" model="codingAssignTableModel"></uitk:dynamic-table>
+					</div>
+				</div>
+			</script>
+			<script type="text/ng-template" id="codingQAAssign.html">
+				<div style="padding: 10px;" id="codingAssign">
+					<h2 class='fontcolor'>Coding QA</h2>
+					<div class='scrollable' ng-if="codingQAAssignTableModel">
+						<uitk:dynamic-table id="codingQAAssignTable" model="codingQAAssignTableModel"></uitk:dynamic-table>
+					</div>
+				</div>
+			</script>
+
+		</div>
+		<div>
+			<uitk:dialog dialog-id='userAssignDialog' dialog-role='dialog' header-text='User Assign' confirm-dialog="false" default-width='50%' 
+				show='codingAssignObj.modalShown' ng-if="codingAssignObj.modalShown" trigger-element='#uitkPopupId1_openModalBtn'>
+				<h5>{{codingAssignObj.chartsSelected}} charts selected <!--  <span style="padding-left: 3em" ng-if="codingAssignObj.selectedOption !== '2'"> | </span><span style="padding-left: 3em" ng-if="codingAssignObj.selectedOption !== '2'"> {{codingAssignObj.usersEligible}} users eligible for assignment</span>--></h5> 
+				<br>
+				<span style="padding: 10px;">Choose how you want to assign the charts.</span><br><br>
+				<span style="padding: 10px; color: red; margin-top: 10px;">All fields required</span><br><br><br>
+				<span style="font-weight: bold""><h7>Assign charts</h7></span><br><br>
+	
+				<div style="padding: 10px;">
+					<input style="margin-right: 5px;" type="radio" ng-model="codingAssignObj.selectedOption" value="0" name="codingAssignOptions">
+						Assign to all users evenly<br><br>
+					<input style="margin-right: 5px;" type="radio" ng-model="codingAssignObj.selectedOption" value="1" name="codingAssignOptions">
+						Assign to all users with the same specified amount<br><br>
+						<div style="margin-left: 30px;" ng-if="codingAssignObj.selectedOption == 1"><label class="tk-labl">How many charts per user?</label> <br><br>
+							<input type="text" class="size" ng-model="codingAssignObj.selectedCount" uitk-numbers-only /> <span style="color:red;" ng-if="(codingAssignObj.selectedCount > codingAssignObj.chartsSelected) || codingAssignObj.selectedCount == null || codingAssignObj.selectedCount == 0">Must be less than no. of charts selected</span><br><br>
+						</div>
+					<input style="margin-right: 5px;" type="radio" ng-model="codingAssignObj.selectedOption" value="2" name="codingAssignOptions" ng-click="getUsersOfSupervisors()">
+						Assign to an individual<br><br>
+						<div style="margin-left: 30px;" ng-if="codingAssignObj.selectedOption == 2">
+								<label class="tk-labl">Select Supervisor</label>
+								<select style="margin-left:53.5px;" class="size" ng-model="codingAssignObj.selectedSupervisorKey" 
+									ng-options="selectedItem.loginUserKey as selectedItem.fullName for selectedItem in listOfSupervisors">
+								</select>
+<!-- 								<span style="margin-left:5px;color:red;" ng-if="codingAssignObj.selectedSupervisorKey === ''">Please select a supervisor</span> -->
+								<br><br>
+						<label class="tk-labl">User Last Name starts with</label>
+								<input class="size" type="text" ng-model="codingAssignObj.userSearched"><br><br>
+						<uitk:button type="button" style="margin-bottom: 15px;" value="Search" ng-click="search()" custom-class='uitk-width-6t'></uitk:button> <br>
+
+						<div class='scrollable' style="padding-right: 20px;" ng-if="codingAssignUsersTableModel">
+							<uitk:dynamic-table id="codingAssignUsersTable" model="codingAssignUsersTableModel"></uitk:dynamic-table>
+						</div>
+					</div>
+				</div>
+				<uitk:dialog  dialog-id='codingAssignLoadingDialogId' dialog-role='dialog' show="showCodingAssignLoadingDialog"
+			                 header-text='' confirm-dialog="false" tk-aria-describedby="dialogInsTextId" default-width="auto" >
+			      			<img src="../../../lib/images/loader.gif"/>
+    			</uitk:dialog>
+				<span style="margin-left:40px;">
+					<uitk:button type="button" style="margin-bottom: 15px;" custom-class='uitk-width-6t' value="Confirm" ng-click="codingAssign()" uitk-btn-disabled="!codingAssignObj.enableConfirm() || codingAssignObj.confirmClicked" ></uitk:button>
+					<a href="" ng-click="codingAssignObj.modalShown = false;">Cancel</a>
+				</span>
+			</uitk:dialog>
+		</div>
+		<div>
+			<uitk:dialog dialog-id='locAssignDialog' dialog-role='dialog' header-text='Location Assign' confirm-dialog="false" default-width='50%' 
+				show='locationAssignObj.locModalShown' ng-if="locationAssignObj.locModalShown" trigger-element='#uitkPopupId1_openModalBtn'>
+				<div>
+					<div>
+						<span>
+							<label class="tk-labl">Total Selected Charts :  <span style="color: red;">{{locationAssignObj.chartsSelected}}</span></label>
+						 </span>
+					</div>
+					<div style="margin-top:20px;">
+						<span>
+							<label class="tk-labl">Assign To Location <span style="color: red;">*</span></label>						
+							<select class="size" ng-model="locationAssignObj.assignVendor">
+								<option value="">--Select--</option>
+								<option ng-repeat="vendor in locationAssignObj.vendors" value="{{vendor.key}}">{{vendor.value}}</option>
+							</select>
+						 </span>
+					</div>
+					<div style="margin: 30px;"><label class="tk-labl">Assign Count <span style="color: red;">*</span></label>
+						<input type="text" class="size" ng-model="locationAssignObj.selectedCount" uitk-numbers-only /> <span style="color:red;" ng-if="(locationAssignObj.selectedCount > locationAssignObj.chartsSelected) || locationAssignObj.selectedCount == null || locationAssignObj.selectedCount == 0">Must be less than or equal to no. of charts selected</span><br><br>
+					</div>
+				</div>
+				<span style="margin-left:40px;">
+					<uitk:button type="button" style="margin-bottom: 15px;" custom-class='uitk-width-6t' value="Confirm" ng-disabled="(locationAssignObj.selectedCount > locationAssignObj.chartsSelected) || locationAssignObj.selectedCount == null || locationAssignObj.selectedCount == 0" ng-click="codingQALocAssign()"></uitk:button>
+					<a href="" ng-click="locationAssignObj.locModalShown = false;">Cancel</a>
+				</span>
+			</uitk:dialog>
+		</div>
+	</div>
+</body>
+</html>

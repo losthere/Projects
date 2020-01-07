@@ -1,0 +1,2747 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+
+    <title>Work List</title>
+    <!-- InstanceEndEditable -->
+    <link rel="stylesheet" href="../../../../../emerald/optum/css/general2.css" type="text/css" />
+    <script src="../../../emerald/gcm/js/optumui.js" type="text/javascript"></script>
+    <script src="../../../emerald/gcm/js/cordys.autosuggest.js" type="text/javascript"></script>
+    <script src="../../../emerald/gcm/js/cordys.gcmcore.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../../../../../emerald/optum/js/responsive-layout.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../../../../../emerald/optum/js/ux.js"></script>
+    <style type="text/css">
+        .table-wrapper {
+            overflow: auto;
+            width: 100%;
+            position: relative;
+            top: -10px;
+        }
+        h1 {
+			font-family: Arial, Helvetica, sans-serif !important;
+			font-size : 24px !important;
+			font-weight: normal !important;
+			color : #666666 !important;
+			font : inherti !important;
+		}
+        #retrievalCountElement {
+            font-size: 14px !important;
+        }
+        #ftcCountElement {
+            font-size: 14px !important;
+        }
+        .boldlabel {
+            font-weight: bold !important;
+            color: #333333 !important;
+            font-size: 18px !important;
+        }
+        .ux-panl {
+            box-shadow: none;
+        }
+        .ux-panl-content,
+        .ux-panl {
+            margin: 0px;
+            border: 0px;
+            padding: 0px;
+        }
+        .ux-tabl-form-multicol {
+            margin-left: 0px;
+            padding-left: 0px;
+            border-left: 0px;
+        }
+        .ux-vnav {
+            padding: 0px;
+        }
+        .ux-pagi {
+            padding: 5px;
+        }
+        thead th {
+            cursor: pointer;
+        }
+        .item.small .imagecontainer {
+            clear: both;
+            width: 18px;
+            height: 18px;
+            vertical-align: middle;
+            display: inline-block;
+        }
+        .item .imagecontainer {
+            border: 0;
+            overflow: hidden;
+            position: relative;
+        }
+        .item.small .imagecontainer img {
+            clip: rect(auto 16px 16px auto);
+            left: 0;
+        }
+        .item .imagecontainer img {
+            border: 0;
+            width: auto!important;
+            height: auto!important;
+            position: absolute;
+            z-index: 10;
+        }
+    </style>
+    <script type="text/javascript">
+        var MAX_ROWS = 25;
+        var APPROVER = "Approver";
+		var APPROVALS = "Approvals";
+        var MANAGER = "Manager";
+        var ACCOUNT_MANAGER = "Account Manager";
+        var SUPERVISOR = "Supervisor";
+        var COACH = "Coach";
+        var sortDefaultCss = "ux-icon-tabl-sort-sortable";
+        var sortDescCss = "ux-icon-tabl-sort-desc";
+        var sortAscCss = "ux-icon-tabl-sort-asc";
+        //get this ID from CordysRoot.system.getUser() object. Every HTML5 page contains CordysRoot from optumui.js
+        //In standalone, hardcode USER dn here and when it's loaded through default.htm get from system.getUser()
+        var userDN = "";
+		var userKey = "";
+        //document level data
+        var ACTIVETAB = "activeTab";
+        var ACTIVEROLE = "activeRole";
+        var ACTIVETABID = "activeTabID";
+        var activeCursor = null;
+		var ACTIVEBUSINESSSEGMENT = "ACTIVEBusinessSegment";
+        var MYTASKSVIEW = "MyTasks";
+        var UNASSIGNEDVIEW = "UnAssigned";
+        var COMPLETEDVIEW = "Completed";
+		var OVERREADCODINGVIEW = "OverreadCoding";
+		var OVERREADDISCREPANCIESVIEW = "OverreadDiscrepancies";
+		var CVVIEW="CV";
+		var CVQAVIEW="CVQA";
+        var CURRENTSORTINGCOL;
+        var MAXPAGECOUNT = "";
+        var CURRENTPAGENUMBER = "";
+        var ISPAGINATION = "NO";
+        var GROUPITEMTABID = "groupItemsTab";
+        var CURRENTITEMSTABID = "currentItemsTab";
+        var COMPLETEDITEMSTABID = "completedItemsTab";
+		var OVERREADCODINGTABID = "overreadCodingTab";
+		var OVERREADDISCTABID = "overreadDiscrepanciesTab";
+		var CVTABID="cvATab";
+		var CVQATABID="cvQAATab";
+        var SUPERVISORSEARCH_ERR = "Minimum allowed characters for Reports To search is 4.";
+        var MAX_SEARCH_CHAR_ERR = "Maximum allowed characters for search is 50.";
+        var customSortObj = {};
+        var viewModeMapping = { "MyTasks": "1","Completed": "2","UnAssigned": "3","OverreadCoding": "4","OverreadDiscrepancies" : "5","CV" : "1","CVQA" : "1"};
+		var tempCodes = {
+							"Abstraction" : "AU",
+							"Account Manager" : "AM",
+							"Approvals" : "AP",
+							"CV" : "CVU",
+							"Coach" : "CA",
+							"Coding" : "COU",
+							"CodingPrep" : "COPU",
+							"Intake" : "IU",
+							"Inventory Manager" : "IM",
+							"Manager" : "MR",
+							"Program Owner" : "PO",
+							"Project Manager" : "PM",
+							"QA" : "QU",
+							"Supervisor" : "SUP",
+							"System Administrator" : "SA",
+							"Overread Coder 2" : "OVRDCDR",
+							"Overread QA" : "QU",
+							"Overread Discrepancies" : "OVRDDISC",
+							"CVQA" :"CVQA"};// just for testing
+		var isEnableEscalateandReject = false;
+		var isInprogressCountDone = false;
+		var isBuszClick = false;
+		var isCommitCallBack = false;
+		var lastSelectedRole = null;
+		var isSearch = false;
+		var organizationModel;
+        function WorkListViewModel() {
+            this.organizations = [];
+            this.roles = [];
+			this.businessSegments = [];
+        }
+
+        function WorkListRolesModel() {
+            this.roles = [];
+        }
+		function ClientModel() {
+            this.clients = [];
+        }
+        function UserWorkItemsModel() {
+            this.workItems = [];
+        }
+
+        function GroupWorkItemsModel() {
+            this.workItems = [];
+        }
+
+        function CompletedWorkItemsModel() {
+            this.workItems = [];
+        }
+
+		function HealthPlanModel() {
+			this.healthPlans = [];
+		}
+
+		function GetAllWorkItmesCountByVendorModel() {
+		 this.workListItems = [];
+		}
+
+		function OverreadCodingWorkItemsModel() {
+			this.workItems = [];
+		}
+
+		function OverreadDiscrepanciesWorkItemsModel() {
+			this.workItems = [];
+		}
+		function CVWorkItemsModel(){
+		this.workItems=[];
+		}
+		function CVQAWorkItemsModel(){
+		this.workItems=[];
+		}
+
+		var healthPlanModel = new HealthPlanModel();
+		var clientModel = new ClientModel();
+        var worklistViewModel = new WorkListViewModel();
+        var workListRolesModel = new WorkListRolesModel();
+        var userWorkItemsModel = new UserWorkItemsModel();
+        var groupWorkItemsModel = new GroupWorkItemsModel();
+        var completedWorkItemsModel = new CompletedWorkItemsModel();
+		var overreadCodingWorkItemsModel = new OverreadCodingWorkItemsModel();
+		var overreadDiscrepanciesWorkItemsModel = new OverreadDiscrepanciesWorkItemsModel();
+		var cvWorkItemsModel=new CVWorkItemsModel();
+		var cvqaWorkItemsModel=new CVQAWorkItemsModel();
+		var getAllWorkItmesCountByVendorModel = new GetAllWorkItmesCountByVendorModel();
+        $(
+            function () {
+				if(window.dataObject)
+				{
+					userDN = window.dataObject.userDN;
+					userKey = window.dataObject.userKey;
+				}	
+                if (!userDN) {
+                    throw new Error("User not found.");
+                }
+                autoSuggestOb = new $.cordys.autosuggest($("#searchTextElement")[0], {
+                    minChars: 3
+                });
+                //this event will be fired when no of characters are more than 3
+                $("#searchTextElement").on("beforeshow", function (e) {
+                    //show only if Provider Group Selected
+                    if ($("#providerGRPNameElement").is(':checked')) {
+                        $("#searchTextElement").data("showSuggests", "true");
+                        if (autoSuggestOb.__optionTimer) window.clearTimeout(autoSuggestOb.__optionTimer);
+                        autoSuggestOb.__optionTimer = window.setTimeout(fillAutoSuggest(autoSuggestOb, $("#searchTextElement").val()), 0);
+                    } else {
+                        $("#searchTextElement").data("showSuggests", "false");
+                    }
+                });
+
+                //for Optum ID Integration
+                $.cordys.ajax.defaults.isMock = true;
+
+                var uxo = ux(); // UX object
+                preparePagination();
+                resetToDefaultTab();
+                $("#searchBtn").bind("click", function (e) {
+                    optumUI.hideMessage();
+					var currentSearchText = "";
+					if($("#healthPlanElement").is(':checked'))
+					{
+						currentSearchText = $("#selectHealthPlan").val();
+					}
+					else if($("#clientElement").is(':checked'))
+					{
+						currentSearchText = $("#selectClient").val();
+					}
+					else
+					{
+						currentSearchText = $("#searchTextElement").val();
+					}
+                    if ( currentSearchText == "")
+					{
+                        optumUI.showError("Please provide search text.", false);
+                        return;
+                    }
+					if (currentSearchText.length > 50)
+					{
+						optumUI.showError(MAX_SEARCH_CHAR_ERR, false);
+						return false;
+					}
+					if(currentSearchText.length > 0)
+					{
+						isSearch = true;
+					}
+					else
+					{
+						isSearch = false;
+					}
+                    searchTaskData(null, false);
+					//getAllInProgressCounts(true);
+                });
+
+                $("#clearBtn").bind("click", function (e) {
+                    clearButton_Click();
+                });
+
+                $("#orgElement").bind("change", function (e) {
+                    optumUI.hideMessage();
+					if($("#orgElement option:selected").text()=='External Users')
+						tempCodes.Approvals='AM';
+					else
+						tempCodes.Approvals='AP';
+					isInprogressCountDone = false;
+					getAllInProgressCounts(false);
+                });
+
+				$(":radio").bind("change", function (e){
+					if($(":radio").is(':checked'))
+					{
+						hideorShowFilterButtons(true);
+					}
+					else
+					{
+						//alert("N");
+					}
+				});
+
+				$("#selectHealthPlan").bind("change", function (e){
+				//alert($("#selectHealthPlan").val());
+				});
+
+
+                $(document).on("columnsort", function (e, dataObject) {
+                    customSortObj = {};
+                    customSortObj.columnId = dataObject.dataAttr.value;
+                    if (customSortObj.columnId != "ProviderGroup") {
+                        if (CURRENTSORTINGCOL.sortClass == "ux-icon-tabl-sort-asc") customSortObj.sortOrder = "ASC";
+                        else if (CURRENTSORTINGCOL.sortClass == "ux-icon-tabl-sort-desc") customSortObj.sortOrder = "DESC";
+                        else customSortObj.sortOrder = "ASC";
+                        var tabID = $(document).data(ACTIVETABID);
+                        showWorkItems(null, $(document).data(ACTIVEROLE), $(document).data(ACTIVETABID), customSortObj, dataObject.srcElement);
+                    }
+                });
+
+
+
+                $("thead th").bind("click", function (e) {
+                    CURRENTSORTINGCOL = e.delegateTarget;
+                    var sort = setCurrentSortColumn(e.delegateTarget);
+                    CURRENTSORTINGCOL.sortClass = sort.sortClass;
+                    if (!sort.isAllowed) return;
+                    var eventName = "columnsort";
+                    $(document).trigger(eventName, {
+                        srcElement: e.delegateTarget,
+                        dataAttr: e.delegateTarget.attributes.dataAttr,
+                        sortClass: sort.sortClass
+                    });
+                });
+
+                $(".tab-label").bind("click", function (e) {
+                    var currentRole = $(document).data(ACTIVEROLE);
+                    var tabId = e.delegateTarget.id;
+                    if ($(document).data(ACTIVETABID) != tabId) {
+                        $(document).data(ACTIVETABID, tabId);
+                    }
+                    if (tabId == CURRENTITEMSTABID) $(document).data(ACTIVETAB, MYTASKSVIEW);
+                    else if (tabId == COMPLETEDITEMSTABID) $(document).data(ACTIVETAB, COMPLETEDVIEW);
+                    else if (tabId == GROUPITEMTABID) $(document).data(ACTIVETAB, UNASSIGNEDVIEW);
+					else if (tabId == OVERREADCODINGTABID) $(document).data(ACTIVETAB, OVERREADCODINGVIEW);
+					else if (tabId == OVERREADDISCTABID) $(document).data(ACTIVETAB, OVERREADDISCREPANCIESVIEW);
+					else if (tabId == CVTABID) $(document).data(ACTIVETAB, CVVIEW);
+					else if (tabId == CVQATABID) $(document).data(ACTIVETAB, CVQAVIEW);
+                    if (e.headerElement) setCurrentSortColumnIcon(e.headerElement);
+                    hideOrShowGroupItems(currentRole);
+                    showWorkItems(null, currentRole, tabId);
+                    refetchClientsOrHealthPlans();
+
+                });
+
+                organizationModel = $.cordys.gcmcore.getUserTeams({
+                    parameters: {
+                        isWorkListOrganizations: 'Y',
+                        userDN: userDN
+
+                    }
+                });
+                organizationModel.read().done(function (e) {
+                    worklistViewModel.organizations = e;
+                    ko.applyBindings(worklistViewModel, $("#orgElement")[0]);
+                    if (e.length == 1) {
+                        $("#orgElementRow").hide();
+                    }
+					if($("#orgElement option:selected").text()=='External Users')
+						tempCodes.Approvals='AM';
+					else
+						tempCodes.Approvals='AP';
+					getAllInProgressCounts(false);
+                });
+
+
+            }
+        );
+
+        function readClients(businessSegment, roleCode){
+        	clientModel.clients = {};
+			getClientModel = new $.cordys.model({
+							objectName: "HealthPlan",
+							dataType: "json",
+							read:{
+								async: true,
+								namespace: "http://schemas.optum.com/optum/cpc/gcm/ws/healthplan/1.0",
+								method: "GetUserClients",
+								parameters:
+								{
+									businessSegment : businessSegment,
+									roleCode : roleCode
+								}
+							}
+			});
+			
+			ko.cleanNode($("#selectClient")[0]);
+			getClientModel.read().done(function(e){
+					clientModel.clients = e;
+                    ko.applyBindings(clientModel, $("#selectClient")[0]);
+			});
+        }
+
+        function readHealthPlans(businessSegment, roleCode){
+
+			 healthPlanModel.healthPlans = {};
+        	 var getHealthPlanModel = new $.cordys.model({
+						objectName: "HealthPlan",
+						dataType: "json",
+						read:{
+							async: true,
+							namespace: "http://schemas.optum.com/optum/cpc/gcm/ws/healthplan/1.0",
+							method: "GetUserHealthPlans",
+							parameters:
+							{
+								businessSegment : businessSegment,
+								roleCode : roleCode
+							}
+						}
+				});
+
+				ko.cleanNode($("#selectHealthPlan")[0]);
+				
+				getHealthPlanModel.read().done(function (e) {
+						healthPlanModel.healthPlans = e;
+		                ko.applyBindings(healthPlanModel, $("#selectHealthPlan")[0]);
+                });
+        }
+
+        function clearButton_Click() {
+            optumUI.hideMessage();
+            $("#searchTextElement").val("");
+			$("#selectHealthPlan").val("");
+                 $("#selectClient").val("");
+            searchTaskData(null, false);
+			getAllInProgressCounts(true);
+        }
+
+        /*Returns the sort object based on the previous sort order*/
+        function setCurrentSortColumn(headerElement) {
+            var sort = {
+                isAllowed: true,
+                sortClass: ""
+            };
+            //traverse to table and find rows
+            var dataRows = $(headerElement).parent().parent().parent().find("tbody tr");
+            //no data so dont apply sort
+            if (dataRows.length == 0) {
+                sort.isAllowed = false;
+                return sort;
+            }
+            var spanElement = $(headerElement).find("span");
+            //if sort is not supported
+            if (spanElement.length == 0) {
+                sort.isAllowed = false;
+                return sort;
+            }
+            var sortClass = "";
+            if (spanElement.hasClass("ux-icon-tabl-sort-asc")) {
+                sortClass = "ux-icon-tabl-sort-desc";
+            } else if (spanElement.hasClass("ux-icon-tabl-sort-desc")) {
+                sortClass = "ux-icon-tabl-sort-asc";
+            } else {
+                sortClass = "ux-icon-tabl-sort-asc";
+            }
+            sort.sortClass = sortClass;
+            return sort;
+        }
+        /*Changes the class of the sorted column header based on the sorted class or existing sort class*/
+        function setCurrentSortColumnIcon(headerElement, sortClass) {
+            var spanElement = $(headerElement).find("span");
+            if (!sortClass) {
+                var sortClass = "";
+                if (spanElement.hasClass("ux-icon-tabl-sort-asc")) {
+                    sortClass = "ux-icon-tabl-sort-desc";
+                } else if (spanElement.hasClass("ux-icon-tabl-sort-desc")) {
+                    sortClass = "ux-icon-tabl-sort-asc";
+                } else {
+                    sortClass = "ux-icon-tabl-sort-asc";
+                }
+            }
+            //known bug :: this removes sorting image from all tabs
+            removeSortColumnIcon();
+            $(spanElement).addClass(sortClass);
+        }
+
+        function removeSortColumnIcon() {
+            $(".ux-tpnl-content .ux-icon-tabl-sort-desc").removeClass("ux-icon-tabl-sort-desc");
+            $(".ux-tpnl-content .ux-icon-tabl-sort-asc").removeClass("ux-icon-tabl-sort-asc");
+        }
+
+        function getCurrentPageData(pagenumber) {
+            if (parseInt(pagenumber) < 1) return;
+            ISPAGINATION = "YES";
+            var cursor = {};
+            cursor.position = (parseInt(pagenumber) - 1) * 25;
+            cursor.numRows = MAX_ROWS;
+            cursor.maxRows = MAX_ROWS;
+            searchTaskData(cursor, false);
+        }
+
+		function defaultLastSelection()
+		{
+			var tmp = lastSelectedRole.split("@");
+			if(tmp.length == 2)
+			{
+				if(tmp[0] == "Role")
+				{
+					handleSelection($("li[name='"+tmp[1]+"']"));
+				}
+				else
+				{
+					var childelement = $("li[buzsegmenttitle='"+tmp[1]+"']");
+					var parentElement = $("li[buzsegmenttitle='"+tmp[1]+"']").parent().parent();
+					$(parentElement).addClass("ux-vnav-has-selected");
+					$(parentElement).addClass("ux-vnav-submenu-open");
+					$(childelement).addClass("ux-vnav-selected");
+				}
+			}
+		}
+
+		function refresh_Button_click()
+		{
+			optumUI.hideMessage();
+			if(!isCommitCallBack)
+			{
+				$(":radio").attr('checked', false);
+				hideorShowFilterButtons(false);
+				searchTaskData(null,true);
+			}
+			else
+			{
+				searchTaskData(null,false);
+			}
+			getAllInProgressCounts(true);
+			isCommitCallBack = false;
+			//fireFirstBuzSegClick(lastSelectedRole);
+		}
+
+        function searchTaskData(cursor, isRefresh) {
+            optumUI.hideMessage();
+            if (isRefresh) {
+                customSortObj = {};
+                removeSortColumnIcon();
+            }
+            if (typeof (cursor) == "undefined") cursor = null;
+            var tabId = $(document).data(ACTIVETABID);
+            showWorkItems(cursor, $(document).data(ACTIVEROLE), tabId, customSortObj);
+        }
+
+        function resetToDefaultTab() {
+            //when user is moving from Completed View in one role to other role
+            //Tab has to be there only
+            var isReset = false;
+            if (!$(document).data(ACTIVETAB)) {
+                $(document).data(ACTIVETAB, MYTASKSVIEW);
+                $(document).data(ACTIVETABID, CURRENTITEMSTABID);
+                defaultFilterOptions();
+            }
+            return isReset;
+        }
+
+        function defaultFilterOptions()
+		{
+			$(":radio").attr('checked', false);
+            $("#searchTextElement").val("");
+			$("#selectHealthPlan").val("");
+                          $("#selectClient").val("");
+			var currentRoleName = $(document).data(ACTIVEROLE);
+			if(typeof(currentRoleName) != "undefined" && (currentRoleName.indexOf(ACCOUNT_MANAGER) != -1 || currentRoleName.indexOf(APPROVER) != -1 || currentRoleName.indexOf(APPROVALS) != -1))
+			{
+				hideorShowFilters(false,false,true);
+			}
+			else
+			{
+				hideorShowFilters(true,false,false);
+			}
+        }
+
+        function manageWorkItemStatus(currentWorkItem,taskId, status, activityName, isApprovalWorkItem) {
+            var manageWorkItemStatusModel = null;
+            var dataObject = {};
+            dataObject.isDisableForm = false;
+			dataObject.workItemData = currentWorkItem;
+            if (status == "ASSIGNED") {
+                manageWorkItemStatusModel = new $.cordys.model({
+                    objectName: "ServiceMessage", // Name of the Business Object
+                    dataType: "json",
+					useTupleProtocol : false,
+                    read: {
+                        async: true,
+                        // Settings for the read method
+                        namespace: "http://schemas.optum.com/optum/cpc/emerald/bpm/chart/inventory/workitem/status/1.0",
+                        method: "ManageWorkItemStatus",
+                        // Parameters for the method
+                        parameters: {
+                            WorkItemId: taskId,
+                            TransAction: "ACCEPT"
+                        }
+                    }
+                });
+                manageWorkItemStatusModel.read().done(function (e) {
+                    //done handler
+                    var serviceMessage = $.isArray(e) ? e[0] : e;
+                    if (serviceMessage.Type == "SUCCESS") {
+                        openTask(taskId, dataObject, activityName);
+                    } else {
+                        var faultString = serviceMessage.Description || "";
+                        if (faultString.indexOf("read-only because") != -1) {
+                            dataObject.isDisableForm = true;
+                            dataObject.errorMessage = faultString;
+                            openTask(taskId, dataObject, activityName);
+                        } else {
+                            optumUI.showError(faultString, false);
+                        }
+                    }
+                });
+            } else {
+                openTask(taskId, dataObject, activityName);
+            }
+        }
+
+        function openTask(taskId, dataObject, activityName) {
+            if (typeof (CordysRoot) == "undefined") {
+                optumUI.showError("Application not initialized properly.", false);
+                return;
+            } else if (CordysRoot && CordysRoot.openWorkItem) {
+                dataObject.appCallback = onCommitCallBack;
+                CordysRoot.openWorkItem(taskId, dataObject, "com_optum_cpc_emerald_inbox_WorkListTaskView", "com_optum_cpc_emerald_worklist_id");
+            }
+        }
+
+		var refreshTimer = 0;
+
+        function onCommitCallBack() {
+			isCommitCallBack = true;
+            if ( refreshTimer ){
+            	window.clearTimeout(refreshTimer);
+            	refreshTimer = 0;
+            }
+            refreshTimer = window.setTimeout(refresh_Button_click, 0);
+        }
+
+        function sub_setPageNumber(newPage, isOnPageChange) {
+            if (validateInteger(newPage, getMaxPagenumber())) {
+                setPageNumber($(document).data(ACTIVETABID), newPage);
+                if (!isOnPageChange) getCurrentPageData(newPage);
+                else getCurrentPageData($(document).data(CURRENTPAGENUMBER));
+            } else {
+                optumUI.showError("Invalid PageNumber.", false);
+                return;
+            }
+        }
+
+        function preparePagination() {
+            $(".ux-pagi-first").bind("click", function (e) {
+                //first handler
+				var maxPage = getMaxPagenumber();
+				if (maxPage <= 1) return;
+                sub_setPageNumber(1, false);
+            });
+            $(".ux-pagi-prev").bind("click", function (e) {
+                //prev handler
+                var currPage = $(document).data(CURRENTPAGENUMBER);
+                var newPage = parseInt(currPage) - 1;
+                if (newPage < 1) return;
+                sub_setPageNumber(newPage, false);
+            });
+            $(".ux-pagi-next").bind("click", function (e) {
+                //next handler
+                var currPage = $(document).data(CURRENTPAGENUMBER);
+                var newPage = parseInt(currPage) + 1;
+                if (newPage > getMaxPagenumber()) return;
+                sub_setPageNumber(newPage, false);
+            });
+            $(".ux-pagi-last").bind("click", function (e) {
+                //last handler
+                var maxPage = getMaxPagenumber();
+                if (maxPage <= 1) return;
+                sub_setPageNumber(maxPage, false);
+            });
+            $(".ux-pagi-current-page").bind("change", function (e) {
+                //on page change handler
+                onPageEnter(e);
+            });
+        }
+
+		function updateInprogressCounts()
+		{
+			workListRolesModel.roles = [];
+            if (!$("#orgElement").val()) {
+                optumUI.showError("User doesn't have access to view worklist. Please contact administrator.", false);
+                $(".ux-content").hide();
+                $(".ux-vnav").hide();
+                return;
+            }
+			workListRolesModel.roles = worklistViewModel.roles;
+            ko.applyBindings(workListRolesModel, $("#roleContainer")[0]);
+		}
+
+		function sub_displayRoles(uxo)
+		{
+			uxo.initializeVerticalNavigation();
+
+		}
+
+        function displayRoles(uxo) {
+			updateInprogressCounts();
+            sub_displayRoles(uxo);
+        }
+
+        function fetchFirstRoleDate()
+		{
+	        if ($("#roleContainer li").length > 0)
+			{
+                if ( $("#roleContainer li ul li").length > 0 ){
+                	handleSelection($("#roleContainer li ul li")[0]);
+                	$($("#roleContainer li ul li")[0]).trigger("click", {});
+                }else{
+                	handleSelection($("#roleContainer li")[0]);
+                	$($("#roleContainer li")[0]).trigger("click", {});
+                }
+            }
+        }
+
+		function hideorShowFilters(isShowFilterOptions,isShowButtons,isApprover)
+		{
+			$("#searchTextElement").val("");
+			$("#selectHealthPlan").val("");
+                        $("#selectClient").val("");
+			if(!isShowFilterOptions && isApprover)
+			{
+				$(".filterOptions").hide();
+			}
+			else
+			{
+				$(".filterOptions").show();
+			}
+			hideorShowFilterButtons(isShowButtons);
+		}
+
+		function refetchClientsOrHealthPlans(){
+			    var roleCode = getRoleCode($(document).data(ACTIVEROLE),  $(document).data(ACTIVETAB));
+        	 	if ( ! roleCode ) roleCode = "";
+        	 	var businessSegment = $(document).data(ACTIVEBUSINESSSEGMENT);
+				if ($("#healthPlanElement").is(':checked'))
+				{
+					readHealthPlans(businessSegment, roleCode);
+				}
+				else if($("#clientElement").is(':checked'))
+				{
+					readClients(businessSegment, roleCode);
+				}
+		}
+
+		function hideorShowFilterButtons(isShowButtons)
+		{
+			$("#searchTextElement").val("");
+			$("#selectHealthPlan").val("");
+            $("#selectClient").val("");
+			if(isShowButtons)
+			{
+				if ($("#healthPlanElement").is(':checked'))
+				{
+					refetchClientsOrHealthPlans();
+					$("#searchTextElement").hide();
+					$("#selectHealthPlan").show();
+					$("#selectClient").hide();
+				}
+				else if($("#clientElement").is(':checked'))
+				{
+					refetchClientsOrHealthPlans();
+					$("#searchTextElement").hide();
+					$("#selectClient").show();
+					$("#selectHealthPlan").hide();
+				}
+				else
+				{
+					$("#searchTextElement").show();
+					$("#selectHealthPlan").hide();
+					$("#selectClient").hide();
+				}
+                $("#searchBtn").show();
+                $("#clearBtn").show();
+			}
+			else
+			{
+				$("#searchTextElement").hide();
+				$("#selectHealthPlan").hide();
+				$("#searchTextElement").hide();
+				$("#selectClient").hide();
+                $("#searchBtn").hide();
+                $("#clearBtn").hide();
+			}
+		}
+
+        function hideOrShowColumns(roleDN) {
+            if (!roleDN) {
+                return;
+            }
+            $(".ux-tpnl-content .workItemColumns").show();
+            $(".ux-tpnl-content .esclateColumns").hide();
+            $(".ux-tpnl-content .approvercolumns").hide();
+            $(".ux-tpnl-content .completedColumns").hide();
+            $(".ux-tpnl-content .coachColumns").hide();
+            if (roleDN.indexOf(SUPERVISOR) >= 0 || roleDN.indexOf(COACH) >= 0)
+			{
+                $(".ux-tpnl-content .esclateColumns").show();
+                if (roleDN.indexOf(COACH) >= 0)
+				{
+                    $(".supervisorfilterOptions").show();
+                }
+				else
+				{
+                    //reset values
+                    if ($("#supervisorElement").is(':checked'))
+					{
+                        defaultFilterOptions();
+                    }
+                    $(".supervisorfilterOptions").hide();
+                }
+                if (roleDN.indexOf(COACH) >= 0)
+				{
+                    $(".ux-tpnl-content .coachColumns").show();
+                }
+            }
+			else
+			{
+                //reset values
+                if ($("#supervisorElement").is(':checked'))
+				{
+                    defaultFilterOptions();
+                }
+                $(".supervisorfilterOptions").hide();
+            }
+            if (roleDN.indexOf(APPROVER) >= 0 || roleDN.indexOf(APPROVALS) >= 0 || roleDN.indexOf(MANAGER) >= 0 || roleDN.indexOf(ACCOUNT_MANAGER) >= 0)
+			{
+                $(".ux-tpnl-content .workItemColumns").hide();
+                $(".ux-tpnl-content .approvercolumns").show();
+            }
+            if ($(document).data(ACTIVETAB) == COMPLETEDVIEW)
+			{
+                $(".ux-tpnl-content .completedColumns").show();
+            }
+
+        }
+
+        function isGroupItemsAllowed(roleDN) {
+            var isAllowed = false;
+            if (roleDN && (roleDN.indexOf(SUPERVISOR) >= 0 || roleDN.indexOf(COACH) >= 0)) {
+                isAllowed = true;
+            }
+            return isAllowed;
+        }
+
+        function hideOrShowGroupItems(roleDN) {
+            if (isGroupItemsAllowed(roleDN)) {
+                $("#groupTab").show();
+            } else {
+                $("#groupTab").hide();
+            }
+        }
+
+        function handleSelection(srcElement) {
+			$(".ux-vnav-selected").removeClass("ux-vnav-submenu-open");
+			$(".ux-vnav-selected").addClass("ux-vnav-submenu-closed");
+            $(".ux-vnav-selected").removeClass("ux-vnav-has-selected");
+            $(srcElement).addClass("ux-vnav-has-selected");
+			$(srcElement).addClass("ux-vnav-submenu-open");
+            $(srcElement).removeClass("ux-vnav-active");
+        }
+
+		function handleBuzSegmentSelection(srcElement) {
+			$(".ux-vnav-has-selected").removeClass("ux-vnav-submenu-open");
+			$(".ux-vnav-has-selected").addClass("ux-vnav-submenu-closed");
+			$(".ux-vnav-has-selected").removeClass("ux-vnav-has-selected")
+            $(".ux-vnav-selected").removeClass("ux-vnav-selected");
+			$(".ux-vnav-selected").removeClass("ux-vnav-has-selected");
+            $(srcElement).addClass("ux-vnav-selected");
+			$(srcElement).removeClass("ux-vnav-active");
+        }
+
+        var taskCompletedDurationVal;
+
+        function taskCompletedDurationChange(srcElement) {
+            taskCompletedDurationVal = $(srcElement).val();
+        }
+
+        function showWorkItems(cursor, roleDN, tabId, customSortObj, headerElement) {
+            if (!customSortObj) removeSortColumnIcon();
+            $(".ux-tpnl-selected").find(".ux-tabl-data tbody").html("");
+            //set active tab id
+            $(document).data(ACTIVETABID, tabId);
+            //jquery supports only string values to set in data
+            //this is future use to keep position same place when user complets work item and came back to work list
+            //but don't do now
+            activeCursor = cursor;
+            optumUI.hideMessage();
+            if (typeof(roleDN) == "undefined") {
+                optumUI.showError("Invalid Role.", false);
+                return;
+            }
+            $(document).data(ACTIVEROLE, roleDN);
+			var filterObj = getFilterObjects();
+			if ( ! filterObj ){
+				return;
+			}
+            var fromDate;
+            var toDate;
+            var dateRange = WorkList_getDateRange(taskCompletedDurationVal);
+            fromDate = dateRange.fromDate;
+            toDate = dateRange.toDate;
+            workItemsCordysModel = new $.cordys.model({
+                objectName: "WorkItem", // Name of the Business Object
+                dataType: "json",
+                read: {
+                    async: true,
+                    // Settings for the read method
+                    namespace: "http://schemas.optum.com/optum/cpc/gcm/workitem/1.0",
+                    method: "GetWorkItems",
+                    // Parameters for the method
+                    parameters: getWorkItemsRequestTemplate(cursor, $(document).data(ACTIVETAB), roleDN, userDN,userKey, $("#orgElement").val(), filterObj.barCode, filterObj.providerGroup, filterObj.healthPlan, filterObj.supervisorName, fromDate, toDate, customSortObj,filterObj.clientName)
+                }
+            });
+
+            var readHandler = workItemsCordysModel.read();
+            readHandler.done(function (e) {
+                var currentItemModel = null;
+
+                if ($(document).data(ACTIVETAB) == MYTASKSVIEW)
+				{
+                    userWorkItemsModel.workItems = e;
+                    currentItemModel = userWorkItemsModel;
+                    var tableBody = $(".ux-tpnl-content").find("#currentItemsTableBody")[0];
+                    ko.cleanNode(tableBody);
+                    $(tableBody).html("");
+					ko.applyBindings(userWorkItemsModel, tableBody);
+                    $(".ux-tpnl-content").find("#currentItemsTableBody tr:even").addClass('ux-tabl-alt-row');
+					if(userWorkItemsModel.workItems.length==0)
+					{
+						$(".noRecsFound").show();
+					}
+					else
+					{
+						$(".noRecsFound").hide();
+					}
+                }
+				else if ($(document).data(ACTIVETAB) == UNASSIGNEDVIEW)
+				{
+                    groupWorkItemsModel.workItems = e;
+                    currentItemModel = groupWorkItemsModel;
+                    var tableBody = $(".ux-tpnl-content").find("#groupItemsTableBody")[0];
+                    ko.cleanNode(tableBody);
+                    $(tableBody).html("");
+                    ko.applyBindings(groupWorkItemsModel, tableBody);
+                    $(".ux-tpnl-content").find("#groupItemsTableBody tr:even").addClass('ux-tabl-alt-row');
+					if(groupWorkItemsModel.workItems.length==0)
+					{
+						$(".noRecsFound").show();
+					}
+					else
+					{
+						$(".noRecsFound").hide();
+					}
+                }
+				else if ($(document).data(ACTIVETAB) == COMPLETEDVIEW)
+				{
+                    completedWorkItemsModel.workItems = e;
+                    currentItemModel = completedWorkItemsModel;
+                    var tableBody = $(".ux-tpnl-content").find("#completedItemsTableBody")[0];
+                    ko.cleanNode(tableBody);
+                    $(tableBody).html("");
+                    ko.applyBindings(completedWorkItemsModel, tableBody);
+                    $(".ux-tpnl-content").find("#completedItemsTableBody tr:even").addClass('ux-tabl-alt-row');
+					if(completedWorkItemsModel.workItems.length==0)
+					{
+						$(".noRecsFound").show();
+					}
+					else
+					{
+						$(".noRecsFound").hide();
+					}
+                }
+				else if ($(document).data(ACTIVETAB) == OVERREADCODINGVIEW)
+				{
+                    overreadCodingWorkItemsModel.workItems = e;
+                    currentItemModel = overreadCodingWorkItemsModel;
+                    var tableBody = $(".ux-tpnl-content").find("#overreadCodingTabTableBody")[0];
+                    ko.cleanNode(tableBody);
+                    $(tableBody).html("");
+                    ko.applyBindings(overreadCodingWorkItemsModel, tableBody);
+                    $(".ux-tpnl-content").find("#overreadCodingTabTableBody tr:even").addClass('ux-tabl-alt-row');
+					if(overreadCodingWorkItemsModel.workItems.length==0)
+					{
+						$(".noRecsFound").show();
+					}
+					else
+					{
+						$(".noRecsFound").hide();
+					}
+                }
+				else if ($(document).data(ACTIVETAB) == OVERREADDISCREPANCIESVIEW)
+				{
+                    overreadDiscrepanciesWorkItemsModel.workItems = e;
+                    currentItemModel = overreadDiscrepanciesWorkItemsModel;
+                    var tableBody = $(".ux-tpnl-content").find("#overreadDiscTabTableBody")[0];
+                    ko.cleanNode(tableBody);
+                    $(tableBody).html("");
+                    ko.applyBindings(overreadDiscrepanciesWorkItemsModel, tableBody);
+                    $(".ux-tpnl-content").find("#overreadDiscTabTableBody tr:even").addClass('ux-tabl-alt-row');
+					if(overreadDiscrepanciesWorkItemsModel.workItems.length==0)
+					{
+						$(".noRecsFound").show();
+					}
+					else
+					{
+						$(".noRecsFound").hide();
+					}
+                }
+
+				else if ($(document).data(ACTIVETAB) == CVVIEW)
+				{
+                    cvWorkItemsModel.workItems = e;
+                    currentItemModel = cvWorkItemsModel;
+                    var tableBody = $(".ux-tpnl-content").find("#cvTabTableBody")[0];
+                    ko.cleanNode(tableBody);
+                    $(tableBody).html("");
+                    ko.applyBindings(cvWorkItemsModel, tableBody);
+                    $(".ux-tpnl-content").find("#cvTabTableBody tr:even").addClass('ux-tabl-alt-row');
+					if(cvWorkItemsModel.workItems.length==0)
+					{
+						$(".noRecsFound").show();
+					}
+					else
+					{
+						$(".noRecsFound").hide();
+					}
+                }
+
+				else if ($(document).data(ACTIVETAB) == CVQAVIEW)
+				{
+                    cvqaWorkItemsModel.workItems = e;
+                    currentItemModel = cvqaWorkItemsModel;
+                    var tableBody = $(".ux-tpnl-content").find("#cvQATabTableBody")[0];
+                    ko.cleanNode(tableBody);
+                    $(tableBody).html("");
+                    ko.applyBindings(cvqaWorkItemsModel, tableBody);
+                    $(".ux-tpnl-content").find("#cvQATabTableBody tr:even").addClass('ux-tabl-alt-row');
+					if(cvqaWorkItemsModel.workItems.length==0)
+					{
+						$(".noRecsFound").show();
+					}
+					else
+					{
+						$(".noRecsFound").hide();
+					}
+                }
+                if (CURRENTSORTINGCOL) {
+                    var headerSortElement = $(".ux-tpnl-content").find("th." + CURRENTSORTINGCOL.className + "[dataattr='" + CURRENTSORTINGCOL.getAttribute("dataattr") + "']");
+                    setCurrentSortColumnIcon(headerSortElement, CURRENTSORTINGCOL.sortClass);
+                    CURRENTSORTINGCOL = null;
+                }
+                if ($(document).data(ACTIVETABID) == COMPLETEDITEMSTABID) $(".ux-tpnl-content").find("#taskCompletedDuration").val(taskCompletedDurationVal);
+                //hide columns
+                hideOrShowColumns($(document).data(ACTIVEROLE));
+            });
+            //implement chartcount for all 3 view modes
+            if (ISPAGINATION == "NO")
+			{
+				if(roleDN.indexOf("CV") == -1)
+				readChartCount(roleDN, MYTASKSVIEW, userDN,userKey, $("#orgElement").val(), filterObj.barCode, filterObj.providerGroup, filterObj.healthPlan, filterObj.supervisorName, null, null,filterObj.clientName);
+				if( isGroupItemsAllowed(roleDN) ) 
+				readChartCount(roleDN, UNASSIGNEDVIEW, userDN,userKey, $("#orgElement").val(), filterObj.barCode, filterObj.providerGroup, filterObj.healthPlan, filterObj.supervisorName, null, null,filterObj.clientName);
+				readChartCount(roleDN, COMPLETEDVIEW, userDN,userKey, $("#orgElement").val(), filterObj.barCode, filterObj.providerGroup, filterObj.healthPlan, filterObj.supervisorName, fromDate, toDate,filterObj.clientName);
+				if(roleDN.indexOf("Coding") != -1)
+				{
+					readChartCount(roleDN, OVERREADCODINGVIEW, userDN,userKey, $("#orgElement").val(), filterObj.barCode, filterObj.providerGroup, filterObj.healthPlan, filterObj.supervisorName, null, null,filterObj.clientName);
+					readChartCount(roleDN, OVERREADDISCREPANCIESVIEW, userDN,userKey, $("#orgElement").val(), filterObj.barCode, filterObj.providerGroup, filterObj.healthPlan, filterObj.supervisorName, null, null,filterObj.clientName);
+				}
+				if(roleDN.indexOf("CV") != -1){
+				readChartCount(roleDN, CVVIEW , userDN,userKey, $("#orgElement").val(), filterObj.barCode, filterObj.providerGroup, filterObj.healthPlan, filterObj.supervisorName, null, null,filterObj.clientName);
+				readChartCount(roleDN, CVQAVIEW, userDN,userKey, $("#orgElement").val(), filterObj.barCode, filterObj.providerGroup, filterObj.healthPlan, filterObj.supervisorName, null, null,filterObj.clientName);
+				}
+            }
+            ISPAGINATION = "NO";
+        }
+
+		function getBusinessObject(roleName)
+		{
+			var currentRoleCode = getRoleCode(roleName);
+			if(currentRoleCode == "AP" || currentRoleCode == "MR" || currentRoleCode == "AM")
+			{
+				return "WorkItem" ;
+			}
+			else
+			{
+				return "GCM_PROJ_CONT_BUS_FUNC_VENDOR";
+			}
+		}
+
+        function readChartCount(roleDN, viewMode, user,userKey, team, barCode, providerGroup, healthPlan, supervisorName, fromDate, toDate,clientName) {
+            //TODO::Create Cordys model and in done event, set labels to Tabs along with Count
+            getChartCountCordysModel = new $.cordys.model({
+                objectName: getBusinessObject(roleDN), // Name of the Business Object
+                dataType: "json",
+                read: {
+                    async: true,
+                    // Settings for the read method
+                    namespace: "http://schemas.optum.com/optum/cpc/gcm/workitem/1.0",
+                    method: "GetWorkItemsCountView",
+                    // Parameters for the method
+					parameters: GetWorkItemsCountViewRequestTemplate(viewMode, "", barCode, providerGroup, healthPlan, supervisorName, fromDate, toDate, "", "", roleDN, team, "",clientName,userKey)
+				}
+            });
+            var chartCountHandler = getChartCountCordysModel.read();
+            chartCountHandler.done(function (e) {
+					if(viewMode == MYTASKSVIEW)
+					{
+						setTaskCount(CURRENTITEMSTABID, getRoleCount(e,roleDN,viewMode));
+					}
+					else if(viewMode == COMPLETEDVIEW)
+					{
+						setTaskCount(COMPLETEDITEMSTABID, getRoleCount(e,roleDN,viewMode));
+					}
+					else if(viewMode == UNASSIGNEDVIEW)
+					{
+						setTaskCount(GROUPITEMTABID,getRoleCount(e,roleDN,viewMode));
+					}
+					else if(viewMode == OVERREADCODINGVIEW)
+					{
+						setTaskCount(OVERREADCODINGTABID,getRoleCount(e,"Overread Coder 2",viewMode));
+					}
+					else if(viewMode == OVERREADDISCREPANCIESVIEW)
+					{
+						setTaskCount(OVERREADDISCTABID,getRoleCount(e,"Overread Discrepancies",viewMode));
+					}
+					else if(viewMode == CVVIEW )
+					{
+						setTaskCount(CVTABID,getRoleCount(e,"CV",viewMode));
+					}
+					else if(viewMode == CVQAVIEW)
+					{
+						setTaskCount(CVQATABID,getRoleCount(e,"CVQA",viewMode));
+					}
+            });
+        }
+
+		function fireFirstBuzSegClick(e)
+		{
+			$($(e.delegateTarget).find("li")[0]).trigger("click", {});
+		}
+
+        function initializeRoleClickHandler(){
+
+        	$("#roleContainer li, #roleContainer li ul li").bind("click", function (e) {
+        			//if has children return because onclick happens two times because of roleContainer li structure
+        			if ( $(e.delegateTarget).find("li").length > 0 ){
+        				handleSelection(e.delegateTarget);
+						if(!isBuszClick) fireFirstBuzSegClick(e);
+						isBuszClick = false;
+        				return;
+        			}
+					var currentRoleName = "";
+					e.preventDefault();
+					if(typeof(e.delegateTarget.attributes.buzsegmentname) != "undefined")
+					{
+						var currentBuzSegment = e.delegateTarget.attributes.buzsegmentname.value;
+						var currentworklisttitle = e.delegateTarget.attributes.buzSegmentTitle.value;
+						if(typeof(currentworklisttitle) != "undefined" && currentworklisttitle != "")
+						{
+							currentRoleName = currentworklisttitle.split(" ")[0];
+							$(document).data(ACTIVEBUSINESSSEGMENT,currentBuzSegment);
+							$("#worklistTitle").text(currentworklisttitle);
+							handleSelection($(e.delegateTarget).parent().parent().parent());
+							handleBuzSegmentSelection(e.delegateTarget);
+
+						}
+						lastSelectedRole = "BuzSeg@"+ currentworklisttitle;
+						isBuszClick = true;
+					}
+					else
+					{
+						currentRoleName = e.delegateTarget.attributes.name.value;
+						$(document).data(ACTIVEBUSINESSSEGMENT,"");
+						$("#worklistTitle").text(currentRoleName);
+						handleBuzSegmentSelection(e.delegateTarget);
+						lastSelectedRole = "Role@"+currentRoleName;
+					}
+					var prevRoleDN = $(document).data(ACTIVEROLE);
+					var codingDefaultFlag=0;
+					if(currentRoleName.indexOf("Coding") != -1 && $(document).data(ACTIVEBUSINESSSEGMENT)!="ACA")
+					{
+						if($.cordys.json.find($.cordys.json.find(organizationModel.OrganizationUnit(), "vendorKey",$("#orgElement").val()), "roleCode", "COU"))
+							{
+							$("#currentItemsTab").show();
+							document.getElementById("currentItemTab").style.display="inline-block";
+							}
+						else
+							{
+							$("#currentItemsTab").hide();
+							document.getElementById("currentItemTab").style.display="none";
+							codingDefaultFlag=1;
+							}
+						if($.cordys.json.find($.cordys.json.find(organizationModel.OrganizationUnit(), "vendorKey",$("#orgElement").val()), "roleCode", "OVRDCDR"))
+						{
+							$("#overreadTab").show();
+							$("#overreadTab").css("border-left-width", "1px");
+							if(codingDefaultFlag==1){
+								$(document).data(ACTIVETAB, OVERREADCODINGVIEW);
+							$(document).data(ACTIVETABID, OVERREADCODINGTABID);
+							}
+						}
+						else
+							$("#overreadTab").hide();
+						$("#overreadDisTab").show();
+
+					}
+					else
+					{
+						$("#overreadDisTab").hide();
+						$("#overreadTab").hide();
+					}
+					var defaultFlag=0;
+					if(currentRoleName.indexOf("CV") != -1)
+						{
+						if($.cordys.json.find($.cordys.json.find(organizationModel.OrganizationUnit(), "vendorKey",$("#orgElement").val()), "roleCode", "CVU")){
+							$("#cvTab").show();
+							document.getElementById("cvTab").style.display="inline-block";
+							$("#cvTab").css("border-left-width", "1px");
+							$(document).data(ACTIVETAB, CVVIEW);
+							$(document).data(ACTIVETABID, CVTABID);
+							defaultFlag=1;
+						}
+						else
+						{
+							$("#cvTab").hide();
+							document.getElementById("cvTab").style.display="none";
+						}
+						if($.cordys.json.find($.cordys.json.find(organizationModel.OrganizationUnit(), "vendorKey",$("#orgElement").val()), "roleCode", "CVQA")){
+							$("#cvQATab").show();
+							document.getElementById("cvQATab").style.display="inline-block";
+							$("#cvQATab").css("border-left-width", "1px");
+							if(defaultFlag==0){
+							$(document).data(ACTIVETAB, CVQAVIEW);
+							$(document).data(ACTIVETABID, CVQATABID);
+						}
+						}
+						else
+						{
+							$("#cvQATab").hide();
+							document.getElementById("cvQATab").style.display="none";
+						}
+						$("#currentItemsTab").hide();
+						document.getElementById("currentItemTab").style.display="none";
+						}
+					else
+						{
+						$("#cvTab").hide();
+						document.getElementById("cvTab").style.display="none";
+						$("#cvQATab").hide();
+						document.getElementById("cvQATab").style.display="none";
+						$("#currentItemsTab").show();
+						if(currentRoleName.indexOf("Coding")==-1)
+						document.getElementById("currentItemTab").style.display="inline-block";
+						}
+					var isGroupAllowed = isGroupItemsAllowed(prevRoleDN) && isGroupItemsAllowed(currentRoleName);
+					if (isGroupItemsAllowed(prevRoleDN) && !isGroupItemsAllowed(currentRoleName)) {
+						hideOrShowGroupItems(currentRoleName);
+						isGroupAllowed = false;
+					}
+					var prevTab = $(document).data(ACTIVETAB);
+					$(document).data(ACTIVEROLE, currentRoleName);
+					//onclick of a role
+					//if return true then dont call workitems again
+					if (!isGroupAllowed) $(document).data(ACTIVETAB, "");
+					if(currentRoleName!="CV" && codingDefaultFlag!=1) resetToDefaultTab();
+					var activeTabId = $(document).data(ACTIVETABID);
+					taskCompletedDurationVal = "Today";
+					$("#" + activeTabId).trigger("click");
+			});
+        }
+
+		function getFilterObjects()
+		{
+			var dataObj = {};
+			var barCode;
+            var providerGroup;
+            var supervisorName;
+			var healthPlan;
+			var clientName;
+            var searchText = "";
+			if($("#healthPlanElement").is(':checked'))
+			{
+				searchText =  $.trim($("#selectHealthPlan").val());
+			}
+			else if($("#clientElement").is(':checked'))
+			{
+				searchText =  $.trim($("#selectClient").val());
+			}
+			else
+			{
+				searchText = $.trim($("#searchTextElement").val());
+			}
+            if (searchText.length > 50)
+			{
+                optumUI.showError(MAX_SEARCH_CHAR_ERR, false);
+                return false;
+            }
+			if(searchText.length > 0)
+			{
+				isSearch = true;
+			}
+			else
+			{
+				isSearch = false;
+			}
+            if ($("#chartRequestIDElement").is(':checked'))
+			{
+                barCode = searchText;
+				dataObj.barCode = barCode;
+            }
+			else if ($("#providerGRPNameElement").is(':checked'))
+			{
+                providerGroup = searchText;
+				dataObj.providerGroup = providerGroup;
+            }
+			else if($("#healthPlanElement").is(':checked'))
+			{
+				healthPlan = searchText;
+				dataObj.healthPlan = healthPlan;
+			}
+			else if($("#clientElement").is(':checked'))
+			{
+				clientName = searchText;
+				dataObj.clientName = clientName;
+			}
+			else if ($("#supervisorElement").is(':checked'))
+			{
+                supervisorName = searchText;
+				dataObj.supervisorName = supervisorName;
+                if (supervisorName != "" && supervisorName.length < 4)
+				{
+                    optumUI.showError(SUPERVISORSEARCH_ERR, false);
+                    return false;
+                }
+            }
+			return dataObj;
+		}
+
+		function prepareGetWorkItemsCountViewByVendorTemplate()
+		{
+			var filterObj = getFilterObjects();
+			var parameterXml = "<workItemFilter><WorkItemFilter>";
+			parameterXml += "<viewMode>1</viewMode>";
+			var buzSeg = $(document).data(ACTIVEBUSINESSSEGMENT);
+			//Dont send buzSeg in overall count
+			//if(buzSeg != undefined) parameterXml += "<businessSegment>" + buzSeg + "</businessSegment>";
+			if(filterObj.barCode != undefined) parameterXml += "<projectBarCode>"+ filterObj.barCode +"</projectBarCode>";
+			if(filterObj.providerGroup != undefined) parameterXml += "<providerGroupName>"+ filterObj.providerGroup +"</providerGroupName>";
+			if(filterObj.supervisorName != undefined) parameterXml += "<reportsTo>" + filterObj.supervisorName + "</reportsTo>";
+			parameterXml += "<fromDate></fromDate>";
+			parameterXml += "<toDate></toDate>";
+			parameterXml += "<businessFunctionKey></businessFunctionKey>";
+			parameterXml += "<businessFunctionStatus></businessFunctionStatus>";
+			parameterXml += "<userRole></userRole>";
+			parameterXml += "<vendorKey>"+ $("#orgElement").val() +"</vendorKey>";
+			parameterXml += "<userKey>"+userKey+"</userKey>";
+			parameterXml += "<vendorLoc></vendorLoc>";
+			parameterXml += "<chartScoreGroup></chartScoreGroup>";
+			if(filterObj.healthPlan != undefined) parameterXml += "<healthPlan>"+ filterObj.healthPlan +"</healthPlan>";
+			if(filterObj.clientName != undefined) parameterXml += "<clientKey>"+ filterObj.clientName +"</clientKey>";
+			parameterXml += "</WorkItemFilter></workItemFilter>";
+			return parameterXml;
+		}
+
+		function getAllInProgressCounts(isRefresh)
+		{
+			if ( isSearch || ! getFilterObjects() ){
+				return;
+			}
+			var getAllInprogressCountsModel = new $.cordys.model({
+				objectName: "getWorkItemsCountViewByVendor",
+				dataType: "json",
+				read:{
+					async: true,
+					namespace: "http://schemas.optum.com/optum/cpc/gcm/workitem/1.0",
+					method: "GetWorkItemsCountViewByVendor",
+					parameters: prepareGetWorkItemsCountViewByVendorTemplate()
+				}
+			});
+			getAllInprogressCountsModel.read().done(function (e){
+				var workListObj = $.isArray(e) ? e[0].getWorkItemsCountViewByVendor.WorkList.WorkListItem : e.getWorkItemsCountViewByVendor.WorkList.WorkListItem;
+				worklistViewModel.roles = [];
+				if(!$.isArray(workListObj))
+				{
+					worklistViewModel.roles[0]= workListObj;
+				}
+				else
+				{
+					for (var i = 0, length = workListObj.length; i < length; i++)
+					{
+						worklistViewModel.roles[i]= workListObj[i];
+					}
+				}				
+				if(!isRefresh)
+				{
+					if(!isInprogressCountDone)
+					{
+						refreshRoleContainer(false);
+						isInprogressCountDone = true;
+					}
+				}
+				else
+				{
+					refreshRoleContainer(true);
+					defaultLastSelection();
+				}
+            }).fail(function (error){
+				$(".ux-content").hide();
+                $(".ux-vnav").hide();
+			});
+		}
+
+		function clearRoleContianer()
+		{
+			var roleContainer = $("#roleContainer")[0];
+			ko.cleanNode(roleContainer);
+			$(roleContainer).html("");
+		}
+
+		function refreshRoleContainer(isRefresh)
+		{
+			clearRoleContianer();
+			var uxo = ux();
+			displayRoles(uxo);
+			//Do only once
+			initializeRoleClickHandler();
+			if(!isRefresh) fetchFirstRoleDate();
+		}
+
+		function getRoleCount(e,roleName,viewMode)
+		{
+			var currentRoleCode = getRoleCode(roleName);
+			if(currentRoleCode == 'AP' || currentRoleCode == 'MR' || currentRoleCode == 'AM')
+			{
+				return (typeof(e[0]) != "undefined") ? e[0].COUNT : 0;
+			}
+			else if(currentRoleCode == 'SUP' || currentRoleCode == 'CA' || ( currentRoleCode == 'COU' && viewMode == COMPLETEDVIEW ) || ( currentRoleCode == 'CVU' && viewMode == COMPLETEDVIEW ))
+			{
+				return getStatusCount(e);
+			}
+			else if(currentRoleCode == 'OVRDDISC')
+			{
+				return getStatusCount($.cordys.json.findObjects(e,"GCM_ROLE_CODE",'COU'));
+			}
+			else if(currentRoleCode == 'QU')
+			{
+				var QUcount = getStatusCount($.cordys.json.findObjects(e,"GCM_ROLE_CODE",'QU'));
+				var OVRDQAcount = getStatusCount($.cordys.json.findObjects(e,"GCM_ROLE_CODE",'OVRDQA'));
+				return (Number(QUcount) + Number(OVRDQAcount));
+			}
+			else
+			{
+				return getStatusCount($.cordys.json.findObjects(e,"GCM_ROLE_CODE",currentRoleCode));
+			}
+		}
+
+		function getStatusCount(countObj)
+		{
+			var count = 0;
+			$.each($(countObj),function(){
+				count = Number(count) + Number(this.COUNT);
+			});
+			return count;
+		}
+		function addCounts(currObj)
+		{
+			var t = 0;
+			for(i = 0 ; i < currObj.length ; i++ )
+			{
+				t = Number(t) + Number(currObj[i].COUNT);
+			}
+			return t ;
+		}
+
+		function setCurrentRoleCount(count)
+		{
+			$(".ux-vnav-selected").children().text(count);
+			//var currentDesc = $(".ux-vnav-selected").children().text();
+			//if(currentDesc != undefined && currentDesc != "") $(".ux-vnav-selected").children().text(currentDesc.split(" (")[0] + " ("+ count + ")" );
+		}
+
+        function setTaskCount(tabID, count)
+		{
+            var currTabName = $("#" + tabID).text().split(" (");
+			if(tabID == CURRENTITEMSTABID)
+			{
+				if($(document).data(ACTIVEROLE) == "Coding")
+				{
+					currTabName[0] = "Coding";
+				}
+				else
+				{
+					currTabName[0] = "Current Items";
+				}
+			}
+            $("#" + tabID).text(currTabName[0] + " (" + count + ")");
+            if ($(document).data(ACTIVETABID) == tabID) setMaxPageNumber(tabID, count);
+        }
+
+        function setMaxPageNumber(tabID, count) {
+            var maxPage = Math.ceil(count / MAX_ROWS);
+            $(".ux-tpnl-content").find(".js_totalPages").text(maxPage);
+            if (maxPage < 1) setPageNumber(tabID, 0);
+            else setPageNumber(tabID, 1);
+        }
+
+        function setPageNumber(tabID, pagenumber) {
+			var maxPage = getMaxPagenumber();
+            $(".ux-tpnl-content").find(".ux-pagi").find("input").val(pagenumber);
+            $(document).data(CURRENTPAGENUMBER, pagenumber);
+			enableorDisablePagination(true);
+			if(maxPage == pagenumber)
+			{
+				if(pagenumber == 0 || pagenumber == 1)
+				{
+					enableorDisablePagination(false);
+					enableorDisableFirstPrevious(false);
+					enableorDisableNextLast(false);
+					//x-pagi-first.childelement
+				}
+				else
+				{
+					enableorDisableFirstPrevious(true);
+					enableorDisableNextLast(false);
+				}
+			}
+			else
+			{
+				if(pagenumber == 1)
+				{
+					enableorDisableFirstPrevious(false);
+					enableorDisableNextLast(true);
+				}
+				else
+				{
+					enableorDisablePagination(true);
+				}
+
+			}
+        }
+
+		function enableorDisablePagination(isEnable)
+		{
+			if(isEnable)
+			{
+				$(".ux-pagi").removeAttr('disabled');
+				$($(".ux-pagi-detail").children()).removeClass('discolor');
+				$($(".ux-pagi-detail").children()).removeAttr('disabled');
+				enableorDisableFirstPrevious(true);
+				enableorDisableNextLast(true);
+			}
+			else
+			{
+				$(".ux-pagi").attr('disabled',true);
+				$($(".ux-pagi-detail").children()).addClass('discolor')
+				$($(".ux-pagi-detail").children()).attr('disabled',true);
+			}
+		}
+
+		function enableorDisableFirstPrevious(isEnable)
+		{
+			if(isEnable)
+			{
+				$(".ux-pagi-first a").removeClass("underlinedis");
+				$(".ux-pagi-prev a").removeClass("underlinedis");
+				$(".ux-pagi-first a").addClass("underline");
+				$(".ux-pagi-prev a").addClass("underline");
+
+				$(".ux-pagi-first").removeAttr('disabled');
+				$(".ux-pagi-prev").removeAttr('disabled');
+			}
+			else
+			{
+				$(".ux-pagi-first a").addClass("underlinedis");
+				$(".ux-pagi-prev a").addClass("underlinedis");
+				$(".ux-pagi-first a").removeClass("underline");
+				$(".ux-pagi-prev a").removeClass("underline");
+
+				$(".ux-pagi-first").attr('disabled',true);
+				$(".ux-pagi-prev").attr('disabled',true);
+			}
+
+		}
+
+		function enableorDisableNextLast(isEnable)
+		{
+			if(isEnable)
+			{
+				$(".ux-pagi-next a").removeClass("underlinedis");
+				$(".ux-pagi-last a").removeClass("underlinedis");
+				$(".ux-pagi-next a").addClass("underline");
+				$(".ux-pagi-last a").addClass("underline");
+				$(".ux-pagi-next").removeAttr('disabled');
+				$(".ux-pagi-last").removeAttr('disabled');
+			}
+			else
+			{
+				$(".ux-pagi-next a").addClass("underlinedis");
+				$(".ux-pagi-last a").addClass("underlinedis");
+				$(".ux-pagi-next a").removeClass("underline");
+				$(".ux-pagi-last a").removeClass("underline");
+				$(".ux-pagi-next").attr('disabled',true);
+				$(".ux-pagi-last").attr('disabled',true);
+			}
+
+		}
+
+        function getMaxPagenumber() {
+            var currSpan = $(".ux-tpnl-content").find(".ux-pagi").first().find(".js_totalPages");
+            var maxPageValue = currSpan ? currSpan.text() : 0;
+            return maxPageValue || 0;
+        }
+
+        function onPageEnter(eventObj) {
+            optumUI.hideMessage();
+            sub_setPageNumber(eventObj.target.value, true);
+        }
+
+        function validateInteger(number, max) {
+            var intRegExp = /^[0-9]+$/;
+            var pageNumber = null;
+            pageNumber = "" + number;
+            if (pageNumber && (pageNumber == pageNumber.match(intRegExp))) {
+                if ((Number(max) != 0 && Number(pageNumber) != 0 && Number(pageNumber) <= Number(max)) || (Number(max) == 0 && Number(pageNumber) == Number(max))) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            return false;
+        }
+
+		function getViewMode(viewMode)
+		{
+			var currentView = viewModeMapping[viewMode] ;
+			if(currentView == '4' || currentView == '5')
+			{
+				return '1';
+			}
+			return currentView;
+		}
+
+        function getWorkItemsRequestTemplate(cursor, viewMode, role, user,userKey, team, barCode, providerGroup, healthPlan, supervisorName, fromDate, toDate, customSortObj,clientName) {
+            cursor = validateAndGetCursor(cursor);
+		    var currentView = getViewMode(viewMode);
+            var parameterXml = "<cursor position='" + cursor.position + "' numRows='" + cursor.numRows + "' maxRows='" + cursor.maxRows + "' sameConnection='false' />";
+            parameterXml += "<workItemFilter><WorkItemFilter>";
+            if (currentView != undefined) parameterXml += "<viewMode>" + currentView + "</viewMode>";
+			var buzSeg = $(document).data(ACTIVEBUSINESSSEGMENT);
+            if (buzSeg != undefined) parameterXml += "<businessSegment>"+ buzSeg +"</businessSegment>";
+            if (barCode != undefined) parameterXml += "<projectBarCode>" + barCode + "</projectBarCode>";
+            if (providerGroup != undefined) parameterXml += "<providerGroupName>" + providerGroup + "</providerGroupName>";
+            if (supervisorName != undefined) parameterXml += "<reportsTo>" + supervisorName + "</reportsTo>";
+            if (currentView != undefined && currentView == '2' && fromDate != undefined) parameterXml += "<fromDate>" + fromDate + "</fromDate>";
+            if (currentView != undefined && currentView == '2' && toDate != undefined) parameterXml += "<toDate>" + toDate + "</toDate>";
+            parameterXml += "<businessFunctionKey></businessFunctionKey>";
+            parameterXml += "<businessFunctionStatus></businessFunctionStatus>";
+			parameterXml += "<userKey>"+userKey+"</userKey>";
+			var roleCode = getRoleCode(role, viewMode);
+			if (roleCode != undefined) parameterXml += "<userRole>" + roleCode + "</userRole>";
+            parameterXml += "<vendorLoc></vendorLoc>";
+            if (team != undefined) parameterXml += "<vendorKey>" + team + "</vendorKey>";
+			if (healthPlan != undefined) parameterXml += "<healthPlan>" + healthPlan + "</healthPlan>";
+			if(clientName != undefined) parameterXml += "<clientKey>"+ clientName +"</clientKey>";
+            parameterXml += "</WorkItemFilter>";
+            parameterXml += "</workItemFilter>";
+            parameterXml += "<sortColumn>"+ getDBSortableColumn(customSortObj) +"</sortColumn>";
+            return parameterXml;
+        }
+
+		function getDBSortableColumn(customSortObj)
+		{
+			if(typeof(customSortObj) != "undefined" && typeof(customSortObj.columnId) != "undefined" && typeof(customSortObj.sortOrder) != "undefined" )
+			{
+				return customSortObj.columnId +"-"+ customSortObj.sortOrder;
+			}
+			return "";
+		}
+
+		function GetWorkItemsCountViewRequestTemplate(viewMode, businessSegment, projectBarCode, providerGroupName, healthPlan, reportsTo, fromDate, toDate, businessFunctionKey, businessFunctionStatus, userRole, vendorKey, vendorLoc,clientName,userKey)
+		{
+			var parameterXml = "<workItemFilter><WorkItemFilter>";
+			if (viewMode != undefined) parameterXml += "<viewMode>"+ getViewMode(viewMode) +"</viewMode>";
+			var buzSeg = $(document).data(ACTIVEBUSINESSSEGMENT);
+			if (buzSeg != undefined) parameterXml += "<businessSegment>"+ buzSeg + "</businessSegment>";
+			if (projectBarCode != undefined) parameterXml += "<projectBarCode>"+ projectBarCode +"</projectBarCode>";
+			if (providerGroupName != undefined) parameterXml += "<providerGroupName>"+ providerGroupName +"</providerGroupName>";
+			if (reportsTo != undefined) parameterXml += "<reportsTo>"+ reportsTo +"</reportsTo>";
+			if (fromDate != undefined) parameterXml += "<fromDate>"+ fromDate +"</fromDate>";
+			if (toDate != undefined) parameterXml += "<toDate>"+ toDate +"</toDate>";
+			if (businessFunctionKey != undefined) parameterXml += "<businessFunctionKey>"+ businessFunctionKey +"</businessFunctionKey>";
+			if (businessFunctionStatus != undefined) parameterXml += "<businessFunctionStatus>"+ businessFunctionStatus +"</businessFunctionStatus>";
+			parameterXml += "<userKey>"+userKey+"</userKey>";
+			var roleCode = getRoleCode(userRole, viewMode);
+			if (roleCode != undefined) parameterXml += "<userRole>"+ roleCode +"</userRole>";
+			if (vendorKey != undefined) parameterXml += "<vendorKey>"+ vendorKey +"</vendorKey>";
+			if (vendorLoc != undefined) parameterXml += "<vendorLoc>"+ vendorLoc +"</vendorLoc>";
+			if (healthPlan != undefined) parameterXml += "<healthPlan>" + healthPlan + "</healthPlan>";
+			if(clientName != undefined) parameterXml += "<clientKey>"+ clientName +"</clientKey>";
+			parameterXml += "</WorkItemFilter></workItemFilter>";
+			return parameterXml;
+		}
+
+        function getRoleCode(roleCN, viewMode) {
+			if(viewMode == OVERREADCODINGVIEW)
+			{
+				roleCN = 'Overread Coder 2';
+			}
+			if(viewMode == OVERREADDISCREPANCIESVIEW)
+			{
+				roleCN = 'Overread Discrepancies';
+			}
+			if(viewMode == CVVIEW)
+			{
+				roleCN = 'CV';
+			}
+			if(viewMode == CVQAVIEW)
+			{
+				roleCN = 'CVQA';
+			}
+            return tempCodes[roleCN]; //testing
+        }
+
+        function WorkList_getDateRange(completedDateDuration) {
+            var dateObj = new Date();
+            dateObj.setMinutes(0);
+            dateObj.setHours(0);
+            dateObj.setSeconds(0);
+            var currDate = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate(), 23, 59, 59);
+            var fromDate = "";
+            var toDate = "";
+            if (completedDateDuration == "Today") {
+                toDate = getCurrentUTCDateInFormat(currDate);
+                //alert("ToDate: "+toDate);
+                fromDate = getCurrentUTCDateInFormat(dateObj);
+                //alert("FromDate: "+fromDate);
+            }
+            if (completedDateDuration == "1 Week") {
+                toDate = getCurrentUTCDateInFormat(currDate);
+                //alert("ToDate: "+toDate);
+                dateObj = new Date(dateObj.getTime() - 7 * 24 * 60 * 60 * 1000);
+                fromDate = getCurrentUTCDateInFormat(dateObj);
+                //alert("FromDate: "+fromDate);
+            }
+            if (completedDateDuration == "1 Month") {
+                toDate = getCurrentUTCDateInFormat(currDate);
+                //alert("ToDate: "+toDate);
+                dateObj = new Date(dateObj.getTime() - 30 * 24 * 60 * 60 * 1000);
+                fromDate = getCurrentUTCDateInFormat(dateObj);
+                //alert("FromDate: "+fromDate);
+            }
+            var dateRange = {};
+            dateRange.fromDate = fromDate;
+            dateRange.toDate = toDate;
+            return dateRange;
+        }
+        /*returns UTC Date in "YYYY-MM-DDTHH:mm:SS.s" format*/
+        function getCurrentUTCDateInFormat(displayDate) {
+            var UTCDate = displayDate.getUTCFullYear() + "-" + (displayDate.getUTCMonth() + 1) + "-" + displayDate.getUTCDate() + "T" + displayDate.getUTCHours() + ":" + displayDate.getUTCMinutes() + ":" + displayDate.getUTCSeconds() + ".0";
+            return UTCDate;
+        }
+
+        function validateAndGetCursor(cursor) {
+            var cursor = cursor || {};
+            cursor.position = cursor.position || 0;
+            cursor.numRows = cursor.numRows || MAX_ROWS;
+            cursor.maxRows = cursor.maxRows || MAX_ROWS;
+            return cursor;
+        }
+
+        function claimTask(taskId) {
+            var status = "";
+            claimTaskModel = new $.cordys.model({
+                objectName: "CaseActivity", // Name of the Business Object
+                dataType: "json",
+                read: {
+                    async: false,
+                    // Settings for the read method
+                    namespace: "http://schemas.optum.com/optum/cpc/gcm/ws/caseactivity/1.0",
+                    method: "ClaimWorkItemAndManageStatus",
+                    // Parameters for the method
+                    parameters: {
+                        workListActivityKey: taskId,
+						action: "ACCEPT"
+                    }
+                }
+            });
+
+            claimTaskModel.read().done(function (e) {
+                if (e.length > 0) status = e[0].ChartItem.GCM_BUS_FUNC_STATUS;
+            });
+            return status;
+        }
+
+        function fillAutoSuggest(autoSuggestLib, providerName) {
+
+            return function () {
+
+                if (!providerName) return;
+
+                providerGroupNameModel = new $.cordys.model({
+                    objectName: "RenderingProvider", // Name of the Business Object
+                    dataType: "json",
+                    read: {
+                        async: false,
+                        // Settings for the read method
+                        namespace: "http://schemas.optum.com/optum/gcm/ws/chart/encounter/1.0",
+                        method: "GetProviderGrpNameByText",
+                        // Parameters for the method
+                        parameters: getProviderRequestParam(providerName)
+
+
+                    }
+                });
+
+                providerGroupNameModel.read().done(function (e) {
+
+                    //add options..
+                    var options = [];
+                    for (var i = 0, length = e.length; i < length; i++) {
+                        options[i] = {
+                            description: e[i].PROV_GROUP_NAME,
+                            value: e[i].PROV_GROUP_NAME
+                        };
+                    }
+                    autoSuggestLib.addOptions(options, true);
+                });
+            }
+        }
+
+        function getProviderRequestParam(providerName) {
+            return "<cursor id='0' position='0' numRows='50' maxRows='50' sameConnection='false'/><nameText>" + providerName + "</nameText>";
+        }
+
+        ko.bindingHandlers.BarCode = {
+            update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+                var attribute = bindingContext.$data.projectBarCode;
+                if(typeof(attribute) == 'string') $(element).text(attribute);
+            }
+        };
+
+        ko.bindingHandlers.CurrentStatus = {
+            update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+                var attribute = bindingContext.$data.statusDisplayName;
+                if(typeof(attribute) == 'string') $(element).text(attribute);
+            }
+        };
+
+        ko.bindingHandlers.ModifiedUser = {
+            update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+                var attribute = bindingContext.$data.escalatedBy;
+                if(typeof(attribute) == 'string') $(element).text(attribute);
+            }
+        };
+
+        ko.bindingHandlers.ReasonComment = {
+            update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+                var attribute = bindingContext.$data.reason;
+                if(typeof(attribute) == 'string') $(element).text(attribute);
+            }
+        };
+        ko.bindingHandlers.HealthPlan = {
+            update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+                var attribute = bindingContext.$data.hpName;
+                if(typeof(attribute) == 'string') $(element).text(attribute);
+            }
+        };
+
+        ko.bindingHandlers.ChartScoreGroup = {
+            update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+                var attribute = bindingContext.$data.chartScoreGroup;
+                if(typeof(attribute) == 'string') $(element).text(attribute);
+            }
+        };
+        ko.bindingHandlers.ProviderGroup = {
+            update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+                var attribute = bindingContext.$data.providerName;
+                if(typeof(attribute) == 'string') $(element).text(attribute);
+            }
+        };
+
+        ko.bindingHandlers.EMR = {
+            update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+                var attribute = bindingContext.$data.isEMR;
+                if(typeof(attribute) == 'string') $(element).text(attribute);
+            }
+        };
+
+		ko.bindingHandlers.ProgramType = {
+            update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+                var attribute = bindingContext.$data.programDesc;
+                if(typeof(attribute) == 'string') $(element).text(attribute);
+            }
+        };
+
+        ko.bindingHandlers.Instructions = {
+            update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+                var attribute = bindingContext.$data.workItemInstruction;
+                if(typeof(attribute) == 'string') $(element).text(attribute);
+            }
+        };
+
+        ko.bindingHandlers.UserName = {
+            update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+                var attribute = bindingContext.$data.UserName;
+                if(typeof(attribute) == 'string') $(element).text(attribute);
+            }
+        };
+        ko.bindingHandlers.ReportsTo = {
+            update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+                var attribute = bindingContext.$data.reportsUserName;
+                if(typeof(attribute) == 'string') $(element).text(attribute);
+            }
+        };
+
+        ko.bindingHandlers.EmailAddress = {
+            update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+                var attribute = bindingContext.$data.email;
+                if(typeof(attribute) == 'string') $(element).text(attribute);
+            }
+        };
+        ko.bindingHandlers.StartDate = {
+            update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+                var attribute = bindingContext.$data.assignedDate;
+                if(typeof(attribute) == 'string') $(element).text(convertDateToLocalTimezone(attribute));
+            }
+        };
+        ko.bindingHandlers.CompletionDate = {
+            update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+                var attribute = bindingContext.$data.completedDate;
+                if(typeof(attribute) == 'string') $(element).text(convertDateToLocalTimezone(attribute));
+            }
+        };
+        ko.bindingHandlers.SupervisorName = {
+            update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+                var attribute = bindingContext.$data.reportsUserName;
+                if(typeof(attribute) == 'string') $(element).text(attribute);
+            }
+        };
+		ko.bindingHandlers.WorkItemType = {
+            update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+                var attribute = bindingContext.$data.workItemType;
+                if(typeof(attribute) == 'string') $(element).text(attribute);
+            }
+        };
+		ko.bindingHandlers.BusinessSegmentDesc = {
+		 update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+				var parentAttribute = bindingContext.$data.name;
+                var attribute = bindingContext.$data.BusinessSegment.name;
+                if( typeof(parentAttribute) == 'String' && typeof(attribute) == 'string')
+				{
+					$(element).text(parentAttribute.split(" ")[0] + " - "+attribute.split(" ")[0]);
+				}
+            }
+		};
+		 ko.bindingHandlers.PageCount = {
+            update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+                var attribute = bindingContext.$data.pageCount;
+                if(typeof(attribute) == 'string') $(element).text(attribute);
+            }
+        };
+		ko.bindingHandlers.Client = {
+            update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+                var attribute = bindingContext.$data.client;
+                if(typeof(attribute) == 'string') $(element).text(attribute);
+            }
+        };
+        function convertDateToLocalTimezone(attribute) {
+            var newdateObj = "";
+            if (typeof (attribute) == 'string' && attribute != "") {
+                var currentDate = attribute.split("T");
+                var dt = currentDate[0].split("-");
+                if (dt.length == 3 && currentDate.length == 2) {
+                    newdateObj = dt[1] + "/" + dt[2] + "/" + dt[0] + " " + currentDate[1].split(".")[0];
+                    var mydate = new Date(newdateObj);
+                    var d = new Date();
+                    d.setUTCFullYear(mydate.getFullYear());
+                    d.setUTCMonth(mydate.getMonth());
+                    d.setUTCDate(mydate.getDate());
+                    d.setUTCHours(mydate.getHours());
+                    d.setUTCMinutes(mydate.getMinutes());
+                    d.setUTCSeconds(mydate.getSeconds());
+                    newdateObj = (d.getMonth() + 1) + "/" + d.getDate() + "/" + d.getFullYear();
+                }
+            }
+            return newdateObj;
+        }
+    </script>
+</head>
+
+<body>
+<script type="text/html" id="workItemsTemplate">
+	<tr>
+		<td class='workItemColumns'><span data-bind='BarCode:$data'></span></td>
+		<td class='workItemColumns'><span data-bind='CurrentStatus:$data'></span></td>
+		<td class='workItemColumns'><span data-bind='StartDate:$data'></span></td>
+		<td class='workItemColumns'><span data-bind='WorkItemType:$data'></span></td>
+		<td class='workItemColumns'><span data-bind='PageCount:$data'></span></td>
+		<td class='workItemColumns'><span data-bind='Client:$data'></span></td>
+		<td class='approvercolumns'><a style='cursor:pointer' data-bind='UserName:$data'></a></td>
+		<td class='approvercolumns'><span data-bind='ReportsTo:$data'></span></td>
+		<td class='approvercolumns'><span data-bind='EmailAddress:$data'></span></td>
+		<td class='approvercolumns'><span data-bind='StartDate:$data'></span></td>
+		<td class='completedColumns'><span data-bind='CompletionDate:$data'></span></td>
+		<td class='coachColumns ux-tabl-wrapping-content'><span data-bind='SupervisorName:$data'></span></td>
+		<td class='esclateColumns'><span data-bind='ModifiedUser:$data'></span></td>
+		<td class='esclateColumns'><span data-bind='ReasonComment:$data'></span></td>
+		<td class='workItemColumns'><span data-bind='HealthPlan:$data'></span></td>
+		<td class='workItemColumns'><span data-bind='ChartScoreGroup:$data'></span></td>
+		<td class='workItemColumns'><span data-bind='ProviderGroup:$data'></span></td>
+		<td class='workItemColumns'><span data-bind='EMR:$data'></span></td>
+		<td class='workItemColumns'><span data-bind='ProgramType:$data'></span></td>
+		<td class='workItemColumns'><span data-bind='Instructions:$data'></span></td>
+
+	</tr>
+</script>
+<script  type="text/html" id="userRolesTemplate">
+	<li data-bind='attr:{name:name}'>
+		<a style='cursor:pointer;' data-bind='text: description'></a>
+		<!-- ko if: typeof(BusinessSegment) !='undefined' && $.isArray(BusinessSegment)-->
+		<ul data-bind='foreach:BusinessSegment'>
+			<li data-bind='attr:{buzSegmentName:name , buzSegmentDesc:description , buzSegmentTitle: worklisttitle}'>
+			 <a style='cursor:pointer;' data-bind='text: description'></a>
+         	</li>
+         </ul>
+         <!-- /ko -->
+     </li>
+</script>
+       <div id="ux-wrapper" style="position:relative;top:10px">
+        <div id="__xbody_msg_group_element" style="position:relative"></div>
+			<ul class="ux-vnav" id="roleContainer" data-bind="template:{name:'userRolesTemplate', foreach : roles}">
+			</ul>
+        <div class="ux-content">
+            <div class="ux-panl">
+                <div class="ux-panl-content" style="top:-20px;position:relative">
+					<h1 id="worklistTitle" class="ux-tabl-form-multicol"></h1>
+                    <table class='ux-tabl-form-multicol'>
+                        <tbody>
+                            <tr id='orgElementRow'>
+                                <td>
+                                    <label for='orgElement'>Organization</label>
+                                </td>
+                                <td>
+                                    <select style="width:125px" id='orgElement' data-bind="options: organizations,optionsValue:'vendorKey',optionsText:'unitName'"></select>
+                                </td>
+                            </tr>
+                            <tr class="filterOptions">
+                                <td>
+                                    <label>Search By</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="filterOptions"><span><input type="radio"  name="filterOptions" id="chartRequestIDElement" value="barCode" />Chart Request ID</span>
+                                </td>
+                                <td class="filterOptions"><span><input type="radio" name="filterOptions" id="providerGRPNameElement" value="providerGroupName"/>Provider Group Name</span>
+                                </td>
+								 <td class="filterOptions"><span><input type="radio" name="filterOptions" id="clientElement" value="client"/>Client</span>
+                                </td>
+                                <td class="supervisorfilterOptions"><span><input type="radio" name="filterOptions" id="supervisorElement" value="supervisorName"/>Reports To</span>
+                                </td>
+								 <td class="filterOptions"><span><input type="radio" name="filterOptions" id="healthPlanElement" value="healthPlan"/>Health Plan</span>
+                                </td>
+                                <td class="filterOptions">
+                                    <input style="width:300px" type="text" id="searchTextElement" />
+									<select style="width:125px" id='selectHealthPlan' data-bind="options: healthPlans,optionsValue:'HP_CD',optionsText:'HP_CD',optionsCaption: '-- Select --'"></select>
+                                </td>
+								<td class="filterOptions">
+									<select style="width:125px" id='selectClient' data-bind="options: clients,optionsValue:'GCM_CLIENT_KEY',optionsText:'GCM_CLIENT_CD',optionsCaption: '-- Select --'"></select>
+                                </td>
+                                <td>
+                                    <input type="button" value="Search" class="ux-btn" id='searchBtn' />
+                                    <input type="button" value="Clear" class="ux-btn" id='clearBtn' />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="ux-tpnl">
+                <ul>
+                    <li class="ux-tpnl-selected" id='currentItemTab' style='display:none'><a style="cursor:pointer" id='currentItemsTab' class='tab-label' workListView='MyTasks'>Current Items (0)</a>
+                        <div id='currentWorkItemsDivElement'>
+                            <div>
+                                <input style="height:22px;width:80px;" type="button" value="Refresh" title="Refresh Worklist" onclick="refresh_Button_click()" class="ux-btn" id="currentItemsRefresh">
+                                <div class="ux-pagi">
+                                    <ul id="paginationCurr">
+                                        <li class="ux-pagi-first"><a class="underline">&lt;&lt;First</a>
+                                        </li>
+                                        <li class="ux-pagi-prev"><a class="underline">&lt;Previous</a>
+                                        </li>
+                                        <li class="ux-pagi-detail">
+                                            <input type='text' class='js_curr_page ux-pagi-current-page' maxlength="4" />
+                                            <span> of </span>  <span class="js_totalPages"></span>
+                                        </li>
+                                        <li class="ux-pagi-next"><a class="underline">Next&gt;</a>
+                                        </li>
+                                        <li class="ux-pagi-last"><a class="underline">Last&gt;&gt;</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class='table-wrapper'>
+                                <table id="currentItemsTable" class="ux-tabl-data">
+                                    <thead>
+                                        <th class='workItemColumns' dataAttr='BarCode'><a class="js_sortable">Chart Request ID</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                        </th>
+                                        <th class='workItemColumns' dataAttr='CurrentStatus'><a class="js_sortable">Status</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                        </th>
+                                        <th class='workItemColumns' dataAttr='StartDate'><a class="js_sortable">Assigned Date</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                        </th>
+										<th class='workItemColumns' dataAttr='WorkItemType'><a class="js_sortable">Type</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                        </th>
+										<th class='workItemColumns' dataAttr='PageCount'><a class="js_sortable">Page Count</a><span class='ux-icon-tabl-sort-sortable'></span></th>
+										<th class='workItemColumns' dataAttr='Client'><a class="js_sortable">Client</a><span class='ux-icon-tabl-sort-sortable'></span></th>
+                                        <th class='approvercolumns' dataAttr='UserName'><a class="js_sortable">Name</a><span class='ux-icon-tabl-sort-sortable'></span>
+										</th>
+                                            <th class='approvercolumns' dataAttr='ReportsTo'><a class="js_sortable">Reports To</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='approvercolumns' dataAttr='EmailAddress'><a class="js_sortable">Email</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='approvercolumns' dataAttr='StartDate'><a class="js_sortable">Start Date</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='completedColumns' dataAttr='CompletionDate'><a class="js_sortable">Completion Date</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='coachColumns' dataAttr='SupervisorName'><a class="js_sortable">Reports To</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='esclateColumns' dataAttr='ModifiedUser'><a class="js_sortable">Escalated By</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='esclateColumns' dataAttr='ReasonComment'><a class="js_sortable">Escalated Reason</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='workItemColumns' dataAttr='HealthPlan'><a class="js_sortable">Health Plan</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='workItemColumns' dataAttr='ChartScoreGroup'><a class="js_sortable">Score</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='workItemColumns' dataAttr='ProviderGroup'><a class="js_sortable">Provider Group Name</a>
+                                                <!--span class='ux-icon-tabl-sort-sortable'></span-->
+                                            </th>
+                                            <th class='workItemColumns' dataAttr='EMR'><a class="js_sortable">EMR</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+											 <th class='workItemColumns' dataAttr='ProgramType'><a class="js_sortable">Program</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='workItemColumns' dataAttr='Instructions'><a class="js_sortable">Instructions</a><span class='ux-icon-tabl-sort-sortable'></span></th>
+
+                                    </thead>
+                                    <tbody id="currentItemsTableBody" data-bind="template:{name:'workItemsTemplate', foreach : workItems}">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="height:22px">
+                                <div class="ux-pagi">
+                                    <ul>
+                                        <li class="ux-pagi-first"><a class="underline">&lt;&lt;First</a>
+                                        </li>
+                                        <li class="ux-pagi-prev"><a class="underline">&lt;Previous</a>
+                                        </li>
+                                        <li class="ux-pagi-detail">
+                                            <input type='text' class='js_curr_page ux-pagi-current-page' maxlength="4" />
+                                            <span> of </span>  <span class="js_totalPages"></span>
+                                        </li>
+                                        <li class="ux-pagi-next"><a class="underline">Next&gt;</a>
+                                        </li>
+                                        <li class="ux-pagi-last"><a class="underline">Last&gt;&gt;</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+							<div id='noRecordsCurrent' class='noRecsFound'><p style='position:relative;top:-30px;'>No results found</p></div>
+                        </div>
+                    </li>
+					<li id='overreadTab' style='display:none'><a style="cursor:pointer" id='overreadCodingTab' class='tab-label' workListView='OverreadCoding'>Overread Coding (0)</a>
+                        <div id='overreadCodingTabDivElement'>
+                            <div>
+                                <input style="height:22px;width:80px;" type="button" value="Refresh" title="Refresh Worklist" onclick="refresh_Button_click()" class="ux-btn" />
+                                <div class="ux-pagi">
+                                    <ul>
+                                        <li class="ux-pagi-first"><a class="underline">&lt;&lt;First</a>
+                                        </li>
+                                        <li class="ux-pagi-prev"><a class="underline">&lt;Previous</a>
+                                        </li>
+                                        <li class="ux-pagi-detail">
+                                            <input type='text' class='js_curr_page ux-pagi-current-page' maxlength="4" />
+                                            <span> of </span>  <span class="js_totalPages"></span>
+                                        </li>
+                                        <li class="ux-pagi-next"><a class="underline">Next&gt;</a>
+                                        </li>
+                                        <li class="ux-pagi-last"><a class="underline">Last&gt;&gt;</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class='table-wrapper'>
+                                <table id="overreadCodingTabTable" class="ux-tabl-data">
+                                    <thead>
+                                        <th class='workItemColumns' dataAttr='BarCode'><a class="js_sortable">Chart Request ID</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                        </th>
+                                        <th class='workItemColumns' dataAttr='CurrentStatus'><a class="js_sortable">Status</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                        </th>
+                                        <th class='workItemColumns' dataAttr='StartDate'><a class="js_sortable">Assigned Date</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                        </th>
+										<th class='workItemColumns' dataAttr='WorkItemType'><a class="js_sortable">Type</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                        </th>
+										<th class='workItemColumns' dataAttr='PageCount'><a class="js_sortable">Page Count</a><span class='ux-icon-tabl-sort-sortable'></span></th>
+										<th class='workItemColumns' dataAttr='Client'><a class="js_sortable">Client</a><span class='ux-icon-tabl-sort-sortable'></span></th>
+                                        <th class='approvercolumns' dataAttr='UserName'><a class="js_sortable">Name</a><span class='ux-icon-tabl-sort-sortable'></span>
+										</th>
+                                            <th class='approvercolumns' dataAttr='ReportsTo'><a class="js_sortable">Reports To</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='approvercolumns' dataAttr='EmailAddress'><a class="js_sortable">Email</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='approvercolumns' dataAttr='StartDate'><a class="js_sortable">Start Date</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='completedColumns' dataAttr='CompletionDate'><a class="js_sortable">Completion Date</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='coachColumns' dataAttr='SupervisorName'><a class="js_sortable">Reports To</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='esclateColumns' dataAttr='ModifiedUser'><a class="js_sortable">Escalated By</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='esclateColumns' dataAttr='ReasonComment'><a class="js_sortable">Escalated Reason</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='workItemColumns' dataAttr='HealthPlan'><a class="js_sortable">Health Plan</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='workItemColumns' dataAttr='ChartScoreGroup'><a class="js_sortable">Score</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='workItemColumns' dataAttr='ProviderGroup'><a class="js_sortable">Provider Group Name</a>
+                                                <!--span class='ux-icon-tabl-sort-sortable'></span-->
+                                            </th>
+                                            <th class='workItemColumns' dataAttr='EMR'><a class="js_sortable">EMR</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+											 <th class='workItemColumns' dataAttr='ProgramType'><a class="js_sortable">Program</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='workItemColumns' dataAttr='Instructions'><a class="js_sortable">Instructions</a><span class='ux-icon-tabl-sort-sortable'></span></th>
+
+                                    </thead>
+                                    <tbody id="overreadCodingTabTableBody" data-bind="template:{name:'workItemsTemplate', foreach : workItems}">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="height:22px">
+                                <div class="ux-pagi">
+                                    <ul>
+                                        <li class="ux-pagi-first"><a class="underline">&lt;&lt;First</a>
+                                        </li>
+                                        <li class="ux-pagi-prev"><a class="underline">&lt;Previous</a>
+                                        </li>
+                                        <li class="ux-pagi-detail">
+                                            <input type='text' class='js_curr_page ux-pagi-current-page' maxlength="4" />
+                                            <span> of </span>  <span class="js_totalPages"></span>
+                                        </li>
+                                        <li class="ux-pagi-next"><a class="underline">Next&gt;</a>
+                                        </li>
+                                        <li class="ux-pagi-last"><a class="underline">Last&gt;&gt;</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+							<div id='noRecordsOverRead' class='noRecsFound'><p style='position:relative;top:-30px;'>No results found</p></div>
+                        </div>
+                    </li>
+					<li id='overreadDisTab' style='display:none'><a style="cursor:pointer" id='overreadDiscrepanciesTab' class='tab-label' workListView='OverreadDiscrepancies'>Overread Discrepancies (0)</a>
+                        <div id='overreadDiscrepanciesDivElement'>
+                            <div>
+                                <input style="height:22px;width:80px;" type="button" value="Refresh" title="Refresh Worklist" onclick="refresh_Button_click()" class="ux-btn" />
+                                <div class="ux-pagi">
+                                    <ul>
+                                        <li class="ux-pagi-first"><a class="underline">&lt;&lt;First</a>
+                                        </li>
+                                        <li class="ux-pagi-prev"><a class="underline">&lt;Previous</a>
+                                        </li>
+                                        <li class="ux-pagi-detail">
+                                            <input type='text' class='js_curr_page ux-pagi-current-page' maxlength="4" />
+                                            <span> of </span>  <span class="js_totalPages"></span>
+                                        </li>
+                                        <li class="ux-pagi-next"><a class="underline">Next&gt;</a>
+                                        </li>
+                                        <li class="ux-pagi-last"><a class="underline">Last&gt;&gt;</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class='table-wrapper'>
+                                <table id="DiscrepanciesTable" class="ux-tabl-data">
+                                    <thead>
+                                        <th class='workItemColumns' dataAttr='BarCode'><a class="js_sortable">Chart Request ID</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                        </th>
+                                        <th class='workItemColumns' dataAttr='CurrentStatus'><a class="js_sortable">Status</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                        </th>
+                                        <th class='workItemColumns' dataAttr='StartDate'><a class="js_sortable">Assigned Date</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                        </th>
+										<th class='workItemColumns' dataAttr='WorkItemType'><a class="js_sortable">Type</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                        </th>
+										<th class='workItemColumns' dataAttr='PageCount'><a class="js_sortable">Page Count</a><span class='ux-icon-tabl-sort-sortable'></span></th>
+										<th class='workItemColumns' dataAttr='Client'><a class="js_sortable">Client</a><span class='ux-icon-tabl-sort-sortable'></span></th>
+                                        <th class='approvercolumns' dataAttr='UserName'><a class="js_sortable">Name</a><span class='ux-icon-tabl-sort-sortable'></span>
+										</th>
+                                            <th class='approvercolumns' dataAttr='ReportsTo'><a class="js_sortable">Reports To</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='approvercolumns' dataAttr='EmailAddress'><a class="js_sortable">Email</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='approvercolumns' dataAttr='StartDate'><a class="js_sortable">Start Date</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='completedColumns' dataAttr='CompletionDate'><a class="js_sortable">Completion Date</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='coachColumns' dataAttr='SupervisorName'><a class="js_sortable">Reports To</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='esclateColumns' dataAttr='ModifiedUser'><a class="js_sortable">Escalated By</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='esclateColumns' dataAttr='ReasonComment'><a class="js_sortable">Escalated Reason</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='workItemColumns' dataAttr='HealthPlan'><a class="js_sortable">Health Plan</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='workItemColumns' dataAttr='ChartScoreGroup'><a class="js_sortable">Score</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='workItemColumns' dataAttr='ProviderGroup'><a class="js_sortable">Provider Group Name</a>
+                                                <!--span class='ux-icon-tabl-sort-sortable'></span-->
+                                            </th>
+                                            <th class='workItemColumns' dataAttr='EMR'><a class="js_sortable">EMR</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+											 <th class='workItemColumns' dataAttr='ProgramType'><a class="js_sortable">Program</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='workItemColumns' dataAttr='Instructions'><a class="js_sortable">Instructions</a><span class='ux-icon-tabl-sort-sortable'></span></th>
+
+                                    </thead>
+                                    <tbody id="overreadDiscTabTableBody" data-bind="template:{name:'workItemsTemplate', foreach : workItems}">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="height:22px">
+                                <div class="ux-pagi">
+                                    <ul>
+                                        <li class="ux-pagi-first"><a class="underline">&lt;&lt;First</a>
+                                        </li>
+                                        <li class="ux-pagi-prev"><a class="underline">&lt;Previous</a>
+                                        </li>
+                                        <li class="ux-pagi-detail">
+                                            <input type='text' class='js_curr_page ux-pagi-current-page' maxlength="4" />
+                                            <span> of </span>  <span class="js_totalPages"></span>
+                                        </li>
+                                        <li class="ux-pagi-next"><a class="underline">Next&gt;</a>
+                                        </li>
+                                        <li class="ux-pagi-last"><a class="underline">Last&gt;&gt;</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+							<div id='noRecordsOverReadDesc' class='noRecsFound' ><p style='position:relative;top:-30px;'>No results found</p></div>
+                        </div>
+                    </li>
+					<li id='cvTab' style='display:none'><a style="cursor:pointer" id='cvATab' class='tab-label' workListView='CV'>CV (0)</a>
+                        <div id='cvDivElement'>
+                           <input style="height:22px;width:80px;" type="button" value="Refresh" title="Refresh Worklist" onclick="refresh_Button_click()" class="ux-btn" />
+                                <div class="ux-pagi">
+                                    <ul>
+                                        <li class="ux-pagi-first"><a class="underline">&lt;&lt;First</a>
+                                        </li>
+                                        <li class="ux-pagi-prev"><a class="underline">&lt;Previous</a>
+                                        </li>
+                                        <li class="ux-pagi-detail">
+                                            <input type='text' class='js_curr_page ux-pagi-current-page' maxlength="4" />
+                                            <span> of </span>  <span class="js_totalPages"></span>
+                                        </li>
+                                        <li class="ux-pagi-next"><a class="underline">Next&gt;</a>
+                                        </li>
+                                        <li class="ux-pagi-last"><a class="underline">Last&gt;&gt;</a>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                            <div class='table-wrapper'>
+                                <table id="cvTable" class="ux-tabl-data">
+                                    <thead>
+                                        <th class='workItemColumns' dataAttr='BarCode'><a class="js_sortable">Chart Request ID</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                        </th>
+                                        <th class='workItemColumns' dataAttr='CurrentStatus'><a class="js_sortable">Status</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                        </th>
+                                        <th class='workItemColumns' dataAttr='StartDate'><a class="js_sortable">Assigned Date</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                        </th>
+										<th class='workItemColumns' dataAttr='WorkItemType'><a class="js_sortable">Type</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                        </th>
+										<th class='workItemColumns' dataAttr='PageCount'><a class="js_sortable">Page Count</a><span class='ux-icon-tabl-sort-sortable'></span></th>
+										<th class='workItemColumns' dataAttr='Client'><a class="js_sortable">Client</a><span class='ux-icon-tabl-sort-sortable'></span></th>
+                                        <th class='approvercolumns' dataAttr='UserName'><a class="js_sortable">Name</a><span class='ux-icon-tabl-sort-sortable'></span>
+										</th>
+                                            <th class='approvercolumns' dataAttr='ReportsTo'><a class="js_sortable">Reports To</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='approvercolumns' dataAttr='EmailAddress'><a class="js_sortable">Email</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='approvercolumns' dataAttr='StartDate'><a class="js_sortable">Start Date</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='completedColumns' dataAttr='CompletionDate'><a class="js_sortable">Completion Date</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='coachColumns' dataAttr='SupervisorName'><a class="js_sortable">Reports To</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='esclateColumns' dataAttr='ModifiedUser'><a class="js_sortable">Escalated By</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='esclateColumns' dataAttr='ReasonComment'><a class="js_sortable">Escalated Reason</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='workItemColumns' dataAttr='HealthPlan'><a class="js_sortable">Health Plan</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='workItemColumns' dataAttr='ChartScoreGroup'><a class="js_sortable">Score</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='workItemColumns' dataAttr='ProviderGroup'><a class="js_sortable">Provider Group Name</a>
+                                                <!--span class='ux-icon-tabl-sort-sortable'></span-->
+                                            </th>
+                                            <th class='workItemColumns' dataAttr='EMR'><a class="js_sortable">EMR</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+											 <th class='workItemColumns' dataAttr='ProgramType'><a class="js_sortable">Program</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='workItemColumns' dataAttr='Instructions'><a class="js_sortable">Instructions</a><span class='ux-icon-tabl-sort-sortable'></span></th>
+
+                                    </thead>
+                                    <tbody id="cvTabTableBody" data-bind="template:{name:'workItemsTemplate', foreach : workItems}">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="height:22px">
+                                <div class="ux-pagi">
+                                    <ul>
+                                        <li class="ux-pagi-first"><a class="underline">&lt;&lt;First</a>
+                                        </li>
+                                        <li class="ux-pagi-prev"><a class="underline">&lt;Previous</a>
+                                        </li>
+                                        <li class="ux-pagi-detail">
+                                            <input type='text' class='js_curr_page ux-pagi-current-page' maxlength="4" />
+                                            <span> of </span>  <span class="js_totalPages"></span>
+                                        </li>
+                                        <li class="ux-pagi-next"><a class="underline">Next&gt;</a>
+                                        </li>
+                                        <li class="ux-pagi-last"><a class="underline">Last&gt;&gt;</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+							<div id='noRecordsOverReadDesc' class='noRecsFound' ><p style='position:relative;top:-30px;'>No results found</p></div>
+                        </div>
+                    </li>
+					<li id='cvQATab' style='display:none'><a style="cursor:pointer" id='cvQAATab' class='tab-label' workListView='CVQA'>CVQA (0)</a>
+                        <div id='cvQADivElement'>
+                           <input style="height:22px;width:80px;" type="button" value="Refresh" title="Refresh Worklist" onclick="refresh_Button_click()" class="ux-btn" />
+                                <div class="ux-pagi">
+                                    <ul>
+                                        <li class="ux-pagi-first"><a class="underline">&lt;&lt;First</a>
+                                        </li>
+                                        <li class="ux-pagi-prev"><a class="underline">&lt;Previous</a>
+                                        </li>
+                                        <li class="ux-pagi-detail">
+                                            <input type='text' class='js_curr_page ux-pagi-current-page' maxlength="4" />
+                                            <span> of </span>  <span class="js_totalPages"></span>
+                                        </li>
+                                        <li class="ux-pagi-next"><a class="underline">Next&gt;</a>
+                                        </li>
+                                        <li class="ux-pagi-last"><a class="underline">Last&gt;&gt;</a>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                            <div class='table-wrapper'>
+                                <table id="cvQATable" class="ux-tabl-data">
+                                    <thead>
+                                        <th class='workItemColumns' dataAttr='BarCode'><a class="js_sortable">Chart Request ID</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                        </th>
+                                        <th class='workItemColumns' dataAttr='CurrentStatus'><a class="js_sortable">Status</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                        </th>
+                                        <th class='workItemColumns' dataAttr='StartDate'><a class="js_sortable">Assigned Date</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                        </th>
+										<th class='workItemColumns' dataAttr='WorkItemType'><a class="js_sortable">Type</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                        </th>
+										<th class='workItemColumns' dataAttr='PageCount'><a class="js_sortable">Page Count</a><span class='ux-icon-tabl-sort-sortable'></span></th>
+										<th class='workItemColumns' dataAttr='Client'><a class="js_sortable">Client</a><span class='ux-icon-tabl-sort-sortable'></span></th>
+                                        <th class='approvercolumns' dataAttr='UserName'><a class="js_sortable">Name</a><span class='ux-icon-tabl-sort-sortable'></span>
+										</th>
+                                            <th class='approvercolumns' dataAttr='ReportsTo'><a class="js_sortable">Reports To</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='approvercolumns' dataAttr='EmailAddress'><a class="js_sortable">Email</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='approvercolumns' dataAttr='StartDate'><a class="js_sortable">Start Date</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='completedColumns' dataAttr='CompletionDate'><a class="js_sortable">Completion Date</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='coachColumns' dataAttr='SupervisorName'><a class="js_sortable">Reports To</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='esclateColumns' dataAttr='ModifiedUser'><a class="js_sortable">Escalated By</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='esclateColumns' dataAttr='ReasonComment'><a class="js_sortable">Escalated Reason</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='workItemColumns' dataAttr='HealthPlan'><a class="js_sortable">Health Plan</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='workItemColumns' dataAttr='ChartScoreGroup'><a class="js_sortable">Score</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='workItemColumns' dataAttr='ProviderGroup'><a class="js_sortable">Provider Group Name</a>
+                                                <!--span class='ux-icon-tabl-sort-sortable'></span-->
+                                            </th>
+                                            <th class='workItemColumns' dataAttr='EMR'><a class="js_sortable">EMR</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+											 <th class='workItemColumns' dataAttr='ProgramType'><a class="js_sortable">Program</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='workItemColumns' dataAttr='Instructions'><a class="js_sortable">Instructions</a><span class='ux-icon-tabl-sort-sortable'></span></th>
+
+                                    </thead>
+                                    <tbody id="cvQATabTableBody" data-bind="template:{name:'workItemsTemplate', foreach : workItems}">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="height:22px">
+                                <div class="ux-pagi">
+                                    <ul>
+                                        <li class="ux-pagi-first"><a class="underline">&lt;&lt;First</a>
+                                        </li>
+                                        <li class="ux-pagi-prev"><a class="underline">&lt;Previous</a>
+                                        </li>
+                                        <li class="ux-pagi-detail">
+                                            <input type='text' class='js_curr_page ux-pagi-current-page' maxlength="4" />
+                                            <span> of </span>  <span class="js_totalPages"></span>
+                                        </li>
+                                        <li class="ux-pagi-next"><a class="underline">Next&gt;</a>
+                                        </li>
+                                        <li class="ux-pagi-last"><a class="underline">Last&gt;&gt;</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+							<div id='noRecordsOverReadDesc' class='noRecsFound' ><p style='position:relative;top:-30px;'>No results found</p></div>
+                        </div>
+                    </li>
+
+
+                    <li><a style="cursor:pointer" class='tab-label' id='completedItemsTab' workListView='Completed'>Completed Items (0)</a>
+                        <div id='completedWorkItemsDivElement'>
+                            <div>
+
+                                <select style="height:22px;width:120px;" id="taskCompletedDuration" onchange="taskCompletedDurationChange(this)">
+                                    <option value="Today">Today</option>
+                                    <option value="1 Week">1 Week</option>
+                                    <option value="1 Month">1 Month</option>
+                                </select>
+
+                                <input style="height:22px;width:80px; margin-left: 10px;margin-top: -5px;" type="button" value="Refresh" onclick="refresh_Button_click()" class="ux-btn" id="completedItemsRefresh">
+
+								<div class="ux-pagi">
+                                    <ul>
+                                        <li class="ux-pagi-first"><a class="underline">&lt;&lt;First</a>
+                                        </li>
+                                        <li class="ux-pagi-prev"><a class="underline">&lt;Previous</a>
+                                        </li>
+                                        <li class="ux-pagi-detail">
+                                            <input type='text' class='js_curr_page ux-pagi-current-page' maxlength="4" />
+                                            <span> of </span>  <span class="js_totalPages"></span>
+                                        </li>
+                                        <li class="ux-pagi-next"><a class="underline">Next&gt;</a>
+                                        </li>
+                                        <li class="ux-pagi-last"><a class="underline">Last&gt;&gt;</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class='table-wrapper'>
+                                <table id="groupWorkItemsTable" class="ux-tabl-data">
+                                    <thead>
+                                        <th class='workItemColumns' dataAttr='BarCode'><a class='js_sortable'>Chart Request ID</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                        </th>
+                                        <th class='workItemColumns' dataAttr='CurrentStatus'><a class='js_sortable'>Status</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                        </th>
+                                        <th class='workItemColumns' dataAttr='StartDate'><a class='js_sortable'>Assigned Date</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                        </th>
+										<th class='workItemColumns' dataAttr='WorkItemType'><a class="js_sortable">Type</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                        </th>
+										<th class='workItemColumns' dataAttr='PageCount'><a class="js_sortable">Page Count</a><span class='ux-icon-tabl-sort-sortable'></span></th>
+										<th class='workItemColumns' dataAttr='Client'><a class="js_sortable">Client</a><span class='ux-icon-tabl-sort-sortable'></span></th>
+                                        <th class='approvercolumns' dataAttr='UserName'><a class='js_sortable'>Name</a><span class='ux-icon-tabl-sort-sortable'></span>
+										</th>
+                                            <th class='approvercolumns' dataAttr='ReportsTo'><a class='js_sortable'>Reports To</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='approvercolumns' dataAttr='EmailAddress'><a class='js_sortable'>Email</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='approvercolumns' dataAttr='StartDate'><a class="js_sortable">Start Date</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='completedColumns' dataAttr='CompletionDate'><a class='js_sortable'>Completion Date</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='coachColumns' dataAttr='SupervisorName'><a class='js_sortable'>Reports To</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='esclateColumns' dataAttr='ModifiedUser'><a class='js_sortable'>Escalated By</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='esclateColumns' dataAttr='ReasonComment'><a class='js_sortable'>Escalated Reason</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='workItemColumns' dataAttr='HealthPlan'><a class='js_sortable'>Health Plan</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='workItemColumns' dataAttr='ChartScoreGroup'><a class='js_sortable'>Score</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='workItemColumns' dataAttr='ProviderGroup'><a class='js_sortable'>Provider Group Name</a>
+                                                <!--span class='ux-icon-tabl-sort-sortable'></span-->
+                                            </th>
+                                            <th class='workItemColumns' dataAttr='EMR'><a class='js_sortable'>EMR</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+											 <th class='workItemColumns' dataAttr='ProgramType'><a class="js_sortable">Program</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='workItemColumns' dataAttr='Instructions'><a class='js_sortable'>Instructions</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                    </thead>
+                                    <tbody id="completedItemsTableBody" data-bind="template:{name:'workItemsTemplate', foreach : workItems}">
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="height:22px">
+                                <div class="ux-pagi">
+                                    <ul>
+                                        <li class="ux-pagi-first"><a class="underline">&lt;&lt;First</a>
+                                        </li>
+                                        <li class="ux-pagi-prev"><a class="underline">&lt;Previous</a>
+                                        </li>
+                                        <li class="ux-pagi-detail">
+                                            <input type='text' class='js_curr_page ux-pagi-current-page' maxlength="4" />
+                                            <span> of </span>  <span class="js_totalPages"></span>
+                                        </li>
+                                        <li class="ux-pagi-next"><a class="underline">Next&gt;</a>
+                                        </li>
+                                        <li class="ux-pagi-last"><a class="underline">Last&gt;&gt;</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+							<div id='noRecordsCompleted' class='noRecsFound'><p style='position:relative;top:-30px;'>No results found</p></div>
+
+                        </div>
+                    </li>
+
+                    <li id='groupTab' style='display:none'><a style="cursor:pointer" class='tab-label' id='groupItemsTab' workListView='UnAssigned'>Group Items (0)</a>
+                        <div id='groupWorkItemsElement'>
+                            <div>
+                                <input style="height:22px;width:80px;" type="button" value="Refresh" onclick="refresh_Button_click()" class="ux-btn" id="groupItemsRefresh">
+                                <div class="ux-pagi">
+                                    <ul>
+                                        <li class="ux-pagi-first"><a class="underline">&lt;&lt;First</a>
+                                        </li>
+                                        <li class="ux-pagi-prev"><a class="underline">&lt;Previous</a>
+                                        </li>
+                                        <li class="ux-pagi-detail">
+                                            <input type='text' class='js_curr_page ux-pagi-current-page' maxlength="4" />
+                                            <span> of </span>  <span class="js_totalPages"></span>
+                                        </li>
+                                        <li class="ux-pagi-next"><a class="underline">Next&gt;</a>
+                                        </li>
+                                        <li class="ux-pagi-last"><a class="underline">Last&gt;&gt;</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class='table-wrapper'>
+                                <table id="groupWorkItemsTable" class="ux-tabl-data">
+                                    <thead>
+                                        <th class='workItemColumns' dataAttr='BarCode'><a class='js_sortable'>Chart Request ID</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                        </th>
+                                        <th class='workItemColumns' dataAttr='CurrentStatus'><a class='js_sortable'>Status</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                        </th>
+                                        <th class='workItemColumns' dataAttr='StartDate'><a class='js_sortable'>Assigned Date</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                        </th>
+										<th class='workItemColumns' dataAttr='WorkItemType'><a class="js_sortable">Type</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                        </th>
+										<th class='workItemColumns' dataAttr='PageCount'><a class="js_sortable">Page Count</a><span class='ux-icon-tabl-sort-sortable'></span></th>
+										<th class='workItemColumns' dataAttr='Client'><a class="js_sortable">Client</a><span class='ux-icon-tabl-sort-sortable'></span></th>
+                                        <th class='approvercolumns' dataAttr='UserName'><a class='js_sortable'>Name</a><span class='ux-icon-tabl-sort-sortable'></span></th>
+                                            <th class='approvercolumns' dataAttr='ReportsTo'><a class='js_sortable'>Reports To</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='approvercolumns' dataAttr='EmailAddress'><a class='js_sortable'>Email</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='completedColumns' dataAttr='CompletionDate'><a class='js_sortable'>Completion Date</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='coachColumns' dataAttr='SupervisorName'><a class='js_sortable'>Reports To</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='esclateColumns' dataAttr='ModifiedUser'><a class='js_sortable'>Escalated By</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='esclateColumns' dataAttr='ReasonComment'><a class='js_sortable'>Escalated Reason</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='workItemColumns' dataAttr='HealthPlan'><a class='js_sortable'>Health Plan</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='workItemColumns' dataAttr='ChartScoreGroup'><a class='js_sortable'>Score</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='workItemColumns' dataAttr='ProviderGroup'><a class='js_sortable'>Provider Group Name</a>
+                                                <!--span class='ux-icon-tabl-sort-sortable'></span-->
+                                            </th>
+                                            <th class='workItemColumns' dataAttr='EMR'><a class='js_sortable'>EMR</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+											 <th class='workItemColumns' dataAttr='ProgramType'><a class="js_sortable">Program</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+                                            <th class='workItemColumns' dataAttr='Instructions'><a class='js_sortable'>Instructions</a><span class='ux-icon-tabl-sort-sortable'></span>
+                                            </th>
+
+                                    </thead>
+
+                                    <tbody id="groupItemsTableBody" data-bind="template:{name:'workItemsTemplate', foreach : workItems}">
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="height:22px">
+                                <div class="ux-pagi">
+                                    <ul>
+                                        <li class="ux-pagi-first"><a class="underline">&lt;&lt;First</a>
+                                        </li>
+                                        <li class="ux-pagi-prev"><a class="underline">&lt;Previous</a>
+                                        </li>
+                                        <li class="ux-pagi-detail">
+                                            <input type='text' class='js_curr_page ux-pagi-current-page' maxlength="4" />
+                                            <span> of </span>  <span class="js_totalPages"></span>
+                                        </li>
+                                        <li class="ux-pagi-next"><a class="underline">Next&gt;</a>
+                                        </li>
+                                        <li class="ux-pagi-last"><a class="underline">Last&gt;&gt;</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+							<div id='noRecordsGroup' class='noRecsFound'><p style='position:relative;top:-30px;'>No results found</p></div>
+                        </div>
+                    </li>
+
+                </ul>
+
+                <div class="ux-tpnl-content"></div>
+            </div>
+        </div>
+
+    </div>
+    <script>
+    </script>
+
+    </div>
+</body>
+<!-- InstanceEnd -->
+</html>

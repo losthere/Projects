@@ -1,0 +1,1407 @@
+<html><head><script type="text/javascript">
+
+setPublic(WorkList,"com.optum.cpc.emerald.inbox.library");
+setPublic(WorkItem,"com.optum.cpc.emerald.inbox.library");
+importType("wcp.library.util.LocaleFormat");
+importType("wcp.library.util.DateFormat");
+
+var WORKLIST_MAX_ROWS = 25
+var gDateFormat = "DD MMM YYYY HH:mm";
+var gCordysDateFormat = "YYYY-mm-DDTHH:mm:SS";
+var gDBDateFormat = "YYYY-MM-DD";
+var gAmountFormat = '$';
+var grefDateFormat = "MMM DD YYYY";
+var gCaseDetailsDateFormat = "DD MMM YYYY";
+var gCaseDetailsDateTimeFormat = "DD MMM YYYY HH:mm:SS";
+var dueDateFormat = "DD MMM YYYY";
+var gEmeraldDateFormat = "MM/DD/YYYY";
+var gUSFormat = "MM/DD/YY";
+
+var APPROVER = "cn=Approver";
+var MANAGER = "cn=Manager";
+var ACCOUNT_MANAGER = "cn=Account Manager";
+var WINAMESPACE  = "http://schemas.cordys.com/notification/workflow/1.0";
+var WORKFLOWITEM_NS = {"ns": "http://schemas.optum.com/optum/cpc/emerald/bpm/chart/inventory/workflowitem/1.0", "ns1": "http://schemas.optum.com/optum/cpc/emerald/bpm/chart/inventory/1.0"};
+
+function WorkList()
+{
+}
+
+WorkList.attachType = function(workListElement)
+{
+   workListElement._workItems = [];
+   workListElement._workListXml = null;
+   workListElement._setCursor();
+}
+
+WorkList.detachType = function(workListElement)
+{
+}
+
+
+
+
+function WorkList_getDateRange(queryObject)
+{
+		var dateObj = new Date();
+		dateObj.setMinutes(0);
+		dateObj.setHours(0);
+		dateObj.setSeconds(0);
+		var currDate = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate(), 23, 59, 59);
+		var fromDate = "";
+		var toDate = "";
+		if(queryObject.completedDateDuration == "Today")
+		{
+			toDate = getCurrentUTCDateInFormat("YYYY-MM-DDTHH:mm:SS.s",currDate);
+			//alert("ToDate: "+toDate);
+			fromDate = getCurrentUTCDateInFormat("YYYY-MM-DDTHH:mm:SS.s",dateObj);
+			//alert("FromDate: "+fromDate);
+		}
+		if(queryObject.completedDateDuration == "1 Week")
+		{
+			toDate = getCurrentUTCDateInFormat("YYYY-MM-DDTHH:mm:SS.s",currDate);
+			//alert("ToDate: "+toDate);
+			dateObj = new Date(dateObj.getTime() - 7*24*60*60*1000);
+			fromDate = getCurrentUTCDateInFormat("YYYY-MM-DDTHH:mm:SS.s",dateObj);
+			//alert("FromDate: "+fromDate);
+		}
+		if(queryObject.completedDateDuration == "1 Month")
+		{
+			toDate = getCurrentUTCDateInFormat("YYYY-MM-DDTHH:mm:SS.s",currDate);
+			//alert("ToDate: "+toDate);
+			dateObj = new Date(dateObj.getTime() - 30*24*60*60*1000);
+			fromDate = getCurrentUTCDateInFormat("YYYY-MM-DDTHH:mm:SS.s",dateObj);
+			//alert("FromDate: "+fromDate);
+		}
+		var dateRange = {};
+		dateRange.fromDate = fromDate;
+		dateRange.toDate = toDate;
+		return dateRange;
+}
+
+/**
+
+queryObject is a JScript Object with following properties
+
+{
+
+  targetType : "role/user/team/worklist",
+  target  : "roleDN/userDN/teamId/worklistId",
+
+}
+
+
+callBackHandler is a object of a Javascript function
+
+**/
+WorkList.prototype.readItems = function(queryObject, cursorObject)
+{
+
+	if ( queryObject.isGetTotalCount && queryObject.userRole && queryObject.userRole != "" && !queryObject.isSearchData )
+	{
+		var userRole = queryObject.userRole;
+		//look for Approver and show manager's activities also
+		var isApprovalInbox = userRole.indexOf(APPROVER) >= 0 || userRole.indexOf(MANAGER) >= 0 || userRole.indexOf(ACCOUNT_MANAGER) >= 0;
+		//only for functional roles for approval go with normal path
+		//if ( ! isApprovalInbox )
+		//{
+			var roleCN = userRole.substring(queryObject.userRole.indexOf("=")+1, queryObject.userRole.indexOf(",") );
+			var view = "";
+			var modelProperties = {};
+			modelProperties["showLoadingMessage"] = true ;
+			if ( queryObject.viewItem == "InProgress" )
+			{
+				view = "CURRENT"
+				modelProperties["modelCacheKey"] = "currentSearchItemCount";
+			}
+			else if ( queryObject.viewItem == "Others" )
+			{
+				view = "GROUP"
+				modelProperties["modelCacheKey"] = "groupSearchItemCount";
+			}
+			else
+			{
+				view = "HISTORY"
+				modelProperties["modelCacheKey"] = "completedSearchItemCount";
+			}
+
+			var requestXmlDoc = cordys.cloneXMLDocument(document.getElementById("GetChartsCountRequest").XMLDocument);
+			cordys.setNodeText(requestXmlDoc, ".//*[local-name()='organizationId']", queryObject.target);
+			cordys.setNodeText(requestXmlDoc, ".//*[local-name()='view']", view);
+			cordys.setNodeText(requestXmlDoc, ".//*[local-name()='role']", roleCN);
+
+			if ( queryObject.barCode && queryObject.barCode != "" ) //barcode
+			{
+				cordys.setNodeText(requestXmlDoc, ".//*[local-name()='barCode']", queryObject.barCode);
+			}
+			if ( queryObject.providerGrpName && queryObject.providerGrpName != "")//provider grp name
+			{
+				cordys.setNodeText(requestXmlDoc, ".//*[local-name()='providerGroupName']", queryObject.providerGrpName);
+			}
+			if ( queryObject.supervisorName && queryObject.supervisorName != "")//supervisorName 
+			{
+				cordys.setNodeText(requestXmlDoc, ".//*[local-name()='supervisorName ']", queryObject.supervisorName);
+			}
+
+			var dateRange = WorkList_getDateRange(queryObject);
+			if ( view == "HISTORY" )
+			{
+				cordys.setNodeText(requestXmlDoc, ".//*[local-name()='fromDate']", dateRange.fromDate);
+				cordys.setNodeText(requestXmlDoc, ".//*[local-name()='toDate']", dateRange.toDate);
+			}
+
+			var data = WorkList_SendRequest(this, requestXmlDoc, queryObject.xformsModel, false , modelProperties,queryObject.viewItem, queryObject.sync);
+			if (  queryObject.sync )  this._workListXml = data;
+			return this._workListXml;
+		//}
+	}
+
+	//use GetTasks API to read all Work List Itesm for a user
+	var requestXmlDoc = cordys.cloneXMLDocument(document.getElementById("SearchHumanTasksRequest").XMLDocument);
+	var viewMode = "";
+	var modelProperties = {};
+	modelProperties["showLoadingMessage"] = true ;
+	if(queryObject.viewItem != undefined && (queryObject.viewItem == 0 || queryObject.viewItem == "" || queryObject.viewItem == "InProgress"))
+	{
+		viewMode = "MyTasks";
+		modelProperties["modelCacheKey"] = "currentSearchItem";
+	}
+	else if(queryObject.viewItem != undefined && queryObject.viewItem == "Others")
+	{
+		viewMode = "UnAssigned";
+		modelProperties["modelCacheKey"] = "groupSearchItem";
+	}
+	else
+	{
+		viewMode = "Completed";
+		modelProperties["modelCacheKey"] = "completedSearchItem";
+    }
+
+    var queryPart = "";
+    if ( viewMode == "MyTasks" )
+    {
+    	queryPart += " AND ( Task.Assignee =:PARAMETER5 ) AND 	( Task.State = 'CREATED' OR Task.State = 'ASSIGNED' OR Task.State = 'INPROGRESS' ) ";
+    }
+    else if ( viewMode == "UnAssigned" )
+    {
+    	queryPart += " AND ( Task.State = 'CREATED' OR Task.State = 'ASSIGNED' OR Task.State = 'INPROGRESS' ) "+
+    				  "	AND ( Task.Assignee IS NULL OR LENGTH(TRIM (Task.Assignee)) = 0) ";
+    }
+    else if ( viewMode == "Completed" )
+    {
+    	queryPart += " AND ( Task.State = 'COMPLETED' ) AND ( Task.Assignee =:PARAMETER5 ) AND (Task.CompletionDate>= :PARAMETER8 AND Task.CompletionDate< :PARAMETER9) ";
+
+
+		var dateRange = WorkList_getDateRange(queryObject);
+
+		WorkList_addParameterValue(requestXmlDoc, ".//*[local-name()='Parameters']/*[local-name()='Parameter'][@type='Task.CompletionDate']",
+"PARAMETER8",		"Task.CompletionDate", dateRange.fromDate );
+		WorkList_addParameterValue(requestXmlDoc, ".//*[local-name()='Parameters']/*[local-name()='Parameter'][@type='Task.CompletionDate']",
+"PARAMETER9",		"Task.CompletionDate", dateRange.toDate );
+
+	}
+
+
+	if ( queryObject.userRole && queryObject.userRole != "" )// role
+	{
+		var userRole = queryObject.userRole;
+		//look for Approver and show manager's activities also
+		var isApprover = userRole.indexOf(APPROVER) >= 0;
+		var isManager = userRole.indexOf(MANAGER) >= 0;
+		if ( isApprover || isManager  )
+		{
+			//prepare manager's role dn
+			var roleSubPart = userRole.substring( queryObject.userRole.indexOf(",") );
+			var managerRoleDN = isApprover ?
+					MANAGER + roleSubPart
+					: APPROVER +  roleSubPart;
+			queryPart += " AND ( Role = (:PARAMETER2) OR Role = (:MANAGERROLE) ) ";
+
+			WorkList_addParameterValue(requestXmlDoc, ".//*[local-name()='Parameters']/*[local-name()='Parameter'][@type='Role' and @name='MANAGERROLE']",
+"MANAGERROLE",		"Role", managerRoleDN );
+		}
+		else
+		{
+			queryPart += " AND ( Role =:PARAMETER2 ) ";
+		}
+		WorkList_addParameterValue(requestXmlDoc, ".//*[local-name()='Parameters']/*[local-name()='Parameter'][@type='Role' and @name='PARAMETER2']",
+"PARAMETER2",		"Role", userRole );
+	}
+	if ( queryObject.barCode && queryObject.barCode != "" ) //barcode
+	{
+		queryPart += " AND ( UPPER(BarCode) like UPPER(:PARAMETER3) ) ";
+		WorkList_addParameterValue(requestXmlDoc, ".//*[local-name()='Parameters']/*[local-name()='Parameter'][@type='BarCode']", "PARAMETER3",	"BarCode", "%"+queryObject.barCode+"%" );
+	}
+	if ( queryObject.providerGrpName && queryObject.providerGrpName != "")//provider grp name
+	{
+		queryPart += " AND ( UPPER(ProviderGroup) like UPPER(:PARAMETER4) ) ";
+		WorkList_addParameterValue(requestXmlDoc, ".//*[local-name()='Parameters']/*[local-name()='Parameter'][@type='ProviderGroup']","PARAMETER4",	 "ProviderGroup", "%"+queryObject.providerGrpName+"%" );
+	}
+	if ( queryObject.supervisorName && queryObject.supervisorName != "")//supervisorName
+	{
+		queryPart += " AND ( UPPER(SupervisorName) like UPPER(:PARAMETER12) ) ";
+		WorkList_addParameterValue(requestXmlDoc, ".//*[local-name()='Parameters']/*[local-name()='Parameter'][@type='SupervisorName']","PARAMETER12",	 "SupervisorName", "%"+queryObject.supervisorName+"%" );
+	}
+	WorkList_addParameterValue(requestXmlDoc, ".//*[local-name()='Parameters']/*[local-name()='Parameter'][@type='Task.Target']","PARAMETER1",	 "Task.Target", queryObject.target );
+	WorkList_addParameterValue(requestXmlDoc, ".//*[local-name()='Parameters']/*[local-name()='Parameter'][@type='Task.Assignee']","PARAMETER5",	 "Task.Assignee", queryObject.userDN );
+
+
+	WorkList_appendToQuery(requestXmlDoc, queryPart);
+    // for setting cursor
+	if(cursorObject)
+	{
+		if(isNaN(parseInt(cursorObject.position)))
+		{
+			this._setCursor(queryObject.viewItem);
+		}
+		var cursorNode = cordys.selectXMLNode(requestXmlDoc, ".//*[local-name()='cursor']");
+		cursorNode.setAttribute("position", cursorObject.position);
+		cursorNode.setAttribute("numRows", cursorObject.numRows ? cursorObject.numRows : WORKLIST_MAX_ROWS);
+		cursorNode.setAttribute("maxRows", cursorObject.maxRows ? cursorObject.maxRows : WORKLIST_MAX_ROWS);
+	}
+
+	// for custom sorting
+	if(queryObject.isCustomSort && queryObject.columnId && queryObject.sortOrder)
+	{
+		var orderByField = getSortByField(queryObject.columnId);
+		if(orderByField != "")
+		{
+			if(orderByField == "Task.StartDate" || orderByField == "Task.CompletionDate" || orderByField == "ChartScoreGroup")
+			{
+				cordys.setNodeText(requestXmlDoc, ".//*[local-name()='OrderBy']", orderByField +" "+ queryObject.sortOrder);
+			}
+			else
+			{
+				cordys.setNodeText(requestXmlDoc, ".//*[local-name()='OrderBy']","UPPER("+orderByField+") "+queryObject.sortOrder);
+			}
+		}
+	}
+	else
+	{
+		if(queryObject.viewItem == "InProgress" || queryObject.viewItem == "Others")
+			cordys.setNodeText(requestXmlDoc, ".//*[local-name()='OrderBy']","CurrentStatus desc,Task.DeliveryDate asc");
+		else
+			cordys.setNodeText(requestXmlDoc, ".//*[local-name()='OrderBy']","Task.CompletionDate desc");
+	}
+
+	// for removing cursor node
+	if(queryObject.isGetTotalCount)
+	{
+		modelProperties["modelCacheKey"] = modelProperties["modelCacheKey"]+"All";
+		var cursorNode = cordys.selectXMLNode(requestXmlDoc, ".//*[local-name()='cursor']");
+		cursorNode.parentNode.removeChild(cursorNode);
+		var data = WorkList_SendRequest(this, requestXmlDoc, queryObject.xformsModel, false , modelProperties,queryObject.viewItem, queryObject.sync);
+		if (  queryObject.sync )  this._workListXml = data;
+		return this._workListXml;
+	}
+	//get bdi
+	var data = WorkList_SendRequest(this, requestXmlDoc, queryObject.xformsModel, true ,modelProperties, queryObject.viewItem);
+	//var data = WorkList_SendRequest(this, requestXmlDoc);
+    if ( ! queryObject.async )  this._workListXml = data;
+	return this._workListXml;
+}
+WorkList.prototype.setSortByFieldImage = function(columnId,sortOrder)
+{
+	if(!columnId) return;
+	var currColmDesc = columnId.innerText;
+	if(sortOrder == " asc")
+	{
+		columnId.innerHTML = "<label onselectstart=\"cordys.stopPropagation(event)\">"+currColmDesc+"</label><img src=\"wcp/theme/default/icon/interface/arrowcollapse.gif\" style=\"position:absolute; background-repeat: no-repeat; height: 20px; width: 20px; bottom:0; right:0;\" />";
+	}
+	else
+	{
+		columnId.innerHTML = "<label onselectstart=\"cordys.stopPropagation(event)\">"+currColmDesc+"</label><img src=\"wcp/theme/default/icon/interface/arrowexpand.gif\" style=\"position:absolute; background-repeat: no-repeat; height: 20px; width: 20px; bottom:0; right:0;\" />";
+	}
+}
+
+WorkList.prototype.removeSortByFieldImage = function(columnId)
+{
+	if(!columnId) return;
+	var currColmDesc = columnId.innerText;
+	columnId.innerHTML= "<label onselectstart=\"cordys.stopPropagation(event)\">"+currColmDesc+"</label>";
+}
+
+function getSortByField(columnId)
+{
+	if(columnId == "activityNameControl")
+	{
+		return "BarCode" ;
+	}
+	if(columnId == "businessStatus")
+	{
+		return "CurrentStatus" ;
+	}
+	if(columnId == "StartDate")
+	{
+		return "Task.StartDate" ;
+	}
+	if(columnId == "CompletionDate")
+	{
+		return "Task.CompletionDate" ;
+	}
+	if(columnId == "escalatedBy")
+	{
+		return "ModifiedUser" ;
+	}
+	if(columnId == "escalatedComments")
+	{
+		return "ReasonComment" ;
+	}
+	if(columnId == "HealthPlan")
+	{
+		return "HealthPlan" ;
+	}
+	if(columnId == "ChartScoreGroup")
+	{
+		return "ChartScoreGroup" ;
+	}
+	if(columnId == "outputEMR")
+	{
+		return "EMR" ;
+	}
+	if(columnId == "outputInstructions")
+	{
+		return "Instructions";
+	}
+	if(columnId == "UserName")
+	{
+		return "UserName";
+	}
+	if(columnId == "ReportsTo")
+	{
+		return "ReportsTo";
+	}
+	if(columnId == "EmailAddress")
+	{
+		return "EmailAddress";
+	}
+	if(columnId == "SupervisorName")
+	{
+		return "SupervisorName";
+	}
+
+	return "";
+}
+
+/**
+*	Added by vivek for Date Formatting
+*/
+function getCurrentUTCDateInFormat(dateFormatToBeDisplayed,displayDate)	{
+
+	 var dateFormat = new DateFormat();
+         if(dateFormat)
+         dateFormat.setDisplayFormat(dateFormatToBeDisplayed);
+         dateFormat.setTimezone("GMT");
+          return dateFormat.format(displayDate);
+
+}
+
+function WorkList_addParameterValue(request, parameterXPath, parameterName, parameterType, parameterValue)
+{
+	var parameterNode = cordys.selectXMLNode(request, parameterXPath);
+	if ( parameterNode && parameterValue && parameterXPath.indexOf("CompletionDate") == -1)
+	{
+		parameterNode.setAttribute("value", parameterValue);
+	}
+	else
+	{
+		var parametersParent = cordys.selectXMLNode(request, ".//*[local-name()='Parameters']");
+		parameterNode = cordys.createElementNS(request, "http://schemas.cordys.com/notification/ws-humantask/execution/2.0", "Parameter");
+		parameterNode.setAttribute("name", parameterName);
+		parameterNode.setAttribute("value", parameterValue);
+		parameterNode.setAttribute("type", parameterType);
+		cordys.appendXMLNode(parameterNode, parametersParent);
+	}
+}
+
+function WorkList_appendToQuery(request, newQueryPart)
+{
+	if ( newQueryPart )
+	{
+		var queryValue = cordys.getNodeText(request, ".//*[local-name()='Query']");
+
+		queryValue += "  " + newQueryPart;
+
+		cordys.setNodeText(request, ".//*[local-name()='Query']", queryValue);
+	}
+}
+
+function WorkList_OnResponse( workList, busDataIsland,  isTasksItems)
+{
+	return function(eventObject)
+	{
+		RequestThread_removeListener(busDataIsland, "onresponse", WorkList_OnResponse(workList, busDataIsland, callBackHandler, isTasksItems));
+		workList.__tempResponse = eventObject.response;
+		if ( isTasksItems ) workList._workListXml = workList.__tempResponse ;
+	}
+}
+
+
+function RequestThread_removeListener(busDataIsland, event, eventHandler)
+{
+	busDataIsland.removeListener(event, eventHandler);
+	if ( busDataIsland._eventListeners && busDataIsland._eventListeners["onresponse"] )
+	{
+		delete busDataIsland._eventListeners[event];
+		busDataIsland._eventListeners[event] = null;
+	}
+}
+
+function WorkList_SendRequest(workList, requestXmlDoc, xformsModel, isTasksItems, modelProperties, viewItem, isSync)
+{
+	if ( xformsModel && ! isSync )
+	{
+		//register event for onresponse
+		xformsModel.removeListener("xforms-onresponse", WorkList_onModelResponse(workList, isTasksItems, viewItem, isSync));
+		xformsModel.addListener("xforms-onresponse", WorkList_onModelResponse(workList, isTasksItems, viewItem, isSync));
+		var requestQueueLib = document.getElementById("_worklist_inbox_util_requestQueueLib");
+		xformsModel.setMethodRequest( requestXmlDoc );
+		var requestQueue = requestQueueLib.getRequestQueue();
+                //requestQueue.clear();
+		var thread = requestQueue.addThread("WorkListItemsModel", xformsModel,"",modelProperties);
+		thread.send();
+	}
+	else
+	{
+		var bdi = document.getElementById("_worklist_inbox_util_bdi");
+		bdi.async = false;
+		bdi.clear();
+		bdi.request = requestXmlDoc;
+		bdi.reset();
+		workList.__tempResponse = bdi.data;
+		return workList.__tempResponse;
+	}
+}
+
+
+function WorkList_onModelResponse(workList, isTasksItems, viewItem)
+{
+
+	return function(eventObject)
+	{
+		if ( isTasksItems && viewItem ) workList.initializeCursor(eventObject.response, viewItem);
+	}
+
+}
+
+
+WorkList.prototype.getXml = function()
+{
+   if ( this._workListXml ) return this._workListXml.cloneNode(true);
+   return this._workListXml;
+}
+
+WorkList.prototype.getWorkItem = function(taskId, refresh)
+{
+   if ( ! this._workItems[ taskId ]  || refresh || ( this._workItems[ taskId ] && ! this._workItems[ taskId ].getXml() ) )
+   {
+     //read details
+     if ( taskId )
+     {
+
+     	var requestXmlDoc = cordys.cloneXMLDocument(document.getElementById("GetTaskRequest").XMLDocument);
+		cordys.setNodeText(requestXmlDoc, ".//*[local-name()='TaskId']", taskId);
+		var responseXml = WorkList_SendRequest(this, requestXmlDoc);
+     	this._workItems[ taskId ] = new WorkItem( cordys.selectXMLNode(responseXml, ".//*[local-name()='Task']" )) ;
+     }
+   }
+   return this._workItems[ taskId ];
+}
+
+/** Navigation Starts **/
+
+
+WorkList.prototype.initializeCursor = function(xmlResponse, viewItem)
+{
+	if ( ! viewItem ) return;
+	if ( xmlResponse )
+	{
+		var cursorNode = cordys.selectXMLNode(xmlResponse, ".//*[local-name()='cursor']");
+		if ( ! this._cursorObject ) this._cursorObject = {}
+		if ( ! this._cursorObject[viewItem] ) this._cursorObject[viewItem] = {};
+		if ( cursorNode )
+		{	this._cursorObject[viewItem].position = cursorNode.getAttribute("position");
+			this._cursorObject[viewItem].numRows = cursorNode.getAttribute("numRows");
+			this._cursorObject[viewItem].maxRows = cursorNode.getAttribute("maxRows");
+			this._cursorObject[viewItem]._isLastPage = false ;
+		}
+		else
+		{
+			this._cursorObject[viewItem] = {};
+		}
+	}
+	else
+	{
+		this._cursorObject[viewItem] = {};
+	}
+}
+
+WorkList.prototype._setCursor = function(viewItem)
+{
+	if ( ! this._cursorObject ) this._cursorObject = {};
+	if ( viewItem )
+	{
+		this._cursorObject[viewItem].position = 0;
+		this._cursorObject[viewItem].numRows = WORKLIST_MAX_ROWS;
+		this._cursorObject[viewItem].maxRows = WORKLIST_MAX_ROWS;
+	}
+}
+
+WorkList.prototype.first = function(queryObject)
+{
+	//get current position
+	if ( this.hasValidCursor(queryObject) && this._cursorObject[queryObject.viewItem].position != 0 )
+	{
+		this._cursorObject[queryObject.viewItem]._isLastPage = false;
+		this._cursorObject[queryObject.viewItem].position = 0;
+		this._cursorObject[queryObject.viewItem].numRows = WORKLIST_MAX_ROWS;
+		this._cursorObject[queryObject.viewItem].maxRows = WORKLIST_MAX_ROWS;
+		this.readItems(queryObject, this._cursorObject[queryObject.viewItem]);
+	}
+}
+
+WorkList.prototype.hasValidCursor = function(queryObject)
+{
+	return this._cursorObject && this._cursorObject[queryObject.viewItem];
+}
+
+
+WorkList.prototype.previous = function(queryObject)
+{
+	//get current position
+	if ( this.hasValidCursor(queryObject) && this._cursorObject[queryObject.viewItem].position != 0 )
+	{
+		//get the position and substract from max rows
+		this._cursorObject[queryObject.viewItem]._isLastPage = false;
+		var currentPosition = parseInt(this._cursorObject[queryObject.viewItem].position);
+		var numRows = this._cursorObject[queryObject.viewItem].numRows || WORKLIST_MAX_ROWS;
+		//var newPosition = currentPosition - 2 * parseInt(numRows);
+		var newPosition = (parseInt(queryObject.currentPageNumber)* WORKLIST_MAX_ROWS) - parseInt(numRows);
+		if ( newPosition < 0 ) return;
+		this._cursorObject[queryObject.viewItem].position = newPosition;
+		this.readItems(queryObject, this._cursorObject[queryObject.viewItem]);
+	}
+}
+
+WorkList.prototype.toPage = function(queryObject, pageNumber)
+{
+	if ( this.hasValidCursor(queryObject))
+	{
+		//get the position and substract from max rows
+		var numRows = WORKLIST_MAX_ROWS;
+		var newPosition = ( parseInt(pageNumber-1)  ) * parseInt(numRows);
+		this._cursorObject[queryObject.viewItem].position = newPosition;
+		this._cursorObject[queryObject.viewItem]._isLastPage = false;
+		this.readItems(queryObject, this._cursorObject[queryObject.viewItem]);
+	}
+}
+
+
+WorkList.prototype.next = function(queryObject)
+{
+	if ( this.hasValidCursor(queryObject) && ! this._cursorObject[queryObject.viewItem]._isLastPage)
+	{
+		//get the position and substract from max rows
+		this._cursorObject[queryObject.viewItem]._isLastPage = false;
+		var numRows = this._cursorObject[queryObject.viewItem].numRows || WORKLIST_MAX_ROWS;
+		var newPosition = (parseInt(queryObject.currentPageNumber) - 1) * parseInt(numRows);
+		this._cursorObject[queryObject.viewItem].position = newPosition;
+        if(isNaN(newPosition)) return;
+		this.readItems(queryObject, this._cursorObject[queryObject.viewItem]);
+	}
+}
+
+WorkList.prototype.last = function(queryObject)
+{
+	if ( this.hasValidCursor(queryObject) && ! this._cursorObject[queryObject.viewItem]._isLastPage  )
+	{
+		//get total count
+		try
+		{
+			var totalTaskCount = this.getTotalCount(queryObject, true);
+			var newPosition = "-1";
+			if ( totalTaskCount != -1 )
+			{
+				var numRows = this._cursorObject[queryObject.viewItem].numRows || WORKLIST_MAX_ROWS;
+				//newPosition =  parseInt(totalTaskCount) - parseInt(numRows);
+				newPosition = ( (Math.ceil(parseInt(totalTaskCount)/WORKLIST_MAX_ROWS) - 1)*WORKLIST_MAX_ROWS );
+			}
+			this._cursorObject[queryObject.viewItem].position = newPosition;
+			queryObject.sync = false;
+			queryObject.isGetTotalCount = false;
+			this._cursorObject[queryObject.viewItem]._isLastPage = true;
+			this.readItems(queryObject, this._cursorObject[queryObject.viewItem]);
+		}
+		catch(e)
+		{
+		}
+	}
+}
+
+
+//fill page count is costly operation don't do
+WorkList.prototype.getTotalCount = function(queryObject, isSync)
+{
+	if ( ! queryObject.target || ! queryObject.userRole || !queryObject.userDN) return;
+	if ( typeof(queryObject.isCompletedWorkItems) == "undefined" ) queryObject.isCompletedWorkItems = false;
+	//request
+	queryObject.isGetTotalCount = true ;
+	queryObject.sync = isSync;
+	var response = this.readItems(queryObject);
+	var count = -1;
+	if ( response )
+	{
+		count = cordys.getNodeText(response, ".//*[local-name()='COUNT']", "")
+		if(count == "")
+		{
+			var responseTuple = cordys.selectXMLNodes(response, ".//*[local-name()='tuple']");
+			count = responseTuple.length ;
+		}
+	}
+	return count;
+}
+
+
+/** Navigation Ends **/
+
+
+function WorkItem(  taskXml  )
+{
+  this._clear();
+  this._setXml(taskXml);
+}
+
+WorkItem.prototype._clear = function()
+{
+  this.processInstanceId = null
+  this.processName = null
+  this.taskId = null;
+  this.parentTaskId = null;
+  this.state = null;
+  this.activity = null;
+  this.senderDisplayName = null;
+  this.senderEmail = null;
+  this.senderDN = null;
+  this.assignee = null;
+  this._businessAttributes = null;
+  this.completedBy = null;
+  this.delegatedTo = null;
+  this._taskData = null;
+  this.deliveryDate = null;
+  this.startDate = null;
+  this.completedDate = null;
+  this.url = null;
+  this._possibleActions = [];
+  this._taskXml = null;
+  this._targetsXml = null;
+  this._possibleActionsXml = null;
+  this._targets = [];
+}
+
+WorkItem.prototype._setXml = function(taskXml)
+{
+	this._taskXml = taskXml;
+	if ( ! taskXml )
+	{
+		this._clear();
+		return;
+	}
+    cordys.setXMLNamespaces(this._taskXml, { wi : WINAMESPACE });
+	this.processInstanceId = cordys.getNodeText(this._taskXml, "wi:ProcessInstanceId");
+	this.processName = cordys.getNodeText(this._taskXml, "wi:ProcessName");
+	this.taskId = cordys.getNodeText(this._taskXml, "wi:TaskId");
+	this.parentTaskId = cordys.getNodeText(this._taskXml, "wi:ParentTaskId");
+	this.state = cordys.getNodeText(this._taskXml, "wi:State");
+	this.activity = cordys.getNodeText(this._taskXml, "wi:Activity");
+	var senderNode = cordys.selectXMLNode(this._taskXml, "wi:Sender");
+	this.senderDisplayName  = senderNode ? senderNode.getAttribute("displayName") : null;
+	this.senderEmail = senderNode ? senderNode.getAttribute("email") : null;
+	this.senderDN = cordys.getNodeText(this._taskXml, "wi:Sender");
+	this.assignee = cordys.getNodeText(this._taskXml, "wi:Assignee");
+	this._businessAttributes = cordys.selectXMLNode(this._taskXml, "wi:BusinessAttributes");
+	this.completedBy = cordys.getNodeText(this._taskXml, "wi:CompletedByUser");
+	this.delegatedTo = cordys.getNodeText(this._taskXml, "wi:DelegatedToUser");
+	this._taskData = cordys.selectXMLNode(this._taskXml, "wi:TaskData");
+	this.deliveryDate = cordys.getNodeText(this._taskXml, "wi:DeliveryDate");
+	this.startDate = cordys.getNodeText(this._taskXml, "wi:StartDate");
+	this.completedDate = cordys.getNodeText(this._taskXml, "wi:CompletionDate");
+	this.url = cordys.getNodeText(this._taskXml, "wi:url");
+  	this._possibleActionsXml = cordys.selectXMLNode(this._taskXml, "wi:PossibleActions");
+  	this._targetsXml = cordys.selectXMLNode(this._taskXml, "wi:Targets");
+  	if ( this._targetsXml )
+  	{
+  		this._targets = {};
+  		var targets = cordys.selectXMLNodes(this._targetsXml, "wi:Target");
+  		for(var t=0, length; t<targets.length; t++)
+  		{
+  			this._targets[ targets[t].getAttribute("type") ] = cordys.getTextContent(targets[t]);
+  		}
+  	}
+  	if ( this._possibleActionsXml )
+	{
+		this._possibleActions = {};
+		var possibleActions = cordys.selectXMLNodes(this._possibleActionsXml, "*");
+		for(var t=0, length; t<possibleActions.length; t++)
+		{
+			this._possibleActions[ cordys.getLocalName(possibleActions[t]) ] = cordys.getLocalName(possibleActions[t]);
+		}
+  	}
+        return this._taskXml;
+}
+
+WorkItem.prototype.getXml = function()
+{
+	if ( this._taskXml )
+	{
+		return this._taskXml.cloneNode(true);
+	}
+	return this._taskXml;
+}
+
+WorkItem.prototype.getBusinessAttributes = function()
+{
+	if ( this._businessAttributes )
+	{
+		return this._businessAttributes.cloneNode(true);
+	}
+	return this._businessAttributes;
+}
+
+WorkItem.prototype.getTaskData = function()
+{
+	if ( this._taskData )
+	{
+		return this._taskData.cloneNode(true);
+	}
+	return this._taskData;
+}
+
+
+WorkItem.prototype.isWritable = function()
+{
+	return this._possibleActions["EXECUTE"] ? true : false;
+}
+WorkItem.prototype.saveChart = function(srcApplication, srcWindow)
+{
+	var isSaved = false;
+	if(srcWindow && srcWindow.SaveChart)
+	{
+		isSaved = srcWindow.SaveChart();
+	}
+	if ( isSaved )
+	{
+		if(srcWindow && srcWindow.saveImage)
+			isSaved = srcWindow.saveImage();
+	}
+	return isSaved;
+}
+function confirmCloseHandler(srcApplication, srcWindow, action, object)
+{
+	return function(confirmReturnValue)
+	{
+		var isSaved = true;
+		if (confirmReturnValue == 1)
+		{
+			afterConfirmCloseHandler(srcApplication, srcWindow, action, object);
+		}
+	}
+}
+function afterConfirmCloseHandler(srcApplication, srcWindow, action, object, comment, code)
+{
+	if(action == "accept")
+	{
+		if(srcWindow && srcWindow.AcceptChart) srcWindow.AcceptChart(acceptAfterCallBack,comment);
+	}
+	else if(action == "reject")
+	{
+		if(srcWindow && srcWindow.RejectChart) srcWindow.RejectChart(rejectAfterCallBack, comment, code);
+	}
+	else if(action == "escalate")
+	{
+		if(srcWindow && srcWindow.EscalateChart) srcWindow.EscalateChart(escalateAfterCallBack, comment, code);
+	}
+	else if(action == "complete")
+	{
+		if(srcWindow && srcWindow.EscalateChart) srcWindow.CompleteChart(completeAfterCallBack);
+	}
+	else if(action == "cancel")
+	{
+		cancelAfterCallBack(srcApplication, srcWindow);
+	}
+	else if(action == "NEXT" || action == "ACCEPTOVEREAD")
+	{
+		action = (action == "ACCEPTOVEREAD" ? "ACCEPT" : action);
+		if(srcWindow && srcWindow.AcceptOverreadChart) srcWindow.AcceptOverreadChart(acceptOverreadAfterCallBack,action);
+	}
+	else if(action == "REJTOVERREAD")
+	{
+	    action = (action == "REJTOVERREAD" ? "REJECT" : action);
+		if(srcWindow && srcWindow.AcceptOverreadChart) srcWindow.AcceptOverreadChart(acceptOverreadAfterCallBack,action);
+	}
+}
+WorkItem.prototype.acceptChart = function(srcApplication, srcWindow,comments)
+{
+	afterConfirmCloseHandler(srcApplication, srcWindow, "accept", this,comments);
+}
+function acceptAfterCallBack(srcApplication, srcWindow)
+{
+	var result = true;
+	if(srcWindow && srcWindow.saveImage)
+		result = srcWindow.saveImage();
+	return result;
+}
+WorkItem.prototype.rejectChart = function(srcApplication, srcWindow, comment, code)
+{
+	afterConfirmCloseHandler(srcApplication, srcWindow, "reject", this, comment, code);
+}
+function rejectAfterCallBack(srcApplication, srcWindow)
+{
+	var result = true;
+	if(srcWindow && srcWindow.rejectCommit)
+		result = srcWindow.rejectCommit();
+	return result;
+}
+WorkItem.prototype.escalateChart = function(srcApplication, srcWindow, comment, code)
+{
+	afterConfirmCloseHandler(srcApplication, srcWindow, "escalate", this, comment, code);
+}
+function escalateAfterCallBack(srcApplication, srcWindow)
+{
+	var result = true;
+	if(srcWindow && srcWindow.escalateCommit)
+		result = srcWindow.escalateCommit();
+	return result;
+}
+WorkItem.prototype.cancelChart = function(srcApplication, srcWindow)
+{
+	afterConfirmCloseHandler(srcApplication, srcWindow, "cancel", this);
+}
+function cancelAfterCallBack(srcApplication, srcWindow)
+{
+	var result = true;
+	if(srcWindow && srcWindow.cancelCheckOut)
+		result = srcWindow.cancelCheckOut();
+	if(result && srcWindow && srcWindow.closeApplication)
+		srcWindow.closeApplication()
+}
+WorkItem.prototype.completeChart = function(srcApplication, srcWindow)
+{
+	afterConfirmCloseHandler(srcApplication, srcWindow, "complete", this);
+}
+function completeAfterCallBack(srcApplication, srcWindow)
+{
+	var result = true;
+	if(srcWindow && srcWindow.completeCheckOut)
+		result = srcWindow.completeCheckOut();
+	if(result && srcWindow && srcWindow.closeApplication)
+		srcWindow.closeApplication()
+}
+WorkItem.prototype.acceptOverreadChart = function(srcApplication,srcWindow,action)
+{
+	afterConfirmCloseHandler(srcApplication, srcWindow, action, this);
+}
+function acceptOverreadAfterCallBack(srcApplication,srcWindow)
+{
+	var result = true;
+	if(srcWindow && srcWindow.saveImage)
+		result = srcWindow.saveImage();
+	return result;
+}
+WorkItem.prototype.acceptChartReq = function(CaseInstanceid, TaskInstanceId, ActivityID, ActivityName, ProjectContentKey, OrganizationUnit,comment)
+{
+	return manageWorkflowItem(CaseInstanceid, TaskInstanceId, "ACCEPT", ActivityID, ActivityName, ProjectContentKey, OrganizationUnit,comment);
+}
+WorkItem.prototype.rejectChartReq = function(CaseInstanceid, TaskInstanceId, ActivityID, ActivityName, ProjectContentKey, OrganizationUnit, Comment, Code)
+{
+	return manageWorkflowItem(CaseInstanceid, TaskInstanceId, "REJECT", ActivityID, ActivityName, ProjectContentKey, OrganizationUnit, Comment, Code);
+}
+WorkItem.prototype.escalateChartReq = function(CaseInstanceid, TaskInstanceId, ActivityID, ActivityName, ProjectContentKey, OrganizationUnit, Comment, Code)
+{
+	return manageWorkflowItem(CaseInstanceid, TaskInstanceId, "ESCALATE", ActivityID, ActivityName, ProjectContentKey, OrganizationUnit, Comment, Code);
+}
+WorkItem.prototype.completeChartReq = function(CaseInstanceid, TaskInstanceId, ActivityID, ActivityName, ProjectContentKey, OrganizationUnit)
+{
+	return manageWorkflowItem(CaseInstanceid, TaskInstanceId, "ACCEPT", ActivityID, ActivityName, ProjectContentKey, OrganizationUnit);
+}
+WorkItem.prototype.acceptOverreadChartReq = function(CaseInstanceid, TaskInstanceId, Action, ActivityID, ActivityName, ProjectContentKey, OrganizationUnit)
+{
+	return manageWorkflowItem(CaseInstanceid, TaskInstanceId, Action, ActivityID, ActivityName, ProjectContentKey, OrganizationUnit);
+}
+//allowed actionsa are "ACCEPT", "REJECT", "ESCALATE"
+function manageWorkflowItem(CaseInstanceid, TaskInstanceId, Action, ActivityID, ActivityName, ProjectContentKey, OrganizationUnit, Comment, Code)
+{
+	ManageWorkflowItemRequestXML = cordys.cloneXMLDocument(document.getElementById("ManageWorkflowItemRequest").XMLDocument);
+	cordys.setNodeText(ManageWorkflowItemRequestXML, ".//ns1:CaseInfo/ns1:CaseInstanceId", CaseInstanceid, WORKFLOWITEM_NS);
+	cordys.setNodeText(ManageWorkflowItemRequestXML, ".//ns1:CaseInfo/ns1:ProjectContentKey", ProjectContentKey, WORKFLOWITEM_NS);
+	cordys.setNodeText(ManageWorkflowItemRequestXML, ".//ns1:CaseInfo/ns1:OrganizationUnit", OrganizationUnit, WORKFLOWITEM_NS);
+	cordys.setNodeText(ManageWorkflowItemRequestXML, ".//ns1:TaskInstanceId", TaskInstanceId, WORKFLOWITEM_NS);
+	cordys.setNodeText(ManageWorkflowItemRequestXML, ".//ns1:Action", Action, WORKFLOWITEM_NS);
+	cordys.setNodeText(ManageWorkflowItemRequestXML, ".//ns1:TaskActivityId", ActivityID, WORKFLOWITEM_NS);
+	cordys.setNodeText(ManageWorkflowItemRequestXML, ".//ns1:TaskActivityName", ActivityName, WORKFLOWITEM_NS);
+	if(Comment) cordys.setNodeText(ManageWorkflowItemRequestXML, ".//ns1:Action/@Comment", Comment, WORKFLOWITEM_NS);
+	if(Code) cordys.setNodeText(ManageWorkflowItemRequestXML, ".//ns1:Action/@Code", Code, WORKFLOWITEM_NS);
+	return ManageWorkflowItemRequestXML;
+}
+WorkList.prototype.getCN = function(DNvalue)
+{
+	return DNvalue.split(",")[0].split("=")[1];
+}
+
+WorkList.prototype.getToolbarXML = function()
+{
+	return cordys.getXML(document.getElementById("controlbar").XMLDocument.documentElement);
+}
+WorkList.prototype.disableToolbarButtons = function(buttons)
+{
+	if(buttons && buttons.length > 0)
+	{
+		for(var i=0; i< buttons.length; i++)
+		{
+			this.disableToolbarButton(buttons[i]);
+		}
+	}
+}
+WorkList.prototype.enableToolbarButtons = function(buttons)
+{
+	if(buttons && buttons.length > 0)
+	{
+		for(var i=0; i< buttons.length; i++)
+		{
+			this.enableToolbarButton(buttons[i]);
+		}
+	}
+}
+WorkList.prototype.disableToolbarButton = function(button)
+{
+	if(button)
+	{
+		button.disabled = true;
+		button.style.filter = "alpha(opacity=20)";
+		button.style.opacity = '0.4';
+		button.style.cursor="default";
+		button.className = "item small disabled";
+	}
+}
+WorkList.prototype.enableToolbarButton = function(button)
+{
+	if(button)
+	{
+		button.disabled = false;
+		button.style.filter = ""
+		button.style.opacity = "";
+		button.style.cursor="hand";
+		button.className = "item small";
+	}
+}
+WorkList.prototype.getTaskRequest = function(workListID, selectedView, organization)
+{
+	var GetTasksRequestXMl;
+	if(selectedView == 'MyActivities')
+	{
+		GetTasksRequestXMl = cordys.cloneXMLDocument(document.getElementById("GetMyTasksRequest").XMLDocument);
+		var ParameterNode = cordys.selectXMLNode(GetTasksRequestXMl, ".//*[local-name()='Parameter']");
+		ParameterNode.setAttribute("value", system.getUser().organizations[organization].userDN);
+	}
+	else if(selectedView == 'CompletedActivities')
+	{
+		GetTasksRequestXMl = cordys.cloneXMLDocument(document.getElementById("GetCompletedTasksRequest").XMLDocument);
+		var AssigneeParameterNode = cordys.selectXMLNode(GetTasksRequestXMl, ".//*[local-name()='Parameter'][@type='Task.Assignee']");
+		AssigneeParameterNode.setAttribute("value", system.getUser().organizations[organization].userDN);
+	}
+	else
+	{
+		GetTasksRequestXMl = cordys.cloneXMLDocument(document.getElementById("GetTasksRequest").XMLDocument);
+	}
+	cordys.setNodeText(GetTasksRequestXMl, ".//*[local-name()='Target']", workListID);
+	return GetTasksRequestXMl;
+}
+WorkList.prototype.possibleAction_onRowCheck = function(viewGrid, property, propertyValue, toolbarButtons)
+{
+	var enableButton = true;
+	var checkedRows = viewGrid.getCheckedRows();
+	if(checkedRows.length > 0)
+	{
+		for(var i=0; i < checkedRows.length; i++)
+		{
+			 if(cordys.getNodeText(checkedRows[i].businessObject, ".//tns:"+ property) == propertyValue)
+			 {
+				 enableButton = false;
+				 break;
+			 }
+		}
+	}
+	else
+	{
+		enableButton = false;
+	}
+	if(enableButton)
+		this.enableToolbarButtons(toolbarButtons);
+	else
+		this.disableToolbarButtons(toolbarButtons);
+}
+
+WorkList.prototype.claimTask = function(viewGrid)
+{
+	var ClaimTaskRequestXML = cordys.cloneXMLDocument(document.getElementById("ClaimTaskRequest").XMLDocument);
+	var ClaimTaskNode = cordys.selectXMLNode(ClaimTaskRequestXML, ".//*[local-name()='ClaimTask']");
+	var checkedRows = viewGrid.getCheckedRows();
+	for(var i=0; i < checkedRows.length; i++)
+	{
+		var taskIDNode = ClaimTaskRequestXML.createElement("TaskId");
+		var taskID = cordys.getNodeText(checkedRows[i].businessObject, ".//*[local-name()='TaskId']")
+		cordys.setTextContent(taskIDNode, taskID);
+		cordys.appendXMLNode(taskIDNode, ClaimTaskNode);
+	}
+	_sendAndReceive(ClaimTaskRequestXML);
+}
+function _sendAndReceive( request )
+{
+	_common_inbox_util_bdi = document.getElementById("_worklist_inbox_util_bdi");
+	_common_inbox_util_bdi.async= false; //NOMBV
+	_common_inbox_util_bdi.automatic = false;
+	_common_inbox_util_bdi.clear();
+	_common_inbox_util_bdi.sendAndWait(request);
+	return _common_inbox_util_bdi.data;
+}
+WorkList.prototype.setPriorityImage = function(currentValue)
+{
+	var dataObject = new Object();
+	if(currentValue)
+	{
+		if(currentValue == "High" || currentValue == "5")
+		{
+			dataObject.imgURL = "wcp/theme/default/icon/feedback/priority-high_eb.gif";
+			dataObject.value = currentValue;
+			return dataObject;
+		}
+		else if(currentValue == "Medium" || currentValue == "3")
+		{
+			dataObject.imgURL = "wcp/theme/default/icon/feedback/priority_eb.gif";
+			dataObject.value = currentValue;
+			return dataObject;
+		}
+		else if(currentValue == "Low" || currentValue == "1")
+		{
+			dataObject.imgURL = "wcp/theme/default/icon/feedback/priority-low_eb.gif";
+			dataObject.value = currentValue;
+			return dataObject;
+		}
+	}
+	return null;
+}
+WorkList.prototype.formatDate = function(dateTime, isCordysTime,isRefdate,isCaseDetailsFormat, isCordysDateFormat,isCaseDetailsDateTime,isEmeraldDateFormat, isUSFormat)
+{
+	var dateFormat = gDateFormat;
+	if(isCordysTime)
+	{
+		dateFormat = gDBDateFormat;
+	}
+	if(isRefdate)
+	{
+		dateFormat =  grefDateFormat ;
+	}
+        if(isCaseDetailsFormat)
+	{
+		dateFormat =  gCaseDetailsDateFormat ;
+	}
+	if(isCordysDateFormat)
+	{
+		dateFormat = gCordysDateFormat;
+	}
+       if(isCaseDetailsDateTime)
+	{
+		dateFormat = gCaseDetailsDateTimeFormat ;
+	}
+        if(isEmeraldDateFormat)
+	{
+		dateFormat = gEmeraldDateFormat ;
+	}
+        if(isUSFormat)
+	{
+		dateFormat = gUSFormat;
+	}
+	if (dateTime)
+	{
+		if(dateTime.indexOf("T") > 0)
+		{
+			if (dateTime.indexOf("T00:00:00.0") >= 0)
+			{
+				var df = new DateFormat(dateFormat);
+				df.setTimezone("GMT");
+				return df.format(dateTime);
+			}
+			if (dateTime.indexOf("T23:59:59.0") >= 0)
+			{
+				var df = new DateFormat(dateFormat);
+				df.setTimezone("GMT");
+				return df.format(dateTime);
+			}
+			if ( isEmeraldDateFormat ){
+				var df = new DateFormat(dateFormat);
+				df.setTimezone("GMT");
+				return df.format(dateTime);
+			}
+			return new DateFormat(dateFormat).format(dateTime);
+		}
+		else
+		{
+			return new DateFormat(dateFormat).format(dateTime);
+		}
+	}
+	return "";
+}
+
+</script>
+
+<script type="cordys/xml" id="GetChartsCountRequest">
+<SOAP:Envelope xmlns:SOAP="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP:Body>
+    <GetChartCount xmlns="http://schemas.optum.com/optum/cpc/gcm/ws/chart/1.0" preserveSpace="no" qAccess="0" qValues="">
+      <organizationId></organizationId>
+      <view></view>
+      <role></role>
+      <barCode></barCode>
+      <providerGroupName></providerGroupName>
+      <fromDate></fromDate>
+      <toDate></toDate>
+    </GetChartCount>
+  </SOAP:Body>
+</SOAP:Envelope>
+</script>
+
+<script type="cordys/xml" id="GetTasksRequest">
+	<SOAP:Envelope xmlns:SOAP="http://schemas.xmlsoap.org/soap/envelope/">
+	  <SOAP:Body>
+		<GetTasks xmlns="http://schemas.cordys.com/notification/workflow/1.0">
+		  <Target type="" />
+		</GetTasks>
+	  </SOAP:Body>
+	</SOAP:Envelope>
+</script>
+<script type="cordys/xml" id="SearchHumanTasksRequest">
+<SOAP:Envelope xmlns:SOAP="http://schemas.xmlsoap.org/soap/envelope/">
+	<SOAP:Body>
+		<SearchHumanTasks xmlns="http://schemas.cordys.com/notification/ws-humantask/execution/2.0">
+			<cursor position="0" numRows="25" maxRows="25" />
+			<Variables>
+				<Variable>
+					<TaskIdentifier>
+						<XPath>//proc:forminputdata/proc:ChartManagementCaseDataModel/ns:ChartManagementCaseData/ns:BarCode</XPath>
+						<Name>BarCode</Name>
+						<DataType>STRING</DataType>
+					</TaskIdentifier>
+				</Variable>
+				<Variable>
+					<TaskIdentifier>
+						<XPath>//proc:forminputdata/proc:ExecutionPolicyModel/ns1:ExecutionPolicy/ns1:Entry/ns1:Principal</XPath>
+						<Name>Role</Name>
+						<DataType>STRING</DataType>
+
+					</TaskIdentifier>
+				</Variable>
+				<Variable>
+					<TaskIdentifier>
+						<XPath>//proc:forminputdata/proc:ChartManagementCaseDataModel/ns:ChartManagementCaseData/ns:ProviderGroup</XPath>
+						<Name>ProviderGroup</Name>
+						<DataType>STRING</DataType>
+					</TaskIdentifier>
+				</Variable>
+				<Variable>
+					<TaskIdentifier>
+						<XPath>//proc:forminputdata/proc:ChartItemModel/ns:ChartItem/ns:BusFuncStatus</XPath>
+						<Name>CurrentStatus</Name>
+						<DataType>STRING</DataType>
+					</TaskIdentifier>
+				</Variable>
+				<Variable>
+					<TaskIdentifier>
+						<XPath>//proc:forminputdata/proc:ChartItemModel/ns:ChartItem/ns:ModifiedUser</XPath>
+						<Name>ModifiedUser</Name>
+						<DataType>STRING</DataType>
+					</TaskIdentifier>
+				</Variable>
+				<Variable>
+					<TaskIdentifier>
+						<XPath>//proc:forminputdata/proc:ChartItemModel/ns:ChartItem/ns:ReasonDescription</XPath>
+						<Name>ReasonComment</Name>
+						<DataType>STRING</DataType>
+					</TaskIdentifier>
+				</Variable>
+				<Variable>
+					<TaskIdentifier>
+						<XPath>//proc:forminputdata/proc:ChartManagementCaseDataModel/ns:ChartManagementCaseData/ns:HealthPlan</XPath>
+						<Name>HealthPlan</Name>
+						<DataType>STRING</DataType>
+					</TaskIdentifier>
+				</Variable>
+				<Variable>
+					<TaskIdentifier>
+						<XPath>//proc:forminputdata/proc:ChartManagementCaseDataModel/ns:ChartManagementCaseData/ns:ChartScoreGroup</XPath>
+						<Name>ChartScoreGroup</Name>
+						<DataType>STRING</DataType>
+					</TaskIdentifier>
+				</Variable>
+				<Variable>
+					<TaskIdentifier>
+						<XPath>//proc:forminputdata/proc:ChartManagementCaseDataModel/ns:ChartManagementCaseData/ns:EMR</XPath>
+						<Name>EMR</Name>
+						<DataType>STRING</DataType>
+					</TaskIdentifier>
+				</Variable>
+				<Variable>
+					<TaskIdentifier>
+						<XPath>//proc:forminputdata/proc:ChartItemModel/ns:ChartItem/ns:BusFuncInstruction</XPath>
+						<Name>Instructions</Name>
+						<DataType>STRING</DataType>
+					</TaskIdentifier>
+				</Variable>
+				<Variable>
+					<TaskIdentifier>
+						<XPath>//proc:forminputdata/proc:freeformcontrols/proc:OptumIDOutput</XPath>
+						<Name>UserName</Name>
+						<DataType>STRING</DataType>
+					</TaskIdentifier>
+				</Variable>
+				<Variable>
+					<TaskIdentifier>
+						<XPath>//proc:forminputdata/proc:freeformcontrols/proc:ReportsToOutput</XPath>
+						<Name>ReportsTo</Name>
+						<DataType>STRING</DataType>
+					</TaskIdentifier>
+				</Variable>
+				<Variable>
+					<TaskIdentifier>
+						<XPath>//proc:forminputdata/proc:freeformcontrols/proc:emailOutput</XPath>
+						<Name>EmailAddress</Name>
+						<DataType>STRING</DataType>
+					</TaskIdentifier>
+				</Variable>
+				<Variable>
+					<TaskIdentifier>
+						<XPath>//proc:forminputdata/proc:ChartItemModel/ns:ChartItem/ns:SupervisorName</XPath>
+						<Name>SupervisorName</Name>
+						<DataType>STRING</DataType>
+					</TaskIdentifier>
+				</Variable>
+			</Variables>
+			<Criteria>
+				<Query> Task.Target=:PARAMETER1 </Query>
+				<Parameters>
+					<Parameter name="PARAMETER1" type="Task.Target" value=""/>
+				</Parameters>
+			</Criteria>
+			<OrderBy>CurrentStatus desc,Task.DeliveryDate asc</OrderBy>
+		</SearchHumanTasks>
+	</SOAP:Body>
+</SOAP:Envelope>
+</script>
+<script type="cordys/xml" id="GetMyTasksRequest">
+	<SOAP:Envelope xmlns:SOAP="http://schemas.xmlsoap.org/soap/envelope/">
+	  <SOAP:Body>
+		<GetTasks xmlns:xfr="http://schemas.cordys.com/1.0/xforms/runtime" xmlns="http://schemas.cordys.com/notification/workflow/1.0">
+
+		  <TaskIdentifiers xmlns="http://schemas.cordys.com/notification/workflow/1.0">
+		  	<TaskIdentifierType xmlns="http://schemas.cordys.com/notification/workflow/1.0" id="" name=""/>
+		  </TaskIdentifiers>
+
+		  <Criteria xmlns="http://schemas.cordys.com/notification/workflow/1.0">
+			<Query xmlns="http://schemas.cordys.com/notification/workflow/1.0">Task.State != :PARAMETER0 AND Task.Assignee = :PARAMETER1</Query>
+			<Parameters>
+			<Parameter name="PARAMETER0" type="Task.State" value="COMPLETED"/>
+			  <Parameter name="PARAMETER1" type="Task.Assignee" value="" />
+			  <Parameter name="PARAMETER4" type="Alias.Role" value=""/>
+			</Parameters>
+		  </Criteria>
+		  <OrderBy xmlns="http://schemas.cordys.com/notification/workflow/1.0">Task.DeliveryDate desc</OrderBy>
+		  <AssignedBy xmlns="http://schemas.cordys.com/notification/workflow/1.0" />
+		  <Target xmlns="http://schemas.cordys.com/notification/workflow/1.0" type=""></Target>
+		  <ShowNonWorkableItems xmlns="http://schemas.cordys.com/notification/workflow/1.0">false</ShowNonWorkableItems>
+		  <ReturnTaskData xmlns="http://schemas.cordys.com/notification/workflow/1.0">false</ReturnTaskData>
+		  <cursor position="0" numRows="25" maxRows="25" />
+		</GetTasks>
+	  </SOAP:Body>
+	</SOAP:Envelope>
+</script>
+
+<script type="cordys/xml" id="GetCompletedTasksRequest">
+	<SOAP:Envelope xmlns:SOAP="http://schemas.xmlsoap.org/soap/envelope/">
+		<SOAP:Body>
+			<GetTasks xmlns:xfr="http://schemas.cordys.com/1.0/xforms/runtime" xmlns="http://schemas.cordys.com/notification/workflow/1.0">
+				<TaskIdentifiers xmlns="http://schemas.cordys.com/notification/workflow/1.0">
+					<TaskIdentifierType xmlns="http://schemas.cordys.com/notification/workflow/1.0" id="" name="Alias"/>
+				</TaskIdentifiers>
+				<Criteria xmlns="http://schemas.cordys.com/notification/workflow/1.0">
+					<Query xmlns="http://schemas.cordys.com/notification/workflow/1.0">Task.State = :PARAMETER0 AND Task.Assignee = :PARAMETER1</Query>
+					<Parameters>
+						<Parameter name="PARAMETER0" type="Task.State" value="COMPLETED"/>
+						<Parameter name="PARAMETER1" type="Task.Assignee" value="" />
+						<Parameter name="PARAMETER4" type="Alias.Role" value=""/>
+					</Parameters>
+				</Criteria>
+				<OrderBy xmlns="http://schemas.cordys.com/notification/workflow/1.0">Task.DeliveryDate desc</OrderBy>
+				<AssignedBy xmlns="http://schemas.cordys.com/notification/workflow/1.0"/>
+				<Target xmlns="http://schemas.cordys.com/notification/workflow/1.0" type="worklist">0050568b-00dd-11e3-e255-94e055259755</Target>
+				<ShowNonWorkableItems xmlns="http://schemas.cordys.com/notification/workflow/1.0">true</ShowNonWorkableItems>
+				<ReturnTaskData xmlns="http://schemas.cordys.com/notification/workflow/1.0">false</ReturnTaskData>
+				<cursor position="0" numRows="25" maxRows="25"/>
+			</GetTasks>
+		</SOAP:Body>
+	</SOAP:Envelope>
+</script>
+<script type="cordys/xml" id="controlbar">
+	<div class="elementbar">
+	  <Button class="item small" id="RefreshButton" onclick="RefreshButton_Click(event)" title="Refresh Worklist" style="width: 80px;">
+		<div class="imagecontainer">
+		  <img src="wcp/theme/default/icon/action/refresh.png" />
+		</div>
+		<label class="description">Refresh</label>
+	  </Button>
+
+	</div>
+</script>
+<script type="cordys/xml" id="GetTaskRequest">
+<SOAP:Envelope xmlns:SOAP="http://schemas.xmlsoap.org/soap/envelope/">
+	<SOAP:Body>
+		<GetTask xmlns:xfr="http://schemas.cordys.com/1.0/xforms/runtime" xmlns="http://schemas.cordys.com/notification/workflow/1.0">
+			<TaskId xmlns="http://schemas.cordys.com/notification/workflow/1.0"></TaskId>
+			<Target xmlns="http://schemas.cordys.com/notification/workflow/1.0"/>
+			<RetrievePossibleActions xmlns="http://schemas.cordys.com/notification/workflow/1.0">true</RetrievePossibleActions>
+			<ReturnTaskData xmlns="http://schemas.cordys.com/notification/workflow/1.0">true</ReturnTaskData>
+		</GetTask>
+	</SOAP:Body>
+</SOAP:Envelope>
+</script>
+<script type="cordys/xml" id="ClaimTaskRequest">
+	<SOAP:Envelope xmlns:SOAP="http://schemas.xmlsoap.org/soap/envelope/">
+	  <SOAP:Body>
+		<ClaimTask xmlns="http://schemas.cordys.com/notification/workflow/1.0" />
+	  </SOAP:Body>
+	</SOAP:Envelope>
+</script>
+<script type="cordys/xml" id="ManageWorkflowItemRequest">
+	<SOAP:Envelope xmlns:SOAP="http://schemas.xmlsoap.org/soap/envelope/">
+		<SOAP:Body>
+			<ManageWorkflowItem xmlns="http://schemas.optum.com/optum/cpc/emerald/bpm/chart/inventory/workflowitem/1.0">
+				<ns0:WorkFlowItem xmlns:ns0="http://schemas.optum.com/optum/cpc/emerald/bpm/chart/inventory/1.0">
+					<ns0:CaseInfo>
+						<ns0:CaseInstanceId></ns0:CaseInstanceId>
+						<ns0:ProjectContentKey></ns0:ProjectContentKey>
+						<ns0:OrganizationUnit></ns0:OrganizationUnit>
+					</ns0:CaseInfo>
+					<ns0:TaskInfo>
+						<ns0:TaskInstanceId></ns0:TaskInstanceId>
+						<ns0:Action Comment="" Code="" />
+						<ns0:TaskActivityId></ns0:TaskActivityId>
+						<ns0:TaskActivityName></ns0:TaskActivityName>
+					</ns0:TaskInfo>
+				</ns0:WorkFlowItem>
+			</ManageWorkflowItem>
+		</SOAP:Body>
+	</SOAP:Envelope>
+</script>
+</head>
+<body>
+	<div id="_worklist_inbox_util_bdi" style="display:none" cordysType="wcp.library.data.BusDataIsland"></div>
+<div xmlns="" id="_worklist_inbox_util_requestQueueLib" cordysType="com.optum.emerald.gcm.lib.CordysUI" style="display:none">Lib</div>
+</body>
+</html>

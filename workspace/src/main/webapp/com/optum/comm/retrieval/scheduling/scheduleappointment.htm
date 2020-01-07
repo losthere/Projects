@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule Appointment</title>
+    <link rel="stylesheet" type="text/css" href="../../lib/css/uitk.min.css" />
+    <script type="text/javascript" src="../../lib/js/common/jquery.js"></script>
+    <script type="text/javascript" src="../../lib/js/common/angular.js"></script>
+    <script type="text/javascript" src="../../lib/js/common/angular-sanitize.js"></script>
+    <script type="text/javascript" src="../../lib/js/common/angular-translate/angular-translate.js"></script>
+    
+    <script type="text/javascript" src="../../lib/js/common/ng-csv.js"></script>
+    <script type="text/javascript" src="../../lib/js/common/angular-touch.js"></script>
+    <script type="text/javascript" src="../../lib/js/common/lodash.js"></script>
+    <!--<script src="js/uitk.min.js"></script> -->
+    <script type="text/javascript" src="../../lib/js/common/uitk.js"></script>
+    <script type="text/javascript" src="../../lib/js/common/uitk-wizard.js"></script>
+    <style>
+        .oui-type-like-h3, h3 {
+            color: #c25608;
+        }
+
+        .chartStatusul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .chartStatusli {
+            float: left;
+        }
+        .chartStatuslidiv {
+            display: block;
+            text-align: center;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+    </style>
+	
+    <script type="text/javascript">
+        //SyntaxHighlighter.all();
+    </script>
+</head>
+    <body ng-app="schduleAppointment"  ng-cloak>
+        <main data-ng-controller="schedulerController">
+            <div>
+                <h1 id='worklistHeader'>Worklist</h1>
+				<h2 id="MakeApntmnthdr">Make an Appointment</h2>
+                <uitk:panel model="chartStatusModel"></uitk:panel>
+                <uitk:panel model="faxStatusModel"></uitk:panel>
+                <uitk:panel model="commentHistoryModel"></uitk:panel>
+				<uitk-wizard view-model="model"></uitk-wizard>
+			</div>           
+        </main>
+		<script type="text/javascript" src="../../lib/js/modules/retrieval/scheduleappointment.js"></script>
+    </body>
+</html>

@@ -1,0 +1,205 @@
+<style>
+span.overflow-needed {
+	display: block;
+}
+
+span.overflow-needed div {
+	width: fit-content;
+}
+
+span.overflow-needed input {
+	width: 180px;
+	height: 25px;
+}
+
+.ux-tabl-form, .ux-tabl-form-narrow, .ux-tabl-form-multicol {
+	margin: 0px;
+}
+
+</style>
+<div ng-controller='lookupCtrl'>
+	
+	<span style="color : red; margin-top:13px;">* Required</span><br><br>
+	<table class="ux-tabl-form-multicol ux-padding-bottom-none ux-margin-top-none">
+		<tbody class="tbllabel">
+			<tr>
+				<td>
+					<label class="tk-labl">Business segment <span style="color: red;">*</span></label>
+				</td>
+				<td>
+					<select class="size" ng-model="filters.busSegment" ng-change="onBusSegmentChange()">
+						<option ng-repeat="busSegments in lookup.businessSegments" value="{{busSegments.key}}">{{busSegments.value}}</option>
+					</select>
+				</td>
+				<td>
+					<label class="tk-labl">Health plan</label>
+				</td>
+				<td>
+					<select class="size" ng-model="filters.client" ng-change="onClientChange()">
+						<option value="">All</option>
+						<option ng-repeat="client in lookup.clients" value="{{client.key}}">{{client.value}}</option>
+					</select>
+				</td>
+				<td>
+					<label class="tk-labl">Organization <span style="color: red;">*</span></label>
+				</td>
+				<td>
+					<select class="size" ng-model="filters.vendor">
+						<option value="">--Select--</option>
+						<option ng-repeat="vendor in lookup.vendors" value="{{vendor.key}}">{{vendor.value}}</option>
+					</select>
+				</td>
+				<td>
+					<label class="tk-labl">Chart Score</label>
+				</td>
+				<td>
+					<select class="size" ng-model="filters.chartScore">
+						<option value="" selected="selected">All</option>
+						<option ng-repeat="chartScore in lookup.chartScoreList" value="{{chartScore}}">{{chartScore}}</option>
+					</select>
+				</td>	
+			</tr>
+				<td>
+					<label class="tk-labl">Program</label>
+				</td>
+				<td>
+					<select ng-disabled="filters.busSegment==''" class="size" ng-model="filters.program" ng-change="onProgramChange()">
+						<option value="" selected="selected">All</option>
+						<option ng-repeat="program in lookup.programs" value="{{program.key}}">{{program.value}}</option>
+					</select>
+				</td>
+				<td>
+					<label class="tk-labl">Health plan name</label>
+				</td>
+				<td>
+					<select class="size" ng-model="filters.hp" ng-disabled="filters.client==''" ng-change="onHPChange()">
+						<option value="">All</option>
+						<option ng-repeat="healthPlan in lookup.healthPlans" value="{{healthPlan.key}}">{{healthPlan.value}}</option>
+					</select>
+				</td><td>
+					<span>
+						<label class="tk-labl">Status</label>
+					</span>
+				</td>
+				<td>
+					<span>
+						<select class="size" ng-model="filters.status" ng-change="onStatusChange()">
+							<option value="0">Unassigned/Assigned To Location</option>
+							<option value="1">Assigned to User</option>
+						</select>
+					</span>					
+				</td>
+				<td>
+					<label class="tk-labl">Provider Specialty Code</label>
+				</td>
+				<td>
+					<select class="size" ng-model="filters.provSplCode">
+						<option value="" selected="selected">All</option>
+						<option ng-repeat="provSplCode in lookup.provSplCodeList" value="{{provSplCode.key}}">{{provSplCode.value}}</option>
+					</select>
+				</td>				
+			</tr>
+			<tr>
+				<td>
+					<label class="tk-labl">Project Year <span style="color: red;">*</span></label>
+				</td>
+				<td>
+					<select class="size" ng-model="filters.projectYear">
+						<option ng-repeat="projectYear in lookup.projectYears" value="{{projectYear}}">{{projectYear}}</option>
+					</select>
+				</td>
+				<td>
+					<label class="tk-labl">Health plan product</label>
+				</td>
+				<td>
+					<select class="size" ng-model="filters.hpp" ng-disabled="filters.hp==''">
+						<option value="">All</option>
+						<option ng-repeat="hpp in lookup.healthPlanProds" value="{{hpp}}">{{hpp}}</option>
+					</select>
+				</td>
+				<td>
+					<label class="tk-labl"><span>User</span></label>
+				</td>
+				<td>
+					<select class="size" ng-model="filters.user" ng-disabled="filters.status != 1">
+						<option value=''>Select</option>
+						<option ng-repeat="user in lookup.users" value="{{user.key}}">{{user.value}}</option>
+					</select>
+				</td>
+				<td>
+					<span ng-if="filters.currentTab != 'QA'">
+						<label class="tk-labl">EMR/Non-EMR</label>
+					</span>
+					<span ng-if="filters.currentTab == 'QA'"><label class="tk-labl">Coder</label></span>
+				</td>
+				<td>
+					<select class="size" ng-model="filters.emr"  ng-if="filters.currentTab != 'QA'">
+						<option value="" selected="selected">All</option>
+						<option value="Y">EMR</option>
+						<option value="N">Non-EMR</option>
+					</select>
+					
+					<select class="size" ng-model="filters.coder" ng-if="filters.currentTab == 'QA'">
+						<option value=''>Select</option>
+						<option ng-repeat="coder in lookup.coders" value="{{coder.key}}">{{coder.value}}</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label class="tk-labl">Project name</label>
+				</td>
+				<td colspan='1'>
+					<select class="size" ng-model="filters.projectKey" ng-disabled="filters.busSegment==''">
+						<option selected="selected" value="">All</option>
+						<option ng-repeat="project in lookup.projects" value="{{project.key}}">{{project.value}}</option>
+					</select>
+				</td>
+				<td>
+					<span ng-if="filters.currentTab == 'QA'"><label class="tk-labl">Date Range <span style="color: red;">*</span></label></span>
+				</td>
+				<td>
+					<span ng-if="filters.currentTab == 'QA'">
+						<span>From</span><br>
+						<uitk:calendar style="margin-top:5px;" id="fromDate" name="fromDate" ng-model="filters.fromDate" view-model="fromDateCalendarViewModel" />
+					</span>
+				</td>
+				<td colspan='2'>
+					<span ng-if="filters.currentTab == 'QA'">
+						<span>To</span><br>
+						<uitk:calendar style="margin-top:5px;" id="throughDate" name="throughDate" ng-model="filters.throughDate" view-model="throughDateCalendarViewModel" />
+					</span>
+				</td>
+				<td>
+					<span ng-if="filters.currentTab == 'QA'">
+						<label class="tk-labl">Number Of Charts <span style="color: red;">*</span></label>
+					</span>
+				</td>
+				<td>
+					<span ng-if="filters.currentTab == 'QA'">
+						<select class="size" ng-model="filters.noOfCharts">
+							<option value="10">10%</option>
+							<option value="20">20%</option>
+							<option value="30">30%</option>
+							<option value="40">40%</option>
+							<option value="50">50%</option>
+							<option value="60">60%</option>
+							<option value="70">70%</option>
+							<option value="80">80%</option>
+							<option value="90">90%</option>
+							<option value="100" selected="selected">100%</option>
+						</select>
+					</span>
+				</td>
+			</tr>			
+		</tbody>
+	</table>
+	<div>
+		<span>
+			<input type="button" value="Filter" ng-click="filter()" class="tk-btn-default-action   ux-btn-width" />
+		</span> 
+		<span>
+			<input type="button" value="Clear" ng-click="clear()" class="tk-btn-default-action   ux-btn-width" />
+		</span>
+	</div>
+</div>

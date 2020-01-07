@@ -1,0 +1,113 @@
+	<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+	<!--
+
+		 © 2003 Cordys R&D B.V. All rights reserved.
+		 The computer program(s) is the proprietary information of Cordys R&D B.V. and provided
+		 under the relevant License Agreement containing restrictions on use and disclosure.
+		 Use is subject to the License Agreement.
+
+
+	-->
+	<html>
+	<head>
+		<META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+		<META HTTP-EQUIV="Pragma" CONTENT="NO-CACHE">
+		<META HTTP-EQUIV="CACHE-CONTROL" CONTENT="no-store">
+		<META HTTP-EQUIV="CACHE-CONTROL" CONTENT="must-revalidate">
+		<META HTTP-EQUIV="Expires" CONTENT="Mon, 8 Aug 2005 10:00:00 GMT">
+		<title>Clinical Review</title>
+		<link type="image/x-icon" href="../com/optum/comm/lib/images/favicon.ico" rel="icon"></link>
+		<link type="image/x-icon" href="../com/optum/comm/lib/images/favicon.ico" rel="shortcut icon"></link>
+
+	<style>label.logs {margin-left:13px;}</style>
+
+		<style type="text/css">
+
+						.ux-head-logo {
+			display: table-cell;
+			vertical-align: bottom;
+			height: 62px;
+		}
+
+			.ux-head-cntr-logo {
+		-moz-box-sizing: border-box;
+		-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		height: 88px;
+		padding: 13px;
+		padding-right: 26px;
+		float: left;
+	}
+
+	.ux-head {
+	height: 88px;
+	border-bottom: 1px solid #F47B29;
+	white-space: nowrap;
+}
+
+#ux-wrapper {
+	background-color: white;
+	/*width: 920px;*/
+	margin: 0 auto;
+}
+
+		</style>
+
+		<script type="text/javascript">
+
+
+
+
+			// To hide IE context menu from getting displayed on the left-most corner
+			document.oncontextmenu = function(){return false};
+			function onLoad() {
+				if (location.pathname.indexOf('CRQS') >0)
+				{
+					document.getElementById("hdNumber").innerHTML="1-877-706-1734";
+				}else{
+					document.getElementById("hdNumber").innerHTML="1-844-752-9438";
+				}
+				var messageText = "Error occurred while accessing application."
+				if ( window.parent.__dataObject ){
+					messageText = window.parent.__dataObject.message || messageText;
+					document.getElementById("logoElement").style.display = "none";
+					document.getElementById("uxHeadElement").className = "";
+					document.getElementById("errorNotification").style.top = "0px";
+				}
+				document.getElementById("messageLog").innerHTML=messageText;
+			}
+		</script>
+
+		<link rel="shortcut icon" type="image/ico" href="../com/optum/comm/lib/images/favicon.ico" />
+		<style type="text/css">
+			html, body, iframe {position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; border: 0px; padding: 0px; margin: 0px; overflow: hidden}
+		</style>
+	</head>
+	<body onload="onLoad()" >
+				<div id="__xbody_msg_group_element"></div>
+					 <div id="ux-wrapper">
+					 <div class="ux-head" id='uxHeadElement'>
+				<div class="ux-head-cntr-logo" id='logoElement'>
+						 <span class="ux-head-logo"><img src="../../gcm-app-services/com/optum/comm/lib/images/clinicalReview.png" alt="Clinical Review" /></span>
+				</div>
+				<br><br>
+
+
+				<span id="errorNotification" style="position:absolute;left:10px;top:105px">
+						<H1 class="logs" style="font-family: arial, helvetica, sans-serif;font-size:24px;color:#666666;margin-left:13px;font-weight:normal;">Error</H1>
+						<label class="logs" id='messageLog'  style="font-family: arial, helvetica, sans-serif; font-size: 12px;color: #333333;">Error occurred while accessing application. Request URL not found.</label>
+						<br>
+<p style="font-family: arial, helvetica, sans-serif;font-size:12px;color:#333333;margin-left:13px;"><b>If you need assistance, contact the Help Desk: </b><span id='hdNumber' style="color:#333333;text-decoration: none;">1-844-752-9438</span></p>
+
+				</span>
+
+			<noscript>
+				<div cordystype="wcp.library.util.Translator" id="translator_ajaxtoolkit_default" messageBundle="ajaxtoolkit/ajaxtoolkitmessagebundle"></div>
+				<div style="width: 50%; height: 30%; display: block; top: 35%; left: 50%;margin-left:-25%;position:relative">
+					<h1 translatable="true">Javascript is disabled or not supported by this browser.</h1>
+					<p translatable="true">Enable Javascript for full functionality.</p>
+				</div>
+			</noscript>
+	</body>
+	</html>

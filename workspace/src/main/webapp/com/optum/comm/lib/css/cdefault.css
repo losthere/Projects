@@ -1,0 +1,1212 @@
+/** Custom Style types ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~**/
+
+.memberEligibilityGroup .groupheader
+{
+	background-color: transparent !important;
+	border: 0px !important;
+}
+.memberEligibilityGroup .groupheader>label
+{
+	font-weight: bold !important;
+	font-size: 1.17em !important;
+}
+.memberEligibilityGroup .groupcontent
+{
+	background-color: transparent !important;
+	border: 0px !important;
+}
+
+/** End Here - Custom Style types ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~**/
+
+/** Common Styles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~**/
+.error {
+	background-image: none !important;
+}
+
+/** End Here - Common Styles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~**/
+
+/** Messaging Styles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ **/
+.ux-msg-success,.ux-msg-error {
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	min-height: 23px;
+	color: #333333;
+	padding: 13px 13px 4px 56px;
+	margin-bottom: 26px;
+	margin-top: 13px;
+	left: 10px;
+	right: 10px;
+	position: absolute;
+}
+
+.ux-msg-success {
+	border: 1px solid #7E9E16;
+	background: #E9EFDA url(../images/icon-success1.png) 13px 4px no-repeat;
+}
+
+.ux-msg-error {
+	border: 1px solid #ce0c28;
+	background: #f7eeef url(../images/warning-icon1.png) 13px 4px no-repeat;
+}
+
+.ux-form-required {
+	color: #ce0c28;
+}
+
+/** End Here - Messaging Styles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~**/
+
+/*** input text **/
+.input {
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	font-size: 0.9em;
+	color: #333333;
+	border: 1px solid #b1b3b3;
+	background-color: white;
+	filter: none !important;
+}
+
+.input:focus {
+	background-color: white;
+	border: 1px solid #333333;
+}
+
+.input:hover {
+	background-color: white;
+	border: 1px solid #333333;
+}
+
+/** End**/
+
+/*Buttons ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+button{
+cursor: default !important;
+}
+button.disabled
+{
+background-color: #e6e6e6;
+	background: -webkit-linear-gradient(top, #f3f3f3 0%, #cccccc 100%);
+	background: -moz-linear-gradient(top, #f3f3f3 0%, #cccccc 100%);
+	background: linear-gradient(top, #f3f3f3 0%, #cccccc 100%);
+	-moz-box-shadow: inset 0 0 0 1px white;
+	-webkit-box-shadow: inset 0 0 0 1px white;
+	box-shadow: inset 0 0 0 1px white;
+	border: 1px solid #999999;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	line-height: 16px;
+	font-family: Arial, Helvetica, sans-serif;
+	margin: 0px .3em;
+	padding: 0px .3em;
+	width: 7em;
+	font-weight: normal;
+	font-size: 0.9em;
+	text-align: center;
+	height: 2em;
+	text-overflow: ellipsis;
+color: #808080;
+opacity: initial;
+}
+button.disabled:hover
+{
+border: 1px solid #999999 !important;
+}
+.h_button {
+	background-color: #e6e6e6;
+	background: -webkit-linear-gradient(top, #f3f3f3 0%, #cccccc 100%);
+	background: -moz-linear-gradient(top, #f3f3f3 0%, #cccccc 100%);
+	background: linear-gradient(top, #f3f3f3 0%, #cccccc 100%);
+	-moz-box-shadow: inset 0 0 0 1px white;
+	-webkit-box-shadow: inset 0 0 0 1px white;
+	box-shadow: inset 0 0 0 1px white;
+	border: 1px solid #999999;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	line-height: 16px;
+	color: #333333;
+	font-family: Arial, Helvetica, sans-serif;
+	margin: 0px .3em;
+	padding: 0px .3em;
+	width: 7em;
+	font-weight: normal;
+	font-size: 0.9em;
+	text-align: center;
+	height: 2em;
+	text-overflow: ellipsis;
+}
+
+.h_button:active {
+	border: 1px solid #f47b29;
+}
+
+.h_button disabled {
+	color: #808080;
+	border: 1px solid #999999;
+}
+
+.h_button:hover {
+	border: 2px solid #F47B29;
+	background-color: #e6e6e6;
+	color: black;
+}
+
+.h_button_default_action, .h_button_default_action:focus { 
+	padding: 4px 13px;
+	vertical-align: middle;
+	line-height: 1px;
+	border: 1px solid #f47b29;
+}
+.h_button_default_action:hover {
+		-moz-box-shadow: inset 0 0 0 0px #F47B29;
+		-webkit-box-shadow: inset 0 0 0 0px #F47B29;
+		box-shadow: inset 0 0 0 0px #F47B29;
+		/*padding-top: 3px;*/
+}
+
+.h_button_default_action:active {
+		border: 1px solid #999999;
+		-moz-box-shadow: inset 0 0 0 1px #924719;
+		-webkit-box-shadow: inset 0 0 0 1px #924719;
+		box-shadow: inset 0 0 0 1px #924719;
+		color: white;
+		background-color: #F47B29;
+		background: -webkit-linear-gradient(top, #C36121 0%, #F47B29 100%);
+		background: -moz-linear-gradient(top, #C36121 0%, #F47B29 100%);
+		background: linear-gradient(top, #C36121 0%, #F47B29 100%);
+		text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.5);
+		font-weight: bold;
+}
+
+/* Buttons Ends Here ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*** Drop down ***/
+.selectbox {
+	background-color: white;
+	border: 1px solid #b1b3b3;
+}
+
+.selectbox,.listbox {
+	width: auto;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	font-size: 0.9em;
+	color: #333333;
+	background-color: white;
+}
+
+.input.selectdropdown {
+	height: auto;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	font-size: 0.9em;
+	color: #333333;
+	background-color: white;
+}
+
+.option {
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	font-size: 0.9em;
+	color: #333333;
+	background-color: white;
+}
+
+/*** End ***/
+/** Table **/
+.oddrow,.evenrow,.xgridrowwrapper {
+	line-height: 28px;
+	height: 28px;
+	/* repeated height on xgridrow neeeded for non-xforms pages */
+	vertical-align: middle;
+}
+/*~~~~~~Pagination~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+.tabl-pagi,.tabl-pagi-touch {
+	float: right;
+	text-align: right;
+}
+
+.tabl-pagi h6,.tabl-pagi strong,.tabl-pagi-selected {
+	font-weight: bold;
+}
+
+.tabl-pagi h6 {
+	display: inline;
+}
+
+.tabl-pagi ul {
+	display: inline-block;
+	margin-left: 13px;
+}
+
+.tabl-pagi ul li {
+	border-left: 1px solid #323335;
+	display: inline-block;
+	padding: 0 4px 0 7px;
+}
+
+.tabl-pagi ul li:first-child,.tabl-pagi ul li.tabl-pagi-last,.tabl-pagi ul li.tabl-pagi-prev
+	{
+	border-left: 0;
+}
+
+.tabl-pagi ul li:first-child {
+	padding-left: 0;
+}
+
+.tabl-pagi ul li a {
+	display: inline-block;
+	margin: 0 -4px 0 -7px;
+	padding: 0 4px 0 7px;
+}
+
+.tabl-pagi ul li.tabl-pagi-last {
+	margin-right: 0;
+	padding-right: 0;
+}
+
+input.tabl-pagi-current-page {
+	width: 24px;
+	text-align: center;
+}
+
+.tabl-pagi-touch {
+	font-size: 14px;
+	white-space: nowrap;
+}
+
+.tabl-rppg+.tabl-pagi-touch {
+	margin-top: 13px;
+}
+
+.tabl-pagi-touch input,.tabl-tabl-actions-touch select {
+	font-size: 14px;
+	height: 40px;
+	padding-top: 0;
+	vertical-align: baseline;
+}
+
+.tabl-pagi-touch select {
+	vertical-align: baseline;
+}
+
+input.tabl-pagi-touch-current-page {
+	height: 24px;
+	width: 32px;
+	text-align: center;
+	padding-bottom: 0;
+	padding-top: 14px;
+	vertical-align: bottom;
+}
+
+.highlight,menuitem.highlight,.highlight .input,.highlight .output,.evenrow.highlight,.oddrow.highlight,.lightmedium.highlight,.light.highlight,.highlight .output
+	{
+	background-color: #F7DD99 !important;
+}
+
+fieldset.groupbox {
+	color: black;
+	margin: 0px;
+	background-color: transparent;
+	height: 100%;
+	min-height: 4em;
+	overflow: hidden;
+}
+
+.autosuggestcontainer {
+	padding-bottom: 1px;
+	position: absolute;
+	max-height: 300px;
+	overflow-x: hidden;
+}
+
+.autosuggestoption,.autosuggestoption.optionselected {
+	margin: 0px 1px;
+	padding: 0px 0px 0px 3px;
+	white-space: nowrap;
+	font: normal 11px/1.5 Arial, Helvetica, sans-serif;
+	height: 18px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+fieldset.groupbox .groupheader {
+	color: black;
+	margin: 0px;
+	padding: 0px;
+	width: auto;
+	display: block;
+	background-color: #E7E4E4;
+	xbackground-position: 98% 50%;
+	background-repeat: no-repeat;
+	bottom: 0px;
+	height: 20px;
+	left: 0px;
+	overflow: hidden;
+	position: relative;
+	right: 0px;
+	top: 0px;
+	z-index: 5;
+	text-overflow: ellipsis;
+}
+
+.groupheader.expand {
+	background-position: 0% 1px !important;
+	background-image: url(../images/arrow-right_sm_black.png);
+	BACKGROUND-REPEAT: no-repeat;
+}
+
+.groupheader.expand label {
+	left: 10px !important;
+}
+
+.groupheader.collapse {
+	background-position: 0% 5px !important;
+	background-image: url(../images/down_arrow.png);
+	BACKGROUND-REPEAT: no-repeat;
+}
+
+.groupheader.collapse label {
+	left: 10px !important;
+}
+
+.groupheader label,.groupheader label.primarycaption {
+	color: black;
+	margin: 0px;
+	padding: .2em .5em;
+	width: auto;
+	font-family: Arial, Helvetica, sans-serif;
+	font: normal 0.9em/1 "Arial", Helvetica, sans-serif;
+	bottom: 0px;
+	bottom: 0px;
+	height: auto;
+	position: relative;
+	top: 0px;
+}
+
+/*~~~~~~~~~xLabels~~~~~~~~~*/
+.h_label {
+	color: black;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.9em;
+	font-weight: bold;
+	text-align: left;
+}
+
+.v_label {
+	color: black;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.9em;
+	font-weight: bold;
+}
+
+.autosuggest {
+	color: black;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.9em;
+	font-weight: normal !important;
+}
+
+.choicebox {
+	color: black;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.9em;
+	font-weight: normal !important;
+}
+.h_choicebox{
+	color: black;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.9em;
+	font-weight: normal;
+}
+.h_choicebox label, .v_choicebox label {
+font-size: 12px !important;
+color: black !important;
+}
+/************************** Tabs **********************************/
+.tabcontainer {
+	background: transparent;
+	font: normal normal 12px/1.3 Arial, Helvetica, sans-serif;
+}
+
+.tabcontentholder {
+	top: 31px !important;
+}
+
+.tabstripattop,.tabstripatbottom,.tabstripatleft,.tabstripatright {
+	background-color: transparent;
+	xheight: 26px !important;
+}
+
+.tabstripatleft,.tabstripatright {
+	height: 100%;
+}
+
+.tabcontent {
+	border: 1px solid #cccccc !important;
+	top: 6px;
+	background-color: #ffffff;
+	color: #323335;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	-moz-background-clip: padding;
+	-webkit-background-clip: padding;
+	background-clip: padding-box;
+	padding: 13px !important;
+}
+
+.tabstripattop .activetab {
+	border: 1px solid #CCCCCC;
+	height: 29px !important;
+	background: white !important;
+	border-top: 3px solid #F47B29 !important;
+}
+
+.tabstripattop .inactivetab {
+	border: 1px solid #CCCCCC;
+	height: 29px !important;
+}
+
+.tabstripattop .activetab label {
+	cursor: pointer;
+	font-weight: bold;
+}
+
+.tabstripattop .rollerarea>.item:first-child,.tabstripatbottom .rollerarea>.item:first-child
+	{
+	margin-left: 0px !important;
+}
+
+.tabstripattop .rollerarea .item {
+	margin: 0px !important;
+}
+
+.activetab:hover,.inactivetab:hover {
+	background: transparent !important;
+	background-color: #F5E099 !important;
+}
+
+.activetab:hover label,.inactivetab:hover label {
+	background-color: #F5E099;
+}
+
+.activetab.item.small label{
+	font-size: 14px;
+	font-weight: bold;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.inactivetab.item.small label{
+	font-size: 14px;
+	font-weight: normal;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.tabstripattop .activetab label,.tabstripattop .inactivetab label {
+	display: block;
+	line-height: 29px;
+	vertical-align: middle;
+	white-space: nowrap;
+	padding: 0 13px;
+	text-decoration: none;
+	cursor: pointer;
+	color: #333333;
+	height: 29px;
+}
+
+.tabstripattop .activetab,.tabstripattop .inactivetab {
+	background-color: #e6e6e6;
+	background: -webkit-linear-gradient(top, #ffffff 0%, #E6E6E6 100%);
+	background: -moz-linear-gradient(top, #ffffff 0%, #E6E6E6 100%);
+	background: linear-gradient(top, #ffffff 0%, #E6E6E6 100%);
+	border-bottom-width: 0;
+	border-left-width: 0;
+	font: 14px;
+}
+
+/**Sprite Icons **/
+.sprite {
+	background: url(../images/sprite.png) no-repeat top left;
+	width: 16px;
+	height: 16px;
+}
+
+.sprite.back_arrow_default {
+	background-position: 0px 0px;
+}
+
+.sprite.back_arrow_hover_press {
+	background-position: 0px -26px;
+}
+
+.sprite.burst {
+	background-position: 0px -52px;
+}
+
+.sprite.filled_boxes {
+	background-position: 0px -78px;
+}
+
+.filled_boxes img {
+	position: absolute;
+	top: -78px;
+}
+
+.burst img {
+	position: relative;
+	top: -52px;
+}
+
+.sprite.first_pg_arrow_default {
+	background-position: 0px -104px;
+}
+
+.sprite.first_pg_arrow_hover_press {
+	background-position: 0px -130px;
+}
+
+.sprite.forward_arrow_default {
+	background-position: 0px -156px;
+}
+
+.sprite.forward_arrow_hover_press {
+	background-position: 0px -182px;
+}
+
+.sprite.last_pg_arrow_default {
+	background-position: 0px -208px;
+}
+
+.sprite.last_pg_arrow_hover_press {
+	background-position: 0px -234px;
+}
+
+.sprite.orange_check {
+	background-position: 0px -260px;
+}
+/**Select Box Drop Down **/
+.fieldsbox .selectbox {
+	color: black;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.9em;
+	font-weight: normal;
+}
+
+.fieldsbox {
+	color: black;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.9em;
+	font-weight: normal;
+}
+
+.selectbox {
+	color: black;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.9em;
+	font-weight: normal;
+}
+
+.selectfield {
+	color: black;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.9em;
+	font-weight: normal;
+}
+
+.selectfield .output {
+	color: black;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.9em;
+	font-weight: normal;
+}
+
+.fieldsbox .input {
+	color: black;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 1em;
+	font-weight: normal;
+	border: 1px solid #b1b3b3;
+	background-color: white;
+}
+
+
+
+/**** Ends common fields **/
+
+/*~~~~~~~~~x grid for display~~~~~~~~~*/
+.xgridcontainer {
+	scrollbar-3dlight-color: #63666a;
+	scrollbar-arrow-color: #63666A;
+	scrollbar-darkshadow-color: #b1b3b3;
+	scrollbar-face-color: #f2f2f2;
+	scrollbar-highlight-color: #ffffff;
+	scrollbar-shadow-color: #f2f2f2;
+	scrollbar-track-color: #f2f2f2;
+}
+
+.xgridheaderwrapper,.xgridrowwrapper,.xgridfooterwrapper {
+	border-color: #ffffff;
+}
+
+.xgridheaderwrapper {
+	height: 30px;
+}
+
+.xgridheadercell th {
+	background-image: none;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	font-size: 0.9em;
+	color: #333333;
+	background-color: #cccccc;
+	background: -webkit-linear-gradient(top, #f3f3f3 0%, #cccccc 100%);
+	background: -moz-linear-gradient(top, #f3f3f3 0%, #cccccc 100%);
+	background: linear-gradient(top, #f3f3f3 0%, #cccccc 100%);
+	border-top: 1px solid #666666;
+	border-bottom: 4px solid #666666;
+	height: 38px;
+}
+
+.xgridheadercell th label {
+	text-align: center;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	font-size: 1.1em;
+	color: #333333;
+	height: 38px;
+}
+
+.xgridheaderwrapper,.xgridfooterwrapper {
+	background-color: #f2f2f2;
+	background-position: 0px -0px;
+	background-repeat: repeat-x;
+	color: #ffffff;
+	font: 12px/1.3 Arial, Helvetica, sans-serif;
+}
+
+.xgridheadercell {
+	background-color: #cccccc;
+}
+
+.xgridheadercell,.xgridrowcell,.xgridfootercell {
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	border-color: #323335;
+	background-image: none;
+	color: #323335;
+	font: 12px/1.3 Arial, Helvetica, sans-serif;
+	height: 28px;
+}
+
+.xgridrowcell {
+	border-width: 0px !important;
+}
+
+.xgridheadercell label {
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	color: #323335 !important;
+	text-align: center;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.xgridrowcell {
+	border: 1px !important;
+}
+
+.xgridrowcell.output {
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	border-color: #ffffff;
+}
+
+.xgridrow.evenrow {
+	background-color: #f3f3f3;
+	border-top: 1px solid #FBEECC;
+	color: #323335;
+}
+
+.xgridrow.oddrow {
+	background-color: #ffffff;
+	border-bottom: 1px solid #FBEECC;
+	color: #323335;
+}
+
+.xgridrow.hover,.xgridrow.hover div {
+	background-color: #F9F2CC !important;
+	background-image: none;
+}
+
+/** Ends XGrid **/
+
+/*~~~~~~~~~data grid~~~~~~~~~*/
+
+/*** don't set margin for data class as it changes xgrid scrollbar behavior **/
+.grid.data {
+	margin: 13px 0;
+}
+
+/** This is required only when height of th is increased **/
+.grid.data {
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	font-size: 1em;
+	color: #333333;
+	width: 100%;
+	display: table;
+	table-layout: auto;
+	border-collapse: collapse;
+	white-space: normal;
+}
+
+.gridbodyholder {
+	top: -25px !important;
+}
+
+.grid.data {
+	top: -13px !important;
+}
+
+.grid.data th {
+	text-align:left !important;
+	background-image: none;
+	background-color: #cccccc;
+	background: -webkit-linear-gradient(top, #f3f3f3 0%, #cccccc 100%);
+	background: -moz-linear-gradient(top, #f3f3f3 0%, #cccccc 100%);
+	background: linear-gradient(top, #f3f3f3 0%, #cccccc 100%);
+	border-top: 1px solid #666666;
+	border-bottom: 4px solid #666666;
+	height: 38px;
+border-left-style :none;
+border-right-style :none;
+}
+
+.grid.data th label {
+	text-align:left !important;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	font-size: 1.1em;
+	color: #323335 !important;
+	height: 38px;
+}
+
+.grid.data tr {
+	font-family: Arial, Helvetica, sans-serif !important;
+	font-weight: normal !important;
+	font-size: 1em !important;
+	border-bottom: 1px solid #cccccc;
+	height: 38px;
+	color: #323335 !important;
+}
+
+.grid.data td {
+	font-family: Arial, Helvetica, sans-serif !important;
+	font-weight: normal !important;
+	font-size: 1em !important;
+	border-bottom: 1px solid #cccccc;
+	height: 38px;
+	width: auto;
+	color: #323335 !important;
+border-left:transparent !important;
+border-right:transparent !important;
+}
+
+.grid.data .oddrow {
+	background-color: #ffffff;
+	color: #333333 !important;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	font-size: 0.9em;
+}
+
+.grid.data .evenrow {
+	background-color: #f3f3f3;
+	color: #333333 !important;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	font-size: 0.9em;
+}
+
+.grid tr:hover,.grid tr:hover div {
+	background-image: none;
+	background-color: #F9F2CC !important;
+}
+
+.grid.data.hover,.grid.data.hover div {
+	background-color: #F9F2CC !important;
+	background-image: none;
+}
+
+
+/*
+/*   .grid.data .evenrow .fieldsbox .input {
+	color: black;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.9em;
+	font-weight: normal;
+	border: 1px solid #b1b3b3;
+	background-color: white;
+}
+.grid.data .evenrow .fieldsbox .input tr:hover,.grid.data .evenrow .fieldsbox .input tr:hover div {
+	background-image: none;
+	background-color: #F9F2CC !important;
+}
+
+.grid.data .oddrow .fieldsbox .input tr:hover,.grid.data .oddrow .fieldsbox .input tr:hover div {
+	background-image: none;
+	background-color: #F9F2CC !important;
+}
+
+.grid.data .oddrow .fieldsbox .input {
+	color: black;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.9em;
+	font-weight: normal;
+	border: 1px solid #b1b3b3;
+	background-color: white;
+}
+
+.grid.data .oddrow .fieldsbox .input.output {
+	color: #323335;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	font-size: 0.9em;
+	border: 0px solid #b1b3b3;
+	background-color: #ffffff;
+}
+
+.grid.data .evenrow .fieldsbox .input.output {
+	color: #323335;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	font-size: 0.9em;
+	border: 0px solid #b1b3b3;
+	background-color: #f3f3f3;
+}
+.grid.data .evenrow .fieldsbox .input.output.left_align {
+	color: #323335;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	font-size: 0.9em;
+	border: 0px solid #b1b3b3;
+	background-color: #f3f3f3;
+}
+.grid.data .evenrow .fieldsbox .input.left_align.output {
+	color: #323335;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	font-size: 0.9em;
+	border: 0px solid #b1b3b3;
+	background-color: #f3f3f3;
+}
+
+.grid.data .oddrow .fieldsbox .input.output.left_align{
+	color: #323335;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	font-size: 0.9em;
+	border: 0px solid #b1b3b3;
+	background-color: #ffffff;
+}
+.grid.data .oddrow .fieldsbox .input.left_align.output{
+	color: #323335;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	font-size: 0.9em;
+	border: 0px solid #b1b3b3;
+	background-color: #ffffff;
+}
+
+
+.grid.data .oddrow .fieldsbox .input.output tr:hover,.grid.data .oddrow .fieldsbox .input.output tr:hover div {
+	background-image: none;
+	background-color: #F9F2CC !important;
+}
+.grid.data .evenrow .fieldsbox .input.output tr:hover,.grid.data .evenrow .fieldsbox .input.output tr:hover div {
+	background-image: none;
+	background-color: #F9F2CC !important;
+}
+.grid.data .evenrow .fieldsbox .input.output tr:hover,.grid.data .evenrow .fieldsbox .input.output.left_align tr:hover div {
+	background-image: none;
+	background-color: #F9F2CC !important;
+}
+.grid.data .evenrow .fieldsbox .input.output tr:hover,.grid.data .evenrow .fieldsbox .input.left_align.output tr:hover div {
+	background-image: none;
+	background-color: #F9F2CC !important;
+}
+.grid.data .oddrow .fieldsbox .input.output tr:hover,.grid.data .evenrow .fieldsbox .input.output.left_align tr:hover div {
+	background-image: none;
+	background-color: #F9F2CC !important;
+}
+.grid.data .oddrow .fieldsbox .input.output tr:hover,.grid.data .evenrow .fieldsbox .input.left_align.output tr:hover div {
+	background-image: none;
+	background-color: #F9F2CC !important;
+} */
+ */
+
+/*HighLight*/
+.highlight,.grid tr.highlight.evenrow,.grid tr.highlight.oddrow,.grid tr.highlight
+	{
+	background-color: #F5E099 !important;
+	xbackground: -webkit-linear-gradient(top, #F5E099 0%, #F2CE66 100%);
+	xbackground: -moz-linear-gradient(top, #F5E099 0%, #F2CE66 100%);
+	xbackground: linear-gradient(top, #F5E099 0%, #F2CE66 100%);
+}
+/*
+.grid.data .oddrow.highlight .fieldsbox .input.output {
+	background-color: #F5E099 !important;
+	color: #323335;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	font-size: 0.9em;
+	border: 0px solid #b1b3b3;
+}
+
+.grid.data .evenrow.highlight .fieldsbox .input.output {
+	background-color: #F5E099 !important;
+	color: #323335;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	font-size: 0.9em;
+	border: 0px solid #b1b3b3;
+}
+.grid.data .oddrow.highlight .fieldsbox .input.left_align.output {
+	background-color: #F5E099 !important;
+	color: #323335;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	font-size: 0.9em;
+	border: 0px solid #b1b3b3;
+}
+
+.grid.data .oddrow.highlight .fieldsbox .input.left_align.output {
+	background-color: #F5E099 !important;
+	color: #323335;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	font-size: 0.9em;
+	border: 0px solid #b1b3b3;
+}
+
+
+.grid.data .oddrow.highlight .fieldsbox .input.output.left_align {
+	background-color: #F5E099 !important;
+	color: #323335;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	font-size: 0.9em;
+	border: 0px solid #b1b3b3;
+}
+.grid.data .evenrow.highlight .fieldsbox .input.left_align.output {
+	background-color: #F5E099 !important;
+	color: #323335;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	font-size: 0.9em;
+	border: 0px solid #b1b3b3;
+}
+
+
+.grid.data .evenrow.highlight .fieldsbox .input.output.left_align {
+	background-color: #F5E099 !important;
+	color: #323335;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	font-size: 0.9em;
+	border: 0px solid #b1b3b3;
+}
+
+
+*/
+
+/*** End Data Grid***/
+
+/************************************************************************************ Panels */
+.ux-panl-header-h3 {
+	padding-left: 13px;
+	padding-right: 13px;
+	margin: 0;
+	height: 39px;
+	vertical-align: middle;
+}
+.ux-panl {
+	border: 1px solid #E6E6E6;
+	-moz-box-shadow: 3px 3px 3px 5px #b3b3b3;
+	-webkit-box-shadow: 0px 2px 3px #b3b3b3;
+	box-shadow: 0px 3px 6px rgb(179, 179, 179);
+	box-shadow: 0px 3px 6px rgba(179, 179, 179, 0.35);
+	margin-bottom: 19px;
+	display: table;
+	width: 100%;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+	.ux-panl .ux-panl {
+		border: 0;
+		box-shadow: none;
+		margin: 0;
+	}
+	.ux-panl-header {
+		padding-left: 13px;
+		padding-right: 13px;
+	}
+		.ux-panl-header h2,
+		.ux-panl-header h3 {
+			margin: 0;
+			height: 39px;
+			display: table-cell;
+			vertical-align: middle;
+		}
+	.ux-panl-content {
+		padding: 13px;
+	}
+	.ux-panl .ux-panl-header a.ux-panl-helper {
+		float: left;
+		width: 20px;
+		overflow: hidden;
+		margin-left: -21px;
+		text-decoration: none;
+	}
+
+/**Dialog Box **/
+.feedbackbox {
+	border: 0;
+	margin: 0 0 0 1px;
+	padding: 0;
+	display: block;
+	bottom: 1px;
+	left: 1px;
+	overflow: visible;
+	position: absolute;
+	right: 1px;
+	top: 0;
+	z-index: 2500;
+	filter: none;
+}
+
+.feedbackbox p {
+	margin: 1em 1.5em 1.5em;
+	font: normal .75em/120% "Arial";
+}
+
+.feedbackbox #fb_titlebar {
+	background-color: #e6e6e6 !important;
+	border: 0;
+	margin: 0;
+	padding: 0;
+	cursor: move;
+	height: 30px;
+	left: 0;
+	overflow: hidden;
+	position: absolute;
+	right: 0;
+	top: 1px;
+	z-index: 50;
+}
+
+.feedbackbox #fb_titlebar h1 {
+	border: 0;
+	margin: 0;
+	padding: 0 0 0 10px;
+	white-space: nowrap;
+	cursor: move;
+	bottom: 0;
+	left: 0;
+	overflow: hidden;
+	position: absolute;
+	right: 45px;
+	top: 0;
+	text-overflow: ellipsis;
+	moz-user-select: none;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #333333;
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.feedbackbox #fb_controlbox button,#fb_controlbox button {
+	background-color: #e6e6e6;
+	border: 1px solid #999999;
+	border-radius: 3px;
+	line-height: 16px;
+	color: #333333;
+	font-family: Arial, Helvetica, sans-serif;
+	margin: 0px .3em;
+	padding: 0px .3em;
+	width: 7em;
+	font-weight: normal;
+	font-size: 1em;
+	text-align: center;
+	height: 2em;
+	text-overflow: ellipsis;
+}
+
+.feedbackbox #fb_controlbox button:hover,#fb_controlbox button:hover {
+	border: 1px solid #F47B29;
+	background-color: #e6e6e6;
+	color: black;
+}
+.textarea:focus {
+	background-color: white;
+	border: 1px solid #333333;
+}
+
+.textarea:hover {
+	background-color: white;
+	border: 1px solid #333333;
+}
+
+.data.xgridcolumns {
+               border:0px;
+}
+
+.tableRowFontClass {
+	color: black;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 1.1em;
+	font-weight: normal;
+}
+.ifocus,*[class~=input]:focus,.highlight .input[class~=input]:focus,*[class~=input]:active,.highlight .input[class~=input]:active
+	{
+	border-color: #b1b3b3;
+	border-style: solid;
+	background-color: #fff;
+	-ms-filter: 'none';
+	filter: none;
+}
+
+.selectdropdown {
+	border: 1px solid #b1b3b3;
+	background-color: #fff;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	font-size: 0.9em;
+	filter: none;
+}
+
+.selectdropdown .option,.selectdropdown .optionselected {
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	font-size: 0.9em;
+}
+
+.selectdropdown .highlight,.listbox .highlight,.grid tr.checked.evenrow,.grid tr.checked.oddrow,.grid tr.checked
+	{
+	background-color: #F5E099 !important;
+}
+
+.data input.input {
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	font-size: 12px !important;
+}
+.item.small.disabled{
+width:2em;
+}
+

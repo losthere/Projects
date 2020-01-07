@@ -1,0 +1,432 @@
+<div ng-controller="codingUIController">
+	<uitk:message model="dataModel.codingErrorMessageModel"> </uitk:message>
+	<uitk:message model="dataModel.codingSuccessMessageModel"></uitk:message>
+	<style>
+		body {
+			padding-left: 15px;
+			padding-top: 5px;
+		}
+		
+		table {
+			border: 1px solid grey;
+			border-collapse: separate !important;
+			padding-bottom: 5px;
+		}
+		
+		td, th {
+			padding: 5px;
+			text-align: left;
+		}
+		
+		th {
+			border-bottom: 1px solid grey;
+		}
+		
+		.tk-multi-btn-wrap{
+			margin-top:10px;
+		}
+		
+		.table-column8 {
+			width: 12%;
+		}
+		
+		.header-data {
+			color: #c25608;
+		}
+		
+		.header {
+			border: 1px solid grey;
+			border-collapse: separate !important;
+		}
+		
+		a:link {
+			color: blue;
+		}
+		
+		.panel-table {
+			width: 98% !important
+		}
+		
+		.encountersForm {
+			margin-bottom: 30px;
+			height: 60px;
+		}
+		
+		.uitk-calendar-custom-class {
+			width: 90px;
+		}
+		
+		.uitk-input-custom-class-number {
+			width: 90px;
+			margin-right: 25px;
+		}
+		
+		.uitk-input-custom-class-text {
+			width: 90px;
+			margin-right: 25px;
+		}
+		.tk-multi-btn{
+			width : 18.5rem;
+		}
+		.tk-multi-sel .tk-chckbox-layer{
+			width : 20.667rem !important;
+		}
+		
+		.uitk-panel-custom-class {
+			width: 98%;
+			margin-bottom: 30px;
+		}
+		
+		#eoCodeDropDownId {
+			width: 160px !important;
+			margin-top: 10px;
+		}
+		
+		#renderingProviderId {
+			margin-top: 10px;
+			margin-right: 25px;
+		}
+		
+		#dynamicTableComments {
+			border-top: none;
+			width: 98%
+		}
+		
+		.form-label {
+			display: block;
+			margin-bottom: 10px;
+		}
+		
+		.form-span {
+			display: inline-block;
+			margin-right: 20 px;
+			float: left
+		}
+		
+		.coding-panel {
+			display: block;
+		}
+		
+		#dynamicTableICDCodes {
+			border: none;
+			margin-bottom: 10px;
+		}
+		
+		#codingUIEncountersPanelContent {
+			overflow: visible !important;
+		}
+		
+		#commentsTextId_textarea {
+			height: 140px;
+			width: 35rem;
+		}
+		#replyCommentsTextId_textarea{
+			height: 140px;
+			width: 35rem;
+		}
+		#agreeCommentsTextId_textarea{
+			height: 140px;
+			width: 35rem;
+		}
+		#disagreeCommentsTextId_textarea{
+			height: 140px;
+			width: 35rem;
+		}
+		#codingUILoadingDialog_headerId{
+			display: none
+		}
+		#codingUILoadingDialog_closeLink{
+			display: none
+		}
+		#codingUILoadingDialog{
+			border-width:unset;
+			border-style: none
+		}
+	</style>
+	<h1>Coding</h1>
+	<div >
+		<div>
+			<table style='width:98%'>
+				<tr class="header">
+					<th class="table-column1">Name</th>
+					<th class="header-data table-column2"><span ng-bind="dataModel.chartDetailsObj.memberName"></span></th>
+					<th class="table-column3">Member ID</th>
+					<th class="header-data table-column4"><span ng-bind="dataModel.chartDetailsObj.hpMemberId"></span></th>
+					<th class="table-column5">Gender</th>
+					<th class="header-data table-column6"><span ng-bind="dataModel.chartDetailsObj.memberGender"></span></th>
+					<th class="table-column7">DOB</th>
+					<th class="header-data table-column8"><span ng-bind="dataModel.chartDetailsObj.memberDOB | date : 'MM-dd-yyyy'"></span></th>
+				</tr>
+				<tbody>
+					<tr>
+						<td class="table-column1" style="width:130px"><label>Health plan</label></td>
+						<td class="table-column2"><span ng-bind="dataModel.chartDetailsObj.clientCode"></span></td>
+						
+						<td class="table-column1" style="width:130px"><label>Member MBI</label></td>
+						<td class="table-column2"><span ng-bind="dataModel.chartDetailsObj.mbrextID"></span></td>
+						
+						<td class="table-column5" style="width:90px"><label>Provider</label></td>
+						<td class="table-column2"><span ng-bind="dataModel.chartDetailsObj.provName"></span></td>
+						
+						<td class="table-column7" style="width:130px"><label>Provider ID</label></td>
+						<td class="table-column2"><span ng-bind="dataModel.chartDetailsObj.providerId"></span></td>
+					</tr>
+
+					<tr>
+						<td class="table-column1"><label>Health plan name</label></td>
+						<td class="table-column2"><span ng-bind="dataModel.chartDetailsObj.hpCode"></span></td>
+						
+						<td class="table-column3"><label>Chart review year</label></td>
+						<td class="table-column2"><span ng-bind="dataModel.chartDetailsObj.chartReviewYear"></span></td>
+						
+						<td class="table-column3"><label>Group name</label></td>
+						<td class="table-column2"><span ng-bind="dataModel.chartDetailsObj.provGroupName"></span></td>
+												
+						<td class="table-column3"><label>Chart ID</label></td>
+						<td class="table-column2"><span ng-bind="dataModel.chartDetailsObj.chartId"></span></td>
+					</tr>
+
+					<tr>
+						<td class="table-column1"><label>Health plan product</label></td>
+						<td class="table-column2"><span ng-bind="dataModel.chartDetailsObj.hpProduct"></span></td>
+						
+						<td class="table-column3"><label>Chart status</label></td>
+						<td class="table-column2"><span ng-bind="dataModel.chartDetailsObj.chartStatus"></span></td>						
+						
+						<td class="table-column5"><label>Group ID</label></td>
+						<td class="table-column2"><span ng-bind="dataModel.chartDetailsObj.provGroupId"></span></td>
+						
+						<td class="table-column1"><label>Business segment</label></td>
+						<td class="table-column2"><span ng-bind="dataModel.chartDetailsObj.busSegment"></span></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<br>
+		<div>
+			<a href="" ng-click="openImage()">Chart Image | </a>
+			<a href ng-click="toggleCIDialog()">Coding Instructions | </a>
+			
+			<uitk:dialog dialog-id='codingInstructionsId' dialog-role='dialog' header-text='Coding Instructions' show='showCodingInstructions'
+				confirm-dialog="false" default-width='507px' default-height="217px">
+				<uitk:label><span ng-bind='dataModel.chartDetailsObj.codingInstructions'></span></uitk:label>
+				<uitk:button type="button" style="float:center;display:block" value="Close" enable-default="true" ng-click="toggleCIDialog()"
+					custom-class='tk-width-6t uitk-btn-close-dialog'></uitk:button>
+			</uitk:dialog>
+			<uitk:dialog dialog-id='encEoDescId' dialog-role='dialog' header-text='Encounter Level EO Codes' show='showencEoDesc'
+				confirm-dialog="false" default-width='507px' default-height="217px">
+				<div ng-repeat="encEoDesc in dataModel.encEoDescValue"><uitk:label><span>{{encEoDesc}}</span></uitk:label></div>
+				<uitk:button type="button" style="float:center;display:block" value="Close" enable-default="true" ng-click="toggleEncEoDesc()"
+					custom-class='tk-width-6t uitk-btn-close-dialog'></uitk:button>
+			</uitk:dialog>
+			
+			<a href ng-click="togglePDDialog()">Program Directions</a>
+			
+			<uitk:dialog dialog-id='programDirectionsId' dialog-role='dialog' header-text='Program Directions' show='showProgramDirections'
+				confirm-dialog="false" default-width='507px' default-height="217px">
+				<uitk:label><span ng-bind='dataModel.chartDetailsObj.programInstructions'></span></uitk:label>
+				<uitk:button type="button" style="float:center;display:block" value="Close" enable-default="true" ng-click="togglePDDialog()"
+					custom-class='tk-width-6t uitk-btn-close-dialog'></uitk:button>
+			</uitk:dialog>
+		</div>
+		<div>
+			<br>
+			<uitk:panel style = "height: auto;
+    					padding-left: 1.083rem;
+    					padding-right: 1.083rem;
+   					    overflow: hidden;
+    					box-shadow: 0 0.25rem 0.25rem 0 rgba(179,179,179,.75);
+    					border: 1px solid #dcdcd9;
+   						margin-bottom: 1.583rem;" model="history.codingUIHistoryModel"></uitk:panel>
+			<uitk:panel style = "height: auto;
+    					padding-left: 1.083rem;
+    					padding-right: 1.083rem;
+   					    overflow: hidden;
+    					box-shadow: 0 0.25rem 0.25rem 0 rgba(179,179,179,.75);
+    					border: 1px solid #dcdcd9;
+   						margin-bottom: 1.583rem;" model="codingUICommentsModel"></uitk:panel>
+			<div style="display: block; width: 98% !important; margin-bottom: 10px;" ng-show='dataModel.savedEncountersTableModel.totalRecordsCount > 0'>
+				<span style="font-weight:bold">Saved Encounters</span>
+				<uitk:dynamic-table id="dynamicTableSavedEncounters"  model="dataModel.savedEncountersTableModel"></uitk:dynamic-table>
+				<uitk:dialog dialog-id='rpDetailsId' dialog-role='dialog' header-text='Rendering Provider Details' show='dataModel.encounters.showRPDetails'
+					confirm-dialog="false" default-width='507px' default-height="217px">
+					<div>
+						<uitk:label>First name :</uitk:label>
+						<span ng-bind='selectedEnc.provFirstName'></span>
+					</div>
+					<div style='margin-top:10px;'>
+						<uitk:label>Last name : </uitk:label>
+						<span ng-bind='selectedEnc.provLastName'></span>
+					</div>
+					<div style='margin-top:10px;'>
+						<uitk:label>NPI :</uitk:label>
+						<span ng-bind='selectedEnc.provNpi'></span>
+					</div>
+					<uitk:button type="button" style="float:center;display:block" value="Close" enable-default="true" ng-click="toggleRpDetailsDialog()"
+						custom-class='tk-width-6t uitk-btn-close-dialog'></uitk:button>
+				</uitk:dialog>
+			</div>
+			<!-- <uitk:panel class="coding-panel" ng-if='(!dataModel.isSupervisorUI && !dataModel.isReadonly) || dataModel.showEncounterSection' model="dataModel.encounters.codingUIEncounters"></uitk:panel> -->
+			<uitk:panel class="coding-panel" ng-if='(!dataModel.isSupervisorUI && !dataModel.isReadonly)' model="dataModel.encounters.codingUIEncounters"></uitk:panel>
+			<uitk:panel style = "height: auto;
+    					padding-left: 1.083rem;
+    					padding-right: 1.083rem;
+   					    overflow: hidden;
+    					box-shadow: 0 0.25rem 0.25rem 0 rgba(179,179,179,.75);
+    					border: 1px solid #dcdcd9;
+   						margin-bottom: 1.583rem;" ng-if='dataModel.isSupervisorUI || dataModel.isReadonly' model="viewEncounters"></uitk:panel>			
+		</div>
+		<div>
+			<p>
+				<span style='display:inline-block;' ng-if='!dataModel.isSupervisorUI'>
+				<input ng-disabled="dataModel.savedEncountersTableModel.totalRecordsCount > 0 || dataModel.isReadonly || dataModel.ICDTableModel.records.length > 0" 
+				ng-true-value="'Y'" ng-model='dataModel.noDosMeetsCriteria' 
+				ng-change="dataModel.noDosMeetsCriteriaChange()" type="checkbox"> 
+				<span style='display:inline-block;'>I have reviewed and attest no DOS meets criteria for coding</span></span>
+				<span style='display:inline-block;' ng-if='dataModel.currentRole == "SUP"'>
+				<input ng-disabled="dataModel.savedEncountersTableModel.totalRecordsCount > 0 || dataModel.isReadonly || dataModel.ICDTableModel.records.length > 0" 
+				ng-true-value="'Y'" ng-model='dataModel.noDosMeetsCriteria' 
+				ng-change="dataModel.noDosMeetsCriteriaChange()" type="checkbox"> 
+				<span style='display:inline-block;'>I have reviewed and attest no DOS meets criteria for coding</span></span>
+			</p>
+			<uitk:dialog  dialog-id='codingUILoadingDialog' dialog-role='dialog' show="showCodingUILoadingDialog"
+			                 header-text='' confirm-dialog="false" default-width="auto" tk-aria-describedby="dialogInsTextId">
+			      			<img src="../../lib/images/loader.gif"/>
+    		</uitk:dialog>
+			<uitk:button ng-if='!dataModel.isSupervisorUI && !dataModel.isReadonly' ng-click="toggleCloseChartDialog('ACCEPT',false)">Accept</uitk:button>
+			<uitk:button ng-if='!dataModel.isSupervisorUI && !dataModel.isReadonly' ng-click="toggleCloseChartDialog('ESCALATE',false)">Escalate</uitk:button>
+			<uitk:button ng-if='dataModel.isSupervisorUI && !dataModel.isReadonly && !dataModel.showAgreeDisagree()' ng-click="toggleReplyDialog()">Reply</uitk:button>
+			<uitk:button ng-if='dataModel.isSupervisorUI && !dataModel.isReadonly && dataModel.showAgreeDisagree()' ng-click="toggleAgreeDialog()">Agree</uitk:button>
+			<uitk:button ng-if='dataModel.isSupervisorUI && !dataModel.isReadonly && dataModel.showAgreeDisagree()' ng-click="toggleDisagreeDialog()">Disagree</uitk:button>
+			<uitk:button ng-click="toggleCloseChartDialog('EXIT',false)">Exit</uitk:button>
+			<uitk:dialog dialog-id='escalateId' dialog-role='dialog' header-text='Escalate Reason' show='showEscalateDialog'
+				confirm-dialog="false" default-width='35%' default-height="auto">
+				<uitk:message model="dataModel.escalateDialogErrorMessageModel"> </uitk:message>
+				<div style="line-height: 20px">
+					<uitk:label style="display:block; color:red">All fields are mandatory</uitk:label>
+				</div>
+				<div style="line-height: 30px">
+					<uitk:label for=escalateReason style="display:block">Escalating Reason</uitk:label>
+					<uitk:select id="escalateReason" item-list="escalateReasonDropdownList" on-change='escalateReasonChange(selectedValue)' selected-value="escalateReason"></uitk:select>
+				</div>
+				<div style="line-height: 30px">
+					<uitk:label for=commentsTextId style="display:block">Comments</uitk:label>
+					<uitk:textarea id="commentsTextId" model='dataModel.commentsTextModel' rows='7' max-char-count='500'></uitk:textarea>
+				</div>
+				<uitk:button ng-click="escalateAndExit()">Escalate and Exit</uitk:button>
+				<uitk:button ng-click="toggleEscalateDialog()">Cancel</uitk:button>
+			</uitk:dialog>
+			<uitk:dialog dialog-id='replyDialogId' dialog-role='dialog' header-text='Reply' show='showReplyDialog'
+				confirm-dialog="false" default-width='35%' default-height="auto">
+				<uitk:message model="dataModel.replyDialogErrorMessageModel"> </uitk:message>
+				<div style="line-height: 20px">
+					<span class='cux-icon-asterisk'>
+						<span class="tk-icon-glyph">
+							<span icon='cux-icon-asterisk' style='font-size:14px;'>Required</span>
+						</span>
+					</span>
+				</div>
+				<div style="line-height: 30px">
+					<uitk:label for="replyCommentsTextId" style="display:block" required="true">Comments</uitk:label>
+					<uitk:textarea id="replyCommentsTextId" model='dataModel.replyComments' rows='7' max-char-count='500'></uitk:textarea>
+				</div>
+				<uitk:button ng-click="replyAndExit()"><span ng-bind="dataModel.replyButtonText"></span></uitk:button>
+				<uitk:button ng-click="toggleReplyDialog()">Cancel</uitk:button>
+			</uitk:dialog>
+			<!-- <uitk:dialog dialog-id='agreeDialogId' dialog-role='dialog' header-text='Agree' show='showAgreeDialog'
+				confirm-dialog="false" default-width='35%' default-height="auto">
+				<uitk:message model="dataModel.agreeDialogErrorMessageModel"> </uitk:message>
+				<div style="line-height: 20px">
+					<span class='cux-icon-asterisk'>
+						<span class="tk-icon-glyph">
+							<span icon='cux-icon-asterisk' style='font-size:14px;'>Required</span>
+						</span>
+					</span>
+				</div>
+				<div style="line-height: 30px">
+					<uitk:label for="agreeCommentsTextId" style="display:block" required="true">Comments</uitk:label>
+					<uitk:textarea id="agreeCommentsTextId" model='dataModel.agreeComments' rows='7' max-char-count='500'></uitk:textarea>
+				</div>
+				<uitk:button ng-click="agreeAndExit()"><span ng-bind="dataModel.agreeButtonText"></span></uitk:button>
+				<uitk:button ng-click="toggleAgreeDialog()">Cancel</uitk:button>
+			</uitk:dialog> -->
+			<uitk:dialog dialog-id='disagreeDialogId' dialog-role='dialog' header-text='Disagree' show='showDisagreeDialog'
+				confirm-dialog="false" default-width='35%' default-height="auto">
+				<uitk:message model="dataModel.disAgreeDialogErrorMessageModel"> </uitk:message>
+				<div style="line-height: 20px">
+					<span class='cux-icon-asterisk'>
+						<span class="tk-icon-glyph">
+							<span icon='cux-icon-asterisk' style='font-size:14px;'>Required</span>
+						</span>
+					</span>
+				</div>
+				<div style="line-height: 30px">
+					<uitk:label for="disagreeCommentsTextId" style="display:block" required="true">Comments</uitk:label>
+					<uitk:textarea id="disagreeCommentsTextId" model='dataModel.disagreeComments' rows='7' max-char-count='500'></uitk:textarea>
+				</div>
+				<uitk:button ng-click="disagreeAndExit()"><span ng-bind="dataModel.disagreeButtonText"></span></uitk:button>
+				<uitk:button ng-click="toggleDisagreeDialog()">Cancel</uitk:button>
+			</uitk:dialog>
+		</div>
+		<div>
+			<uitk:dialog dialog-id='deleteEncounterConfirm' dialog-role='dialog' header-text='Confirm Message' show='showConfirmDeleteEncounter'
+					confirm-dialog="false" default-width='400px' default-height="150px">
+					<div>
+						<span>Are you sure you want to delete the encounter?</span>
+					</div>
+					<div style="margin-top:7px;">
+						<uitk:button type="button" value="Yes"
+									 style="float:left;"
+									 ng-click="dataModel.deleteEncounter(deleteEncounerRecord)"
+									 custom-class='tk-width-6t uitk-btn-close-dialog'>
+						</uitk:button>
+						<uitk:button type="button" value="No"
+									 style="float:left;"
+									 onclick="document.getElementById('deleteEncounterConfirm_closeLink').click();"
+									 custom-class='tk-width-6t uitk-btn-close-dialog'>
+						</uitk:button>
+					</div>
+			</uitk:dialog>
+		</div>
+		<div>
+			<uitk:dialog dialog-id='acceptConfirm' dialog-role='dialog' header-text='Confirm Message' show='showConfirmAcceptWorkItem'
+					confirm-dialog="false" default-width='450px' default-height="200px">
+					<div>
+						<span ng-if='!dataModel.isSupervisorUI'>Ready to Accept? Click Yes to Accept or No to return to the chart.<br/><br/>Warning! No changes can be made once the chart is accepted</span>
+						<span ng-if='dataModel.isSupervisorUI'>All coding results will be deleted for this member. Are you sure you want to continue?</span>
+					</div>
+					<div style="margin-top:7px;">
+						<uitk:button type="button" value="Yes"
+									 style="float:left;"
+									 ng-if='!dataModel.isSupervisorUI'
+									 ng-click="dataModel.acceptWorkItem()"
+									 custom-class='tk-width-6t uitk-btn-close-dialog'>
+						</uitk:button>
+						<uitk:button type="button" value="Yes"
+									 style="float:left;"
+									 ng-if='dataModel.isSupervisorUI'
+									 ng-click="agreeAndExit()"
+									 custom-class='tk-width-6t uitk-btn-close-dialog'>
+						</uitk:button>
+						<uitk:button type="button" value="No"
+									 style="float:left;"
+									 onclick="document.getElementById('acceptConfirm_closeLink').click();"
+									 custom-class='tk-width-6t uitk-btn-close-dialog'>
+						</uitk:button>
+					</div>
+			</uitk:dialog>
+		</div>
+		<div>
+		<uitk:dialog dialog-id='closeChartDialogId' dialog-role='dialog' header-text='Confirm' show='showCloseChartDialog'
+		confirm-dialog="false" default-width='407px' default-height="167px">
+			<div><span style='font-size:13px;' ng-bind='cofirmMessage'></span></div>
+			<div>
+				<uitk:button type="button" value="Yes" enable-default="true" ng-click="handleYesClick(true)"
+					custom-class='tk-width-6t'></uitk:button>
+				<uitk:button type="button" value="No" enable-default="true" ng-click="toggleCloseChartDialog(true)"
+					custom-class='tk-width-6t'></uitk:button>
+			</div>
+		</uitk:dialog>
+	</div>
+	</div>
+</div>

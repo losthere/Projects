@@ -1,0 +1,42 @@
+<div id="chartStatusDiv" ng-controller="utilityCtrl">
+	<!-- <div><span>Total Chart Count:  </span><span style="font-weight: bold; font-size: 16px;" ng-bind='dataModel.totalChartCount'></span></div> -->
+	<div style='margin-top:20px;'>
+	    <ul class='chartStatusul'>
+	    	<li class='chartStatusli' >
+	            <div class='chartStatuslidiv'>
+	            	<div><span>Total Chart Count</span></div>
+	                <div style='padding-top:10px;'><span style="font-weight: bold;font-size: 16px;" ng-bind="dataModel.totalChartCount"></span></div>
+	            </div>
+	        </li>
+	        <li class='chartStatusli' >
+	            <div class='chartStatuslidiv'>	                
+	                <div style='padding-top:10px;'><span style="font-weight: bold;font-size: 16px;">=</span></div>
+	            </div>
+	        </li>
+	        <li class='chartStatusli' >
+	            <div class='chartStatuslidiv'>
+	            	<div><span>Scheduled</span></div>
+	                <div style='padding-top:10px;'><span style="font-weight: bold;font-size: 16px;" ng-bind="dataModel.scheduledCnt"></span></div>
+	            </div>
+	        </li>
+	        <li class='chartStatusli' >
+	            <div class='chartStatuslidiv'>
+	            	<div><span>Charts Received</span></div>
+	                <div style='padding-top:10px;'><span style="font-weight: bold;font-size: 16px;" ng-bind='dataModel.receivedCnt'></span></div>
+	            </div>
+	        </li>
+	        <li class='chartStatusli'>
+	            <div class='chartStatuslidiv'>
+	            	<div><span>Unscheduled / Past Due / Pend</span></div>
+	                <div style='padding-top:10px;'><span style="font-weight: bold;font-size: 16px;" ng-bind='dataModel.unscheduledCnt'></span></div>
+	            </div>
+	        </li>
+	        <li class='chartStatusli' >
+	            <div class='chartStatuslidiv'>
+	            	<div><span>Non-Retrievable / Cancelled / Duplicate</span></div>
+	                <div style='padding-top:10px;'><span style="font-weight: bold;font-size: 16px;" ng-bind="dataModel.nonRetrievableCnt"></span></div>
+	            </div>
+	        </li>
+	    </ul>
+	</div>
+</div>

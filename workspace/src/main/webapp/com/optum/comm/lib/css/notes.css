@@ -1,0 +1,202 @@
+a:link, a:visited, a:active, a:hover, #default-labels-header a.add {
+    color: #108AD5;
+}
+
+li, ol
+{
+list-style:none;
+display : block;
+}
+
+ol.comment-threads.top-level {
+	margin-left: 10px;
+    padding-left: 0;
+}
+#comment-wrapper .comment {
+    -moz-border-radius: 5px; /* Firefox */
+    -webkit-border-radius: 5px; /* Safari */
+    border-radius: 5px; /* CSS3 (Opera?) */
+    border: 1px solid #eee;
+    clear: left;
+    font-size: 1em;
+    margin: 0 10px 10px 0; 
+    padding: 5px;
+    padding-right: 10px;
+    height: 1%;
+}
+#comment-wrapper .comment.odd {
+    background: #f7f7f7;
+}
+.comment-user-logo {
+    float: left;
+}
+.comment-header {
+    line-height: 1.8em; /* calculated to match shrunken profile image height */
+}
+.comment-header .author {
+    display: inline;
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+}
+.comment-header .date {
+    margin: 0;
+    padding: 0;
+    padding-left:5px;
+    line-height: 1.8em; /* calculated to match shrunken profile image height */
+    color: #999;
+    border : 0px
+}
+
+.comment-header .minimize{
+right: 20px !important;
+position: absolute  !important;
+cursor: pointer  !important;
+}
+
+#comment-wrapper .comment.focused,
+#comment-wrapper .comment.edit {
+    background: #ffffe7;
+}
+#comment-wrapper .comment.reply {
+    background: #fff;
+}
+.comment .comment-user-logo {
+    width: 58px;
+    margin: 0;
+    padding: 0;
+    top:5px;
+}
+
+.comment .comment-user-logo .replacement {
+    height: 48px;
+    width: 48px;
+}
+.comment.collapsed .comment-user-logo img,
+.comment.collapsed .comment-user-logo .replacement {
+    height: 24px;
+    width: 24px;
+    margin-left: 12px;
+}
+.comment.collapsed .comment-body {
+    opacity: 0;
+    height: 0;
+}
+.comment .excerpt {
+    color: #666;
+    font-weight: normal;
+    opacity: 0;
+    height: 1.8em;
+}
+#comment-wrapper #previewArea iframe {
+    height: 210px; /* Default height of the editor in comments */
+}
+#comment-wrapper div.auth_img img {
+position: static;
+}
+#comment-wrapper, #children-wrapper {
+border: 0px solid #C8C9C9;
+background:none;
+}
+#comment-wrapper .section-header ,#children-wrapper .section-header {
+   background: url("/images/2009/latest/bottom_heading_bg.jpg") repeat-x scroll 0 0 transparent;
+  margin-left: 0px!important;
+	padding: 4px 10px;
+    width: auto;
+}
+#comment-wrapper, #children-section {
+    margin: 0;
+}
+#comment-wrapper .comment ,#comment-wrapper .comment.odd , #comment-wrapper .comment.even  {
+border:0px;
+border-bottom:1px dotted #CBCBCB;
+background:none;
+border-radius:0px
+}
+#comment-wrapper-title {
+	background: url("/images/2009/latest/arrow_bottom.jpg") no-repeat scroll left bottom transparent;
+    display: inline;
+    height: 24px;
+    margin-top: 2px;
+	margin-bottom:0px;
+	padding-bottom: 7px;
+	width:auto;
+}
+#comment-wrapper {
+margin-top:20px;
+}
+.comment-body {
+width:auto;
+}
+.comments-show-hide.icon{
+left: -2px;
+}
+#comments-section{
+margin-top:0;
+}
+#comments-section .quick-comment-body form{
+margin-top: 55px;
+}
+#comments-section .comment-body, #comments-section .bottom-comment-panels form, #comments-section .comment-body form{
+margin-top: 0px !important;
+}
+.contenteditor #main .edit
+{
+display:block;
+}
+.global-comment-actions li,
+.comment-actions li {
+    list-style-type: none;
+    display: inline;
+    border-left: 1px solid #aaa;
+    padding: 0 5px;
+    margin: 0; /* for IE */
+    color: #aaa;
+}
+.comment-actions li:first-child,
+li#comment-show-hide { /* left-most comment option -- no left border */
+    border-left: none;
+    padding-left: 0;
+}
+.comment-actions #comment-actions-secondary li {
+    float: right;
+    padding: 0;
+}
+.global-comment-actions li.hidden,
+.comment-actions li.hidden {
+    display: none;
+}
+.global-comment-actions a {
+    margin: 0;
+}
+.global-comment-actions,
+.comment-actions ul {
+    display: inline;
+    padding: 0;
+    margin: 0; /* for IE */
+}
+.comment-body,
+.comment-header {
+    overflow: hidden;  /*new positioning block next to floated image*/
+    _height: 1%;  /*for IE*/
+}
+* html .comment-body,
+* html .comment-header {
+    overflow: visible;  /*rewriting for IE6*/
+}
+/** Custom Styles **/
+
+body{
+	border-width:0px;
+	background-color:#ffffff;
+	color:#323335;
+	font: normal normal 11px/1.3 Arial, Helvetica, sans-serif;
+	cursor:default;
+	scrollbar-3dlight-color:#b8bdc0;
+	scrollbar-arrow-color:#0066cc;
+	scrollbar-darkshadow-color:#9aa1a6;
+	scrollbar-face-color:#ececec;
+	scrollbar-highlight-color:#ffffff;
+	scrollbar-shadow-color:#ffffff;
+	scrollbar-track-color:#fbfcfd;
+}

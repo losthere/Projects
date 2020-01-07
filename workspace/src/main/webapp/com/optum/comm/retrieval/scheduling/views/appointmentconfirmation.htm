@@ -1,0 +1,123 @@
+<div ng-controller="apntmntCnfrmCntrl">
+	<h3>Confirmation</h3>
+	<div style='width:98%'>
+		<h4>Retrieval Information</h4>
+		<div class="tk-grid">
+			<div class="tk-col-1-4">
+				<div>
+					<div>
+						<uitk:label>Contact Name</uitk:label>
+					</div>
+					<div>
+						<span style="text-transform:capitalize;" ng-bind='dataModel.retrievalProvName'></span>
+					</div>
+				</div>
+			</div>
+			<div class="tk-col-1-4">
+				<div>
+					<div>
+						<uitk:label>Contact Location</uitk:label>
+					</div>
+					<div ng-if='dataModel.address1'>
+						<span ng-bind='dataModel.address1'></span>,
+					</div>
+					<div ng-if='dataModel.address2'>
+						<span ng-bind='dataModel.address2'></span>,
+					</div>
+					<div>
+						<span ng-bind='dataModel.city'></span>,
+						<span ng-bind='dataModel.stateSelect'></span>,
+						<span ng-bind='dataModel.zip'></span>
+					</div>
+				</div>
+			</div>
+			<div class="tk-col-1-4">
+				<div>
+					<div>
+						<uitk:label>Contact Phone</uitk:label>
+					</div>
+					<div>
+						<span ng-bind='dataModel.phonenumber'></span>
+					</div>
+					<div class='tk-margin-top-1t'>
+						<uitk:label>Contact Fax</uitk:label>
+					</div>
+					<div>
+						<span ng-bind='dataModel.fax'></span>
+					</div>
+				</div>
+			</div>
+			<div class="tk-col-1-4">
+				<div>
+					<div>
+						<uitk:label>Contact Email</uitk:label>
+					</div>
+					<div>
+						<span ng-bind='dataModel.email'></span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div>
+			<img src='../lib/images/user_line.png'/>
+		</div>
+		<h4>Appointment Information</h4>
+		<div class="tk-grid">
+			<div class="tk-col-1-4">
+				<div>
+					<div>
+						<uitk:label>Appointment Date</uitk:label>
+					</div>
+					<div>
+						<span ng-bind='dataModel.apontmntDateViewModel.dateText'></span>
+					</div>
+				</div>
+			</div>
+			<div class="tk-col-1-4">
+				<div>
+					<div>
+						<uitk:label>Appointment Time</uitk:label>
+					</div>
+					<div>
+						<span ng-bind='dataModel.apontmntTime'></span>
+						<span>{{dataModel.amPMType.index == 0 ? 'AM' : 'PM'}}</span>
+					</div>
+				</div>
+			</div>
+			<div class="tk-col-1-4">
+				<div>
+					<div>
+						<uitk:label>Retrieval Method</uitk:label>
+					</div>
+					<div>
+						<span ng-bind='dataModel.retrvlPrefSelect'></span>
+					</div>					
+				</div>
+			</div>
+			<!-- <div class="tk-col-1-4">
+				<div>
+					<div>
+						<uitk:label>Fax Member Packet</uitk:label>
+					</div>
+					<div>
+						<span ng-bind='dataModel.faxMemberPacket'></span>
+					</div>
+				</div>
+			</div> -->
+			<div>
+				<img src='../lib/images/user_line.png'/>
+			</div>
+		</div>
+		<h4>Member Information</h4>
+		 <div>
+			<uitk:dynamic-table id="retrievalInfoTable" model="dataModel.appointmentConfirmModel"> </uitk:dynamic-table>
+		</div>
+
+		<div class="oui-rfrm-group">
+            <div class="oui-rfrm-label-container">
+                <input type="checkbox" id="iAgreeLblId" ng-model="dataModel.agree"/>
+                <uitk:label for='iAgreeLblId'>I Agree</uitk:label>
+            </div>
+        </div>
+	</div>
+</div>

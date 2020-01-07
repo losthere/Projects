@@ -1,0 +1,51 @@
+<div>
+	<uitk:dialog  dialog-id='codingFiltersDialog' dialog-role='dialog' show="dataModel.showCodingFiltersLoadingDialog"
+			                 header-text='' confirm-dialog="false" default-width="auto" tk-aria-describedby="dialogInsTextId">
+			      			<img src="../../lib/images/loader.gif"/>
+    </uitk:dialog>
+	<uitk:tabs tk-model="codingWorklistTabsModel"></uitk:tabs>
+	<uitk:message model="errorMessageModel"></uitk:message>
+			
+	<script type="text/ng-template" id="myworklist.html">
+				<div ng-controller="myWorklistCtrl" style="padding: 10px;" id="myworklist">
+					<h2 class='fontcolor'>My Worklist</h2>
+							
+					<div class='scrollable' ng-if="worklistViewModel">
+						<uitk:dialog  dialog-id='codingLoadingDialog' dialog-role='dialog' show="dataModel.showCodingLoadingDialog"
+			                 header-text='' confirm-dialog="false" default-width="auto">
+			      			<img src="../../lib/images/loader.gif"/>
+    					</uitk:dialog>	
+						<uitk:dynamic-table id="myworklistTable" model="worklistViewModel"></uitk:dynamic-table>
+					</div>
+
+			<uitk:dialog dialog-id='releaseToAssignWarningDialog' dialog-role='dialog' header-text='Warning' confirm-dialog="false" default-width='40%' 
+				show='dialogObj.showReleaseToAssignWarning' ng-if="dialogObj.showReleaseToAssignWarning" trigger-element='#uitkPopupId1_openModalBtn'>
+				<br><br>
+				<span>Atleast one of the selected charts is inprogress. Reassigning would delete all encounters. Are you sure you want to proceed ?</span><br><br>
+	
+				<span style="margin-left:10px;">
+					<uitk:button type="button" style="margin-bottom: 15px;" custom-class='uitk-width-6t' value="Yes" ng-click="releaseToAssignment()"></uitk:button>
+					<a href="" ng-click="dialogObj.showReleaseToAssignWarning = false;">No</a>
+				</span>
+			</uitk:dialog>
+				</div>
+	</script>
+	
+	<script type="text/ng-template" id="completedworkitems.html">
+				<div ng-controller="completedWorkItemsCtrl" style="padding: 10px;" id="completedworkitems">
+					<h2 class='fontcolor'>Completed Work Items</h2>	
+					<div class='scrollable' ng-if="worklistViewModel">
+						<uitk:dynamic-table id="completedworkitemsTable" model="worklistViewModel"></uitk:dynamic-table>
+					</div>
+				</div>
+	</script>
+	
+	<script type="text/ng-template" id="qafeedback.html">
+				<div ng-controller="qaFeedbackCtrl" style="padding: 10px;" id="qafeedback">
+					<h2 class='fontcolor'>QA Feedback</h2>	
+					<div class='scrollable' ng-if="worklistViewModel">
+						<uitk:dynamic-table id="qafeedbackTable" model="worklistViewModel"></uitk:dynamic-table>
+					</div>
+				</div>
+	</script>
+</div>

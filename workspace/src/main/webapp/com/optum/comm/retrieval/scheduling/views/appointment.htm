@@ -1,0 +1,123 @@
+<div ng-controller="appointmentCntrl">
+	<h3>Appointment</h3>
+	<uitk:message model="errorMessageModel"> </uitk:message>
+	<div class="tk-grid-container">
+		<div class="tk-grid">
+			<div class="tk-col-1-6" style="width: 13.66%">
+				<div style='display:block;float:left;'>
+					<h4>Retrieval Information</h4>
+					<div id='retrievalProvNameDiv'>
+						<div>
+							<uitk:label id="retrievalProvName_label" for='retrievalProvName' required="true">Name</uitk:label>
+						</div>
+						<div class='tk-margin-top-1t'>
+							<span style="text-transform:capitalize;" ng-bind='dataModel.retrievalProvName'><span>
+						</div>						
+					</div>
+					<div>
+						<div class='tk-margin-top-1t'>
+							<uitk:label id="retrievalLocation_label" for='retrievalProvAdress' required="true">Location</uitk:label>
+						</div>
+						<div class='tk-margin-top-1t'>
+							<div>
+								<span ng-bind='dataModel.address1'></span>,
+							</div>
+							<div ng-if='dataModel.address2'>
+								<span ng-bind='dataModel.address2'></span>,
+							</div>
+							<div>
+								<span ng-bind='dataModel.city'></span>,
+								<span ng-bind='dataModel.stateSelect'></span>,
+								<span ng-bind='dataModel.zip'></span>
+							</div>
+						</div>
+						<div class='tk-margin-top-1t'>
+							<span style='font-weight:bold'>Phone</span>
+						</div>
+						<div class='tk-margin-top-1t'>
+							<div>
+								<span ng-bind='dataModel.phonenumber'></span>
+							</div>
+						</div>
+						<div class='tk-margin-top-1t'>
+							<span style='font-weight:bold'>Fax</span>
+						</div>
+						<div class='tk-margin-top-1t'>
+							<div>
+								<span ng-bind='dataModel.fax'></span>
+							</div>
+						</div>
+						<div class='tk-margin-top-1t'>
+							<span style='font-weight:bold'>Email</span>
+						</div>
+						<div class='tk-margin-top-1t'>
+							<div>
+								<span ng-bind='dataModel.email'></span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div style='float:right;'>
+					<img src='../lib/images/verticalseparator.png'/>
+				</div>
+			</div>
+			<div class="tk-col-5-6" style="width: 86%">
+				<div>
+					<div>
+						<div ng-if='dataModel.existingAppointments.length > 0'>
+							<uitk:radio item-list='appointmentTypes' group-name='appointmentGroup' on-change='handleApptTypeClick()' model-value='dataModel.appointmentType.index'></uitk:radio>
+						</div>
+						<div ng-if="dataModel.appointmentType.index == 0 && dataModel.existingAppointments.length > 0">
+							<uitk:dynamic-table id="existingAppointmentsTable" model="dataModel.existingAppointmentsModel"> </uitk:dynamic-table>
+							<div><Span style='font-weight:bold;'>Note: </span>All times are local provider's time.</div>
+							<div class='tk-margin-top-1t'>
+								<uitk:radio item-list='faxMemberTypes' group-name='faxMemberGroup' model-value='dataModel.faxMemberType.index'/>
+							</div>
+							<div class='tk-margin-top-2t'>
+								<uitk:button
+										aria-describedby="addToAppointmentButton-desc"
+										ng-click="addToAppointmentClick()"
+										type="button"
+										uitk-btn-disabled='buttonFlag.disableFlagForGenIconBtn'>
+									<uitk:icon-font icon = 'cux-icon-save'></uitk:icon-font>Add to Appointment
+								</uitk:button>
+							</div>
+						</div>
+						<div ng-if="dataModel.appointmentType.index == 1 || dataModel.existingAppointments.length == 0">
+							<div style="margin-top:10px;padding: 10px;" ng-if='dataModel.previousAtmtDates.length > 0'>
+								<!-- <span style='color: #63666a;font-weight: 700;font-size: 1.333em; margin-bottom: .833rem;line-height: 120%;'>Previous attempts</span> -->
+								<uitk:label id='apontmntDateLblId' required=true>Previous attempts</uitk:label>
+								<span style="margin-left: 150px;margin-top: -15px;display:block!important"  ng-repeat='atmtDate in dataModel.previousAtmtDates'>
+									<div style="margin-top:5px;">
+										<span ng-bind="atmtDate"></span>
+									</div>
+								</span>
+							</div>
+							<div style="padding: 10px;width:450px;">
+								<uitk:label id='apontmntDateLblId' required=true>Date</uitk:label>
+								<span style="margin-left: 150px;margin-top: -15px;display:block!important">
+									<uitk:calendar id="apptDateId" name="apptDate" ng-model="dataModel.apontmntDate" 
+										view-model="dataModel.apontmntDateViewModel" />
+								</span>
+								<span>{{apontmntDateId | date: 'MM-dd-yyyy'}}</span>
+								<br><br>
+								<uitk:label id='apontmntTimeLblId' required=true>Time</uitk:label>
+								<span style="margin-left: 150px;margin-top: -15px;display:block!important">
+								<input id="apontmntTimeId_input" type="text"  
+									class="uitk-text-field ng-empty ng-valid ng-valid-pattern ng-valid-minlength ng-valid-maxlength 
+									ng-valid-required" ng-model="dataModel.apontmntTime" name="apontmntTime" />
+									<img src="../lib/images/icon-clock.png"/>
+									<span style="float:right;">
+										<uitk:radio item-list='amPMTypes' group-name='amPMGroup' model-value='dataModel.amPMType.index'/>
+									</span>
+								</span><br>
+								<span style='margin-left:150px;'>hh:mm</span><br><br>
+								<span style='margin-top:5px;margin-left:150px;'><span>Local Provider's Time</span></span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div> 
+		</div>
+	</div>
+</div>

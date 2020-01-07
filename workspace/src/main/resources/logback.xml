@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<appender name="FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${catalina.home}/logs/gcm-app-services.log</file>
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>${catalina.home}/logs/gcm-app-services-%d{yyyy-MM-dd}.%i.log
+			</fileNamePattern>
+			<maxFileSize>10MB</maxFileSize>
+			<!-- <maxHistory>30</maxHistory> <totalSizeCap>1GB</totalSizeCap> -->
+		</rollingPolicy>
+
+		<!-- <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${catalina.home}/logs/gcm-app-services.%d{yyyy-MM-dd}.log
+			</fileNamePattern>
+		</rollingPolicy> -->
+
+		<encoder>
+			<pattern>%d [%thread] %-5level [%X{USERNAME}] %logger{0} - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d [%thread] %-5level [%X{USERNAME}] %logger{0} - %msg%n
+			</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>WARN</level>
+		</filter>
+	</appender>
+
+	<logger name="com.optum.gcm" level="INFO" />
+	<!-- <logger name="org.springframework.jdbc.core.JdbcTemplate" level="DEBUG" />
+	<logger name="org.springframework.jdbc.core.StatementCreatorUtils"
+		level="TRACE" />  -->
+
+	<root level="INFO">
+		<!-- <appender-ref ref="STDOUT" /> -->
+		<appender-ref ref="FILE" />
+	</root>
+
+</configuration>

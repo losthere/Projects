@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="robots" content="noindex, nofollow" />
+		<title>Administration</title>
+		<link rel="stylesheet" href="../lib/css/general2.css" type="text/css" />
+		<link rel="stylesheet" href="../lib/css/cdefault.css" type="text/css" />
+		<script src="../lib/js/common/jquery.js" type="text/javascript"></script>
+		<script src="../lib/js/common/angular.js" type="text/javascript"></script>
+		<script src="../lib/js/common/optumui.js" type="text/javascript"></script>
+		<script src="../lib/js/common/ux.js" type="text/javascript"></script>
+		
+		<script type="text/javascript" src="../lib/js/common/ng-csv.js"></script>
+		<script type="text/javascript" src="../lib/js/common/angular-sanitize.js"></script>
+		<script type="text/javascript" src="../lib/js/common/angular-touch.js"></script>
+		<script type="text/javascript" src="../lib/js/common/angular-translate/angular-translate.js"></script>
+		<script type="text/javascript" src="../lib/js/common/lodash.js"></script>
+		<script type="text/javascript" src="../lib/js/common/ngDialog.min.js"></script>
+		<script src="../lib/js/common/uitk.min.js"></script>
+		
+		<script type="text/javascript" src="../lib/js/modules/retrieval/staticDataService.js"></script>
+		<script src="../lib/js/modules/retrieval/lookup.js"></script>
+		<script src="../lib/js/modules/admin/administration.js"></script>
+		<script src="../lib/js/modules/admin/userAdministration.js"></script>
+		
+		<link type="image/x-icon" href="../lib/images/favicon.ico" rel="icon" />
+		<link type="image/x-icon" href="../lib/images/favicon.ico" rel="shortcut icon" />
+		<link rel="stylesheet"  href="../lib/css/comm-default.css" type="text/css" />
+		<link rel="stylesheet"  href="../lib/css/notes.css" type="text/css" />
+		<script   src="../../comm/lib/js/common/responsive-layout.js"  type="text/javascript"></script>
+		
+		<script src="../lib/js/common/uitk.js"></script>
+		<script src="../lib/js/modules/useradmin/userViewModel.js"></script>
+		<script src="../lib/js/modules/useradmin/uploadUserViewModel.js"></script>
+		<script src="../lib/js/modules/useradmin/userregistration.js"></script>
+		
+		
+		<link rel="stylesheet" href="../lib/css/uitk.min.css" type="text/css" />
+		<style>
+		.size {
+			width: 300px;
+			height: 20px;
+		}
+		a.disabled:hover {
+		  cursor: not-allowed;
+		}
+		.oui-pick-options tbody{
+		width:200px;
+			 overflow-y: auto;
+			 overflow-x: auto;
+		}
+		.oui-pick-options tr{
+	  width:200px;
+	}
+	.tk-dtbl-container .pagination{margin-top:13px;margin-bottom:13px;}
+	.tk-dtbl .cux-icon-caret_right {
+     margin-right: 0rem; 
+    
+	}
+	.tk-dtbl .cux-icon-caret_down_centered {
+    margin-right: 0.083rem;
+	}
+	.tk-tpnl-content {
+    padding: 13px;
+}
+</style>
+		 
+	</head>
+	<body ng-app="administrationApp" ng-controller='administrationCtrl' ng-cloak>
+		<div ng-if='showGroupList' style='padding:10px;'>
+			<label>Client</label>
+			<select style="margin-left:5px;" ng-model="dataModel.groupKey" ng-change='handleGroupchange()' ng-options='group.key as group.value for group in dataModel.groupList'>
+			</select>
+		</div>
+		<div ng-include="url"></div>
+
+	</body>
+</html>

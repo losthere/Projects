@@ -1,0 +1,36 @@
+<div ng-controller="dataintakeUIController">
+<p>
+	<uitk:message model="dataModel.dataintakeErrorMessageModel"> </uitk:message>
+    <uitk:message model="dataModel.dataintakeSuccessMessageModel"></uitk:message>
+</p>    	
+	<div>
+		
+		<uitk:panel model="dataintakeUIFiltersModel"></uitk:panel>		
+		<uitk:dynamic-table id="dynamicTableProjectDetails" model="dataintakeUITableModel" ></uitk:dynamic-table>
+		<uitk:dialog dialog-id='dialog.releaseProject' dialog-role='dialog' header-text='Release Project' show='showReleaseProjectDialog'
+				confirm-dialog="false" default-width='400px' default-height="160px">
+				<uitk:label>Are you sure you want to release the selected project(s)?</uitk:label>
+				<div style="display:block;clear:both;margin-top:4%">
+					<uitk:button type="button" value="Confirm" enable-default="true" ng-click="dataModel.releaseProject()"
+						custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+					<uitk:button type="button" value="Cancel" enable-default="true" onclick="document.getElementById('dialog.releaseProject_closeLink').click();"
+						custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+				</div>			
+		</uitk:dialog>
+		<uitk:dialog  dialog-id='loadingDialogId' dialog-role='dialog' show="showLoadingDialog"
+			                 header-text='' confirm-dialog="false" tk-aria-describedby="dialogInsTextId" default-width="auto" >
+			      			<img src="../lib/images/loader.gif"/>
+    	</uitk:dialog>
+		<uitk:dialog dialog-id='dialog.deleteProject' dialog-role='dialog' header-text='Delete Project' show='showDeleteProjectDialog'
+				confirm-dialog="false" default-width='400px' default-height="160px">
+				<uitk:label>Are you sure you want to delete the selected project(s)?</uitk:label>
+				<span style="display:block;margin-top:4%">
+					<uitk:button type="button" value="Confirm" enable-default="true" ng-click="dataModel.deleteProject()"
+						custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+					<uitk:button type="button" value="Cancel" enable-default="true" onclick="document.getElementById('dialog.deleteProject_closeLink').click();"
+						custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+				</span>			
+		</uitk:dialog>
+	</div>	
+				
+</div>

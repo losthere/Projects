@@ -1,0 +1,63 @@
+<div>
+		<!-- <uitk:message model="errorMessageModel1"> </uitk:message> -->
+	<div ng-if="!dataModel.showViewAppt && !dataModel.showPend">
+		<uitk:tabs tk-model="utilitiesTabsModel"></uitk:tabs>
+	</div>
+	<div ng-if="dataModel.showViewAppt">
+		<h2 id="MakeApntmnthdr" ng-if="dataModel.showViewAppt">View Appointment</h2>
+		<uitk:panel model="chartStatusModel"></uitk:panel>
+	    <uitk:panel model="faxStatusModel"></uitk:panel>
+	    <uitk:panel model="commentHistoryModel"></uitk:panel>
+		<div ng-if="!dataModel.showViewAppt"><uitk-wizard view-model="dataModel.wizardModel"></uitk-wizard></div>
+		<div ng-if="dataModel.showViewAppt">
+			<uitk:panel model="viewApptModel"></uitk:panel>
+		</div>
+		<uitk:dialog dialog-id='pendApptDialogId' dialog-role='dialog' header-text='Pend Appointment' show='dataModel.showPendApptDialog' default-width='38%' default-height="50%"
+					style="overflow:hidden; top: 75%;" header-text='Pend Appointment' confirm-dialog="false">
+					<uitk:dialog  dialog-id='uitkPopupId1' dialog-role='dialog' show="dataModel.showPendLoadingDialog"
+			                 header-text='' confirm-dialog="false" default-width="auto">
+			      			<img src="../lib/images/loader.gif"/>
+    				</uitk:dialog>
+					<div>
+						<div>
+						<uitk:label id="pendReasonSelect_label" for='pendReasonSelect' required="true">Reason</uitk:label>						
+					</div>	
+					<div style="margin-top:2%">	
+						<select ng-model="dataModel.pendReasonSelect" id='pendReasonSelectId' ng-options='pendReason.key as pendReason.value for pendReason in dataModel.pendReasons'>
+							<option value="">Select</option>
+						</select>
+					</div>	 
+					</div>
+					<div style="margin-top:2%">
+						<span><label>Comments</label></span>
+						<span><uitk:textarea  id='addPendCommentField' name='addPendCommentField' width='100%' model='dataModel.addPendcomments' style="margin-top: 2%" max-char-count="200"></uitk:textarea></span>
+					</div>
+					<br/>
+					<div>
+						<uitk:button type="button" value="Save"
+									 style="float:left;"
+									 ng-click="dataModel.handlePendAppointMent()"
+									 custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+						<uitk:button type="button" value="Cancel"
+									 style="float:left;"
+									 onclick="document.getElementById('pendApptDialogId_closeLink').click();"
+									 custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+					</div>
+				</uitk:dialog>
+				
+	</div>
+	<div ng-if="dataModel.showPend">
+	<h2 id="MakeApntmnthdr" ng-if="dataModel.showPend">Pended Appointment</h2>
+		<uitk:panel model="chartStatusModel"></uitk:panel>
+	    <uitk:panel model="faxStatusModel"></uitk:panel>
+	    <uitk:panel model="commentHistoryModel"></uitk:panel>
+	   <uitk:panel model="retrievalInfoModel"></uitk:panel>
+	
+	</div>
+	<!-- <div ng-if="dataModel.showCodingUi">
+		<uitk:panel model="codingUiModel"></uitk:panel>
+	</div> -->
+	<!-- <div ng-if="dataModel.showCodingQAui">
+		<uitk:panel model="codingQAUiModel"></uitk:panel>
+	</div> -->
+</div>

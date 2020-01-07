@@ -1,0 +1,16 @@
+<div ng-controller='condingQACtrl'>
+	<div ng-if="dataModel.codingQAShowChart && dataModel.codingQACounts[0].totalCnt > 0" style="width: 73%;float: left;">
+		<uitk-pie-chart view-model="dataModel.condingQAPieChartModel"></uitk-pie-chart>
+	</div>
+	<div ng-if="dataModel.codingQACounts[0].totalCnt == 0 || dataModel.codingQACounts[0].totalCnt == ''" style="width: 72%; height: 431px;">
+		<h1><span style="color: #f20202; font-size: 15px;">No Data Found</span><br/>
+	</div>
+	<div ng-if="dataModel.codingQAShowChart && dataModel.codingQACounts[0].totalCnt > 0" style="width: 27%;float: right;">
+	<br/><br/><br/><br/><br/><br/>
+		<span><span style="font-size: 15px; font-weight: bold;">Total Charts = {{dataModel.codingQACounts[0].totalCnt}}</span></span><br/><br/>
+		<div style="padding-left:5px;"><div class="symbolStyle" style="background-color: #963d3b;"></div><span style="width: 55%;" class="labelStyle">Unassigned</span><span style="width: 30%;" class="labelValuesStyle">{{dataModel.codingQACounts[0].unassingedCnt}}</span></div><br/><br/>
+		<div style="padding-left:5px;"><div class="symbolStyle" style="background-color: #b34a47;"></div><span style="width: 55%;" class="labelStyle">Assigned</span><span style="width: 30%;" class="labelValuesStyle">{{dataModel.codingQACounts[0].assignedCnt}}</span></div><br/><br/>
+		<div style="padding-left:5px;"><div class="symbolStyle" style="background-color: #ca7e7d;"></div><span style="width: 55%;" class="labelStyle">QA Complete</span><span style="width: 30%;" class="labelValuesStyle">{{dataModel.codingQACounts[0].qaCompletedCnt}}</span></div><br/><br/> 
+		<div style="padding-left:5px;"><div class="symbolStyle" style="background-color: #ddb6b5;"></div><span style="width: 55%;" class="labelStyle">QA Not Eligible</span><span style="width: 30%;" class="labelValuesStyle">{{dataModel.codingQACounts[0].qaNotEligCnt}}</span></div><br/><br/>
+	</div>
+</div>

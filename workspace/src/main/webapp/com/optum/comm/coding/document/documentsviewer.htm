@@ -1,0 +1,178 @@
+<!doctype html>
+<html>
+<head>
+
+<link rel="stylesheet"
+ href="../../../../../../../emerald/optum/css/general2.css" type="text/css" />
+
+<link rel="stylesheet" type="text/css" href="../../../../../emerald/gcm/css/cdefault.css"/>
+<link rel="stylesheet" type="text/css" href="../../../../../emerald/gcm/css/default.css"/>
+
+<script src="../../../../../emerald/gcm/js/angular.js"
+ type="text/javascript"></script>
+
+<script type="text/javascript"
+ src="../../../../../../../emerald/optum/js/responsive-layout.js"
+ type="text/javascript"></script>
+
+<script type="text/javascript" src="../../../../../../../emerald/optum/js/jquery-1.8.2.min.js"></script>
+
+<script type="text/javascript"
+ src="../ux.js"></script>
+
+<script type='text/javascript'>
+	
+	
+  window.reLoadImage = function(docObject, imageIndex){
+  	
+  	var docList = window.angularScope.documents;
+ 		window.angularScope.setDocList([]);
+ 		window.angularScope.reInitializeTabs(docList, imageIndex);
+
+  		
+  }
+  
+
+
+
+	var documentDownloadModule = angular.module('documentDownloadApp', []);
+	documentDownloadModule.controller('downloadUIController', function($scope, $compile, $timeout)
+	{
+		
+		window.angularScope = $scope;
+		//"IMG1,20151123;"
+	$scope.getParameter = function(parameterName){
+			if (window.location.search.match(new RegExp("[\#\&]" + parameterName + "=([^\&]*)")))
+                    return decodeURIComponent(RegExp.$1);
+	}
+		$timeout(function()
+		{
+			$scope.documents = [];
+			var docList = "";
+			var locationHashValue = window.location.hash;
+			var selectedDocIndex = 0;
+			if ( locationHashValue && locationHashValue.indexOf("documentList") >= 0  ){
+				var locationHashArray = locationHashValue.split("&");
+				docList = locationHashArray[0].substring(locationHashArray[0].indexOf("=")+1);
+				if ( locationHashArray[1].indexOf("selectedImgIndex") >=0 ){
+					selectedDocIndex = parseInt(locationHashArray[1].split("=")[1]);
+				}
+			}
+			
+			
+			if ( docList ){
+				
+				var docs = docList.split(";");
+				var docsArray = [];
+				for(var d=0, len = docs.length; d < len;d++){
+						if ( ! docs[d] ) continue;
+						docsArray[docsArray.length] = { name : docs[d].split(",")[0], documentId : docs[d].split(",")[1] };
+				}
+				
+				$scope.documents = docsArray;
+				$scope.reInitializeTabs(docsArray, selectedDocIndex);
+			}
+		});
+
+		function isIE() {
+			  var userAgent = navigator.userAgent;
+			  return userAgent.indexOf("MSIE ") > -1 || userAgent.indexOf("Trident/") > -1 || userAgent.indexOf("Edge/") > -1;
+		}
+	
+		$scope.downloadDocument = function(docObject, index){
+			  $("iframe").attr('src', "");
+				$timeout(function(){ 
+					
+					$(".ux-tpnl-content iframe").attr('src', "/cm/document?documentId="+docObject.documentId);
+
+                                   if ( isIE() ) {
+						 $(".ux-tpnl-content iframe").load(function(){
+                                        		 var img = $(this).contents().find("img");
+              	                           $(img).css("width", "50%");
+	
+       	                            }); 
+					}
+
+				}, 1000)
+		}
+		
+		$scope.setDocList = function(docList){
+			
+							$timeout(function()
+							{
+								$scope.documents = docList;
+							});
+		}
+	
+
+		
+		$scope.reInitializeTabs = function(docList, selectedDocIndex){
+			
+			if ( docList ){
+							$timeout(function()
+							{
+								$scope.documents = docList;
+							});
+
+			}
+			$timeout(function(){
+					$(".ux-tpnl").append("<div class='ux-tpnl-content' style='height:100%;position:relative'></div>");
+					
+					$($("ul li")[selectedDocIndex]).addClass("ux-tpnl-selected ux-tpnl-active");
+					
+					var uxo = ux(); // UX object
+					uxo.initializeTabbedPanels();
+					if ( $scope.documents.length > 0 ){
+						$("#tab-"+ selectedDocIndex).click();
+					}
+					$scope.downloadDocument($scope.documents[selectedDocIndex], selectedDocIndex);
+
+
+			}, 500);
+		};
+		
+
+
+
+
+	}
+
+);
+
+		window.opener = null;
+
+
+		
+
+	</script>
+
+
+<style>
+.ux-a11y-hidden{
+  display :none;
+}
+</style>
+</head>
+<body ng-app="documentDownloadApp" ng-controller='downloadUIController' >
+
+	<div id="ux-wrapper">
+		<div class="ux-content">
+			<div class='ux-tpnl'>
+				<ul>
+					<li   ng-repeat="doc in documents track by $index"  id="{{'tab-' + $index}}">
+						<a class='tab-label' style='cursor: pointer;'  ng-click="downloadDocument(doc, $index)">{{doc.name}}</a>
+						<div style="width:90%;height:600px;">
+							<iframe id="{{ 'document-' + $index }}" name="{{ 'document-' + $index }}"  style="width:100%;height:100%;"   ></iframe>
+						</div>
+					</li>
+				</ul>
+			<div class='ux-tpnl-content' style='min-width: 919px;'></div>
+			</div>
+		<div class="ux-msg-error" ng-show='documents.length == 0'  id="__xbody_msg_group_element" style="position:relative;line-height: 15px; display: block;" >
+			<p>There are no documents to display</p>
+		</div>
+		</div>
+	</div>
+</body>
+</html> 
+

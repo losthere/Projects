@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+	<head lang="en">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Supervisor Dashboard</title>		
+		
+		<script type="text/javascript" src="../lib/js/common/jquery.js"></script>
+		<script type="text/javascript" src="../lib/js/common/angular.js"></script>
+		<script type="text/javascript" src="../lib/js/common/angular-sanitize.js"></script>
+		<script type="text/javascript" src="../lib/js/common/angular-translate/angular-translate.js"></script>
+		<script type="text/javascript" src="../lib/js/common/ngDialog.min.js"></script>
+		<script type="text/javascript" src="../lib/js/common/optumui.js"></script>
+		
+		<script type="text/javascript" src="../lib/js/common/ng-csv.js"></script>
+		<script type="text/javascript" src="../lib/js/common/angular-touch.js"></script>
+		<script type="text/javascript" src="../lib/js/common/lodash.js"></script>
+		<script type="text/javascript" src="../lib/js/common/ux.js"></script>
+		<script type="text/javascript" src="../lib/js/common/uitk.js"></script>
+		<script type="text/javascript" src="../lib/js/common/d3.min.js"></script>
+		<script type="text/javascript" src="../lib/js/common/nv.d3.js"></script>
+		<script type="text/javascript" src="../lib/js/common/uitk-auto-complete.js"></script>
+		<script type="text/javascript" src="../lib/js/modules/retrieval/staticDataService.js"></script>
+		<script type="text/javascript" src="../lib/js/modules/dashboard/supervisordashboard.js"></script>
+		<script type="text/javascript" src="../lib/js/modules/dashboard/schedulingDashboard.js"></script>
+		<script type="text/javascript" src="../lib/js/modules/dashboard/retrievalDashboard.js"></script>
+		<script type="text/javascript" src="../lib/js/modules/dashboard/schedulingStatus.js"></script>
+		<script type="text/javascript" src="../lib/js/modules/dashboard/codingDashboard.js"></script>
+		<script type="text/javascript" src="../lib/js/modules/dashboard/codingQADashboard.js"></script>
+		<script type="text/javascript" src="../lib/js/modules/dashboard/schedulingOutreach.js"></script>
+		<script type="text/javascript" src="../lib/js/modules/dashboard/schedulingOnsite.js"></script>
+		<script type="text/javascript" src="../lib/js/modules/dashboard/schedulingEmr.js"></script>
+		<script type="text/javascript" src="../lib/js/modules/dashboard/pendManagementDashboard.js"></script>
+		<script type="text/javascript" src="../lib/js/modules/dashboard/pendManagementStatus.js"></script>
+		<script type="text/javascript" src="../lib/js/modules/dashboard/pendManagementPendReason.js"></script>
+		<script type="text/javascript" src="../lib/js/modules/dashboard/pendManagementCNAReason.js"></script>
+		<link rel="stylesheet" type="text/css" href="../lib/css/uitk.min.css" />
+		<style type="text/css">
+			.labelStyle {
+				font-size : 12px;
+				padding-left: 5px;
+				width: 80%;
+				float:left;
+			}
+			.labelValuesStyle {
+				font-size : 12px;
+				font-weight: bold;
+				padding-left: 5px;
+				text-align: right;
+				width: 13%;
+				float:right;
+			}
+			button.tk-barchart-showdata-button{ display: none}
+			.symbolStyle {
+				height: 12px; 
+				width: 12px; 
+				display: inline-block; 
+				float: left;
+			}
+			.chartStyle {
+				width: 72%;
+				display: inline-block; 
+			}
+			.valuesStyle {
+				width: 28%;
+				float:right;
+				display: inline-block; 
+			}
+			.nv-pie.nvd3 path {
+				stroke : #fff;
+				stroke-width : 1px;
+				stroke-opacity : 1;
+			}
+			.nv-pieLabels text {
+				text-anchor : middle !important;
+			}
+			.Inline style {
+				text-anchor : start;
+			}
+		</style>
+	</head>
+	<body ng-app="supervisorDashboard" ng-cloak>
+	
+	<div ng-controller="supervisorDashboardCtrl" class="tk-grid-container" style="width:1500px;display:inline-block;overflow:auto; padding-left: 5px; padding-right: 5px;">
+		<div class="tk-grid">
+		    <div class="tk-col-1-2" style='padding-right:5px;'>
+		    	<div class="tk-module" style="height: 70px; background-color: white; border: none;padding:5px;">
+		    		<h1><span>Welcome {{dataModel.currentRoleName}}</span><br/>
+		    		<span style="font-size: 12px;">Data current as of {{dataModel.currentDate}}</span></h1>
+		    	</div>
+		        
+		    </div>
+		    
+		    <div class="tk-col-1-2"  style='padding-right:10px;'>
+		    	<div class="tk-module" style="height: 70px; background-color: #F3F3F3; border: none; margin-top: 10px;margin-left: 6px;">
+		    		<table class='ux-tabl-form-multicol'>
+		    			<tbody>
+                            <tr>
+                                <td><label class="tk-labl">Filter By</label></td>
+                                <td>
+                                	<label style="margin-left:10px;" class="tk-labl">Region<span class='cux-icon-asterisk'><span class="tk-icon-glyph"></span></span></label>
+                                </td>
+                                <td ng-if="regionsList.length > 1">
+                                	<select class="size" style='margin-left:10px;' ng-model="dataModel.region" ng-change="getProjectsList()">
+										<option value="" selected="">Select</option>
+										<option ng-repeat="region in regionsList" value="{{region.key}}">{{region.value}}</option>
+									</select>
+                                </td>
+                                <td ng-if="regionsList.length == 1">
+                                	<select ng-disabled='true' class="size" style='margin-left:10px;' ng-model="dataModel.region" ng-change="getProjectsList()">
+										<option ng-repeat="region in regionsList" value="{{region.key}}">{{region.value}}</option>
+									</select>
+                                </td>
+                               <!-- <td ng-if="organizationList.length > 1">
+                                	<label style="margin-left:10px;" class="tk-labl">Organization<span class='cux-icon-asterisk'><span class="tk-icon-glyph"></span></span></label>
+                                </td>
+                                <td ng-if="organizationList.length > 1">
+                                	<select  class="size" style='margin-left:10px;' ng-model="organization">
+										<option value="" selected="">Select</option>
+										<option ng-repeat="organization in organizationList" value="{{organization.key}}">{{organization.value}}</option>
+									</select>
+                                </td>
+                                 <td><label style='margin-left:10px;' for='orgElement'>View Summary by</label></td>
+                                <td>
+                                	<select ng-model="dataModel.viewSummarySelect" ng-change="getProjectsList()" style="margin-left:10px;width:150px" id='viewSummaryId' >
+										<option ng-if = "dataModel.currentRole!='OIM' && dataModel.currentRole!='OPM' "value="CLIENT">Client Only</option>
+										<option value="OPTUM">Optum Only</option>
+                                	</select>
+                                </td> -->
+                                <td><label style='margin-left:10px;' for='orgElement'>Project Name</label></td>
+                                <td>
+                                	<select ng-change="refreshChartData();" style="margin-left:10px;width:150px" ng-model="dataModel.projectSelect" id='projectId' ng-options='projectsList.key as projectsList.value for projectsList in dataModel.projectsList'>
+                                		<option value="">All</option>
+                                	</select>
+                                </td>
+                            </tr>
+                        </tbody>
+		    		</table>
+		    	</div>
+		    </div>
+		</div>
+		<div ng-if='isRetConfigured'>
+			<div class="tk-grid">
+			    <div class="tk-col-1-2" style='padding-right:5px;'>
+			    	<div ng-if="dataModel.showChart" class="tk-module" style="height: 500px; background-color: white;  border: none;padding:5px;">
+			    		<uitk:panel model="dataModel.schedulingPanelModel" header-class="tk-panl-with-underline"></uitk:panel>
+			    	</div>
+			        
+			    </div>		    
+			    <div class="tk-col-1-2" style='padding-right:10px;'>
+			    	<div  class="tk-module" style="height: 500px; background-color: white;   border: none;padding:5px;">
+			    		<uitk:panel model="dataModel.retrievalPanelModel"></uitk:panel>
+			    	</div>			        
+			    </div>
+			</div>
+			<div class="tk-grid">
+			    <div class="tk-col-1-2" style='padding-right:5px;'>
+			    	<div ng-if="dataModel.pendStatusShowChart" class="tk-module" style="height: 500px; background-color: white;   border: none;padding:5px;">
+			    		<uitk:panel model="dataModel.pendManagementPanelModel"></uitk:panel>
+			    	</div>
+			        
+			    </div>
+			    <div class="tk-col-1-2"  style='padding-right:10px;'>
+			    	<div  class="tk-module" style="height: 500px; background-color: white;   border: none;padding:5px;">
+			    		<uitk:panel model="dataModel.codingPanelModel"></uitk:panel>
+			    	</div>			        
+			    </div>
+			</div>
+			<div class="tk-grid"  ng-if="dataModel.showQAChart">
+			    <div class="tk-col-1-2">
+			        
+			    </div>
+			    <div class="tk-col-1-2" style='padding-right:10px;'>
+			    	<div  class="tk-module" style="height: 500px; background-color: white; padding:5px;  border: none;">
+			    		<uitk:panel model="dataModel.codingQAPanelModel"></uitk:panel>
+			    	</div>
+			        
+			    </div>
+			</div>
+		</div>
+		<div ng-if='!isRetConfigured'>
+			<div class="tk-grid">
+				<div class="tk-col-1-2" style='padding-right:10px;'>
+				    	<div  class="tk-module" style="height: 500px; background-color: white;   border: none;padding:5px;">
+				    		<uitk:panel model="dataModel.retrievalPanelModel"></uitk:panel>
+				    	</div>			        
+				 </div>
+				 <div class="tk-col-1-2"  style='padding-right:10px;'>
+				    	<div  class="tk-module" style="height: 500px; background-color: white;   border: none;padding:5px;">
+				    		<uitk:panel model="dataModel.codingPanelModel"></uitk:panel>
+				    	</div>			        
+				 </div>
+			 </div>
+			 <div class="tk-grid" ng-if="dataModel.showQAChart">
+			 	<div class="tk-col-1-2">
+			        
+			    </div>
+			    <div class="tk-col-1-2" style='padding-right:10px;'>
+			    	<div  class="tk-module" style="height: 500px; background-color: white; padding:5px;  border: none;">
+			    		<uitk:panel model="dataModel.codingQAPanelModel"></uitk:panel>
+			    	</div>			        
+			    </div>
+			 </div>
+		</div>
+	</div>
+	</body>
+</html>

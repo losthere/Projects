@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+	<meta charset="UTF-8" />
+	<title>Chart Overview</title>
+	<meta http-equiv="Content-Language" content="en" />
+	<link rel="stylesheet" href="../lib/css/general2.css" type="text/css" />
+	<script src="../lib/js/common/jquery-3.2.1.min.js" type="text/javascript"></script>
+	<script src="../lib/js/common/optumui.js" type="text/javascript"></script>
+	<script src="../lib/js/common/cordys.gcmcore.js" type="text/javascript"></script>
+
+	<script type="text/javascript" src="/cordys/wcp/flash/fusion/fusioncharts.js"></script>
+	<script type="text/javascript" src="/cordys/wcp/flash/fusion/FusionCharts.jqueryplugin.js"></script>
+
+	<style type="text/css">
+
+		h1{
+			font-size : 18px !important;
+			color : #333333 !important;
+		}
+		#retrievalCountElement{
+			font-size : 14px !important;
+		}
+		#ftcCountElement{
+			font-size : 14px !important;
+		}
+		.boldlabel{
+			font-weight:bold !important;
+			color : #333333 !important;
+			font-size : 18px !important;
+		}
+		.ux-panl{
+			box-shadow:none;
+		}
+		.ux-panl-content, .ux-panl{
+			margin : 0px;
+			border : 0px;
+			padding : 0px;
+		}
+		.ux-tabl-form-multicol{
+			margin-left : 0px;
+			padding-left : 0px;
+			border-left: 0px;
+		}
+		.selectbox{
+			width : 200px !important;
+		}
+
+	</style>
+	<script type="text/javascript">
+
+	window.onload=function(){
+
+
+
+
+	}
+
+
+
+	var properties = {showBorder:0, bgAlpha:0, decimals:1, showhovercap:1,decimalPrecision:0,showPercentInToolTip:0,
+animation:0, enableRotation:0, showShadow:0, use3DLighting:0, defaultAnimation:0, baseFontSize:12, showToolTip:1, slicingDistance:0};
+
+	var barProperties = {maxLabelWidthPercent:100,decimals:1, bgAlpha:0, divLineIsDashed:'1', showBorder:'0', borderColor:"FFFFFF", showPlotBorder:'0', baseFontSize:'12', plotFillRatio:'100', interactiveLegend:'0', showAlternateVGridColor:'0',
+canvasBorderColor:"FFFFFF", canvasBorderThickness:'0', plotBorderThickness:'0', showToolTip:'1',yAxisValuesPadding:'10px',yAxisMaxValue:5000,yAxisMinValue:1000};
+
+	var retrievalColors ={};
+	retrievalColors["Completed"] = "#27185a";retrievalColors["Unassigned"] = "#9294cd";retrievalColors["Assigned"] = "#6c66ae";
+	retrievalColors["In Progress"] = "#473890";retrievalColors["Created"] = "#bbc0e9";
+
+	var ftcPieColors ={};
+	ftcPieColors["Completed"] = "#005157";ftcPieColors["Unassigned"] = "#80bcc1";ftcPieColors["Assigned"] = "#499fa6";
+	ftcPieColors["In Progress"] = "#007983";ftcPieColors["Created"] = "#005157";
+
+	var orgGraphColors = ["#d4dfb1", "#638104"];
+
+	var iterationGraphColors = ["#add3e3", "#00568d"];
+
+	var DASHBOARD_NS = "http://schemas.optum.com/optum/mrm/comm/dashboard/overview/1.0";
+
+	//Model Declarations
+	var BusinessSegmentModel,VendorModel,HealthPlanModel,ProgramServicesModel;
+	var dashboardViewModel = new DashboardViewModel();
+	var globalRequestStore = {};
+
+    function recalculateButton_click()
+                {
+				if(!validateProjectID())
+					return;
+                                // Dispose the chart IDs for charts to render again
+
+
+                             {
+                                optumUI.hideMessage();
+                                disposeChartIds();
+
+					 if($('#programElement option:selected').text() == "STOR")
+				{
+
+					$('#ftcGroupBox').hide();
+					$('#ftcDetailsGroupBox').hide();
+					$('#iterationsGroupBox').hide();
+
+
+				}
+				  else
+				{
+
+					$('#ftcGroupBox').show();
+					$('#ftcDetailsGroupBox').show();
+					$('#iterationsGroupBox').show();
+
+
+				}
+                                renderCharts();
+
+                                }
+
+
+
+
+	}
+
+	function clearButton_click()
+	{
+		optumUI.hideMessage();
+		$('#projectYearElement').val($('#projectYearElement option:first').val())
+		$('#businessSegmentElement').val("MCARE").change();
+		$('#projectIDElement').val("");
+		$('#clientElement').val("");
+		$('#programElement').val("3").change();
+		$('#vendorElement').val("").change();
+		$('#hpElement').val("").change();
+		//$('#projectIDElement').addClass("input");
+	}
+
+	function DashboardViewModel()
+	{
+		this.businessSegments = [];
+		this.projectYears = [];
+		this.programs = [];
+		this.vendors = [];
+		this.clients=[];
+		this.healthPlans = [];
+		this.recalculate = function() {
+			recalculateButton_click();
+		};
+		this.clear= function() {
+			clearButton_click();
+		};
+	}
+
+	$(
+		function(){
+
+			$.cordys.ajax.defaults.error = function(data){
+					optumUI.showError(data && data.statusText  ? data.statusText : "Error occured. Please contact administrator.", false);
+					return false;
+			};
+
+			$('#projectIDElement').bind("change", function(e){
+				validateProjectID();
+			}
+			);
+
+			$('#createDateElement').text(formatDate(new Date()));
+			//for Optum ID Integration
+			$.cordys.ajax.defaults.isMock = true;
+			//load base calls
+			prefillServices();
+
+		  /* $('#programElement').bind("change", function(s)
+
+			     {
+				    if($('#programElement option:selected').text() == "STOR")
+				{
+
+					$('#ftcGroupBox').hide();
+					$('#ftcDetailsGroupBox').hide();
+					$('#iterationsGroupBox').hide();
+
+
+				}
+				  else
+				{
+
+					$('#ftcGroupBox').show();
+					$('#ftcDetailsGroupBox').show();
+					$('#iterationsGroupBox').show();
+
+
+				}
+			     });  */
+		}
+
+	);
+
+	function validateProjectID()
+	{
+		optumUI.hideMessage();
+				if($('#projectIDElement').val() != "")
+				{
+				    var value = $('#projectIDElement').val().replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+				    var intRegex = /^\d+$/;
+				    if(!intRegex.test(value)) {
+				        optumUI.showError("Please enter valid value.", false);
+				        return false;
+				    }
+				    if(parseInt(value) == 0 ){
+				    	optumUI.showError("Please enter valid value.", false);
+				        return false;
+				    }
+					return true;
+				}     return true;
+	}
+
+	function prefillServices(){
+		var BusinessSegmentModel = $.cordys.gcmcore.getBusinessSegments();
+		VendorModel = $.cordys.gcmcore.getVendors({
+
+			parameters: function(){
+					var parameterXML = "<businessSegment>"+$('#businessSegmentElement').val()+"</businessSegment>"+($('#hpElement').val() ? $('#hpElement').val() : '')+"<hpKey></hpKey><businessFunKey></businessFunKey><hpProduct></hpProduct><isInternal></isInternal><isOffshore></isOffshore>";
+					return parameterXML;
+			}
+		});
+		var ProjectYearModel = $.cordys.gcmcore.getProjectYearModel();
+		HealthPlanModel = $.cordys.gcmcore.getHealthPlanModel({
+
+			parameters: function() {
+									var parameterXML = "<businessSegment>"+$('#businessSegmentElement').val()+"</businessSegment><busFunKey></busFunKey><isOffshore></isOffshore><programKey></programKey><busFunDetailKey></busFunDetailKey><clientKey></clientKey><programParentKey></programParentKey>";
+									return parameterXML
+				}
+		});
+		var clientModel= $.cordys.gcmcore.getClientsModel();
+		ProgramServicesModel = $.cordys.gcmcore.getProgramGroupsModel ({
+
+			parameters: function(){						//Used the xml because the normal key:value is not working as expected
+						var parameterXML = "<businessSegment>"+$('#businessSegmentElement').val()+"</businessSegment>"+
+						"<businesFuncKey></businesFuncKey>";
+						return parameterXML;
+				}
+		});
+		BusinessSegmentModel.read().done(function(e){
+			if(e) {
+				for(var i=0, length = e.length; i<length; i++)
+					dashboardViewModel.businessSegments[dashboardViewModel.businessSegments.length] = e[i];
+			}
+			ko.applyBindings(dashboardViewModel,$('#businessSegmentElement')[0]);
+			$('#businessSegmentElement').val("MCARE");
+			VendorModel.read().done(function(e){
+				if(e) {
+					for(var i=0, length = e.length; i<length; i++) {
+						e[i].GCM_VENDOR_KEY = e[i].GCMCompositeKey.GCM_VENDOR_KEY;
+						dashboardViewModel.vendors[dashboardViewModel.vendors.length] = e[i];
+					}
+				}
+			ko.applyBindings(dashboardViewModel,$('#vendorElement')[0]);
+				ProjectYearModel.read().done(function(e){
+				if(e) {
+					for(var i=0, length = e.length; i<length; i++) {
+						dashboardViewModel.projectYears[dashboardViewModel.projectYears.length] = e[i];
+					}
+				}
+			ko.applyBindings(dashboardViewModel,$('#projectYearElement')[0]);
+			clientModel.read().done(function(e){
+			if(e) {
+					for(var i=0, length = e.length; i<length; i++) {
+						dashboardViewModel.clients[dashboardViewModel.clients.length] = e[i];
+					}
+				}
+			ko.applyBindings(dashboardViewModel,$('#clientElement')[0]);
+				HealthPlanModel.read().done(function(e){
+				if(e) {
+					for(var i=0, length = e.length; i<length; i++) {
+						e[i].GCM_HP_KEY = e[i].GCMCompositeKey.GCM_HP_KEY;
+						dashboardViewModel.healthPlans[dashboardViewModel.healthPlans.length] = e[i];
+					}
+				}
+				ko.applyBindings(dashboardViewModel,$('#hpElement')[0]);
+					ProgramServicesModel.read().done(function(e){
+						if(e) {
+							for(var i=0; length = e.length, i<length; i++){
+                                                          dashboardViewModel.programs[dashboardViewModel.programs.length] = e[i];
+                                                       }
+						}
+                                                ko.applyBindings(dashboardViewModel,$('#programElement')[0]);
+						$('#programElement').val("Chart Review");
+						ko.applyBindings(dashboardViewModel,$('input[value="Recalculate"]')[0]);
+						ko.applyBindings(dashboardViewModel,$('input[value="Clear"]')[0]);
+						//render charts
+						renderCharts();
+
+					});
+				});
+			});
+		});
+		});
+	});
+	}
+
+
+	function renderCharts() {
+		var settings = {};
+		settings.beforeSend = function (requestModelXhr){
+			//store to cache
+			globalRequestStore[this.modelKey] = requestModelXhr;
+			requestModelXhr.done(function(e){
+				//remove from cache
+				globalRequestStore[this.modelKey] = null;
+				delete globalRequestStore[this.modelKey];
+			}
+			);
+		};
+		settings.modelKey = "RetrievalCompletionRateModel";
+		var RetrievalCompletionRateModel = new $.cordys.model({
+			 objectName : "BusinessFunctionSummary",
+			 read:{
+			 	async: true,
+				method: "GetBusinessFunctionSummary",
+				namespace: DASHBOARD_NS,
+				parameters: setRequestParameters("RETRIEVAL", "CompRate")
+			},
+			dataType:'json'
+		});
+		
+		RetrievalCompletionRateModel.read(settings).done(function(summaryObjects){
+			//data
+			// Create the dataArray required for Fusion Chart
+			var dataArray = [];
+			var dataExists = false;
+			if ( summaryObjects.length > 0 )
+			{
+				//Details
+				var detailsObject = summaryObjects[0].Details;
+				//Take Details
+				if ( detailsObject )
+				{
+	
+					var completionRatePerDay = detailsObject.CompletionRatePerDay;
+					var period = detailsObject.Period;
+
+					completionRatePerDay = completionRatePerDay >=1 ? Math.round(completionRatePerDay) : completionRatePerDay;
+
+					if(completionRatePerDay)
+						$("#retCompletionRateElement").text(completionRatePerDay + " / day");
+					else
+						$("#retCompletionRateElement").text("");
+
+					if(period)
+						$('#retPeriodElement').text("* "+period+" Day Average");
+				}
+			}
+
+
+		}
+		);
+		
+		settings.modelKey = "RetrievalReceivedRateModel";
+		var RetrievalReceivedRateModel = new $.cordys.model({
+			 objectName : "BusinessFunctionSummary",
+			 read:{
+			 	async: true,
+				method: "GetBusinessFunctionSummary",
+				namespace: DASHBOARD_NS,
+				parameters: setRequestParameters("RETRIEVAL", "RecvdRate")
+			},
+			dataType:'json'
+		});
+		
+		RetrievalReceivedRateModel.read(settings).done(function(summaryObjects){
+			//data
+			// Create the dataArray required for Fusion Chart
+			var dataArray = [];
+			var dataExists = false;
+
+			if ( summaryObjects.length > 0 )
+			{
+				//Summary
+				var detailsObject = summaryObjects[0].Details;
+				//Take Details
+				if ( detailsObject )
+				{
+					var receivedRateByPeriod = detailsObject.ReceivedRateByPeriod;
+
+					receivedRateByPeriod = receivedRateByPeriod >=1 ? Math.round(receivedRateByPeriod) : receivedRateByPeriod;
+
+
+					if(receivedRateByPeriod)
+						$("#retReceivedRateElement").text(detailsObject.ReceivedRateByPeriod + " %");
+					else
+						$("#retReceivedRateElement").text("");
+
+				}
+			}
+
+
+		}
+		);
+		
+		
+		var RetrievalModel = new $.cordys.model({
+			 objectName : "BusinessFunctionSummary",
+			 read:{
+			 	async: true,
+				method: "GetBusinessFunctionSummary",
+				namespace: DASHBOARD_NS,
+				parameters: setRequestParameters("RETRIEVAL", "RetSummary")
+			},
+			dataType:'json'
+		});
+		settings.modelKey = "RetrievalModel";
+		
+		RetrievalModel.read(settings).done(function(summaryObjects){
+			//data
+			// Create the dataArray required for Fusion Chart
+			var dataArray = [];
+			var dataExists = false;
+
+			if ( summaryObjects.length > 0 )
+			{
+				//Summary
+				var summaryObject = summaryObjects[0].Summary;
+				var detailsObject = summaryObjects[0].Details;
+				if ( summaryObject )
+				{
+					for(var s=0, length = summaryObject.length; s < length; s++)
+					{
+						dataArray.push({'label':summaryObjects[0].Summary[s].Status,
+										'value':summaryObjects[0].Summary[s].Count,
+										'toolText' :toolTipWithCommas(summaryObjects[0].Summary[s].Count),
+										'color' : retrievalColors[summaryObjects[0].Summary[s].Status]});
+
+						//Check if any one count element is greater than 0
+						if(summaryObjects[0].Summary[s].Count != 0)
+							dataExists = true;
+					}
+				}
+				//Take Details
+				if ( detailsObject )
+				{
+					$("#retrievalCountElement").text(replaceCount(detailsObject.TotalCount) + " Charts");
+					$("#retrievalCountElement").attr("title",toolTipWithCommas(detailsObject.TotalCount)+" Charts");
+				}
+			}
+			// Create complete chart data with schema required for Fusion Chart
+			var chartData = "";
+			if(dataExists)
+			{
+				chartData = {
+					"data" : dataArray,
+					"chart" :  properties
+				}
+			}
+
+			$("#retrievalDashboardElement").insertFusionCharts({type: "Pie2D", dataSource: chartData, dataFormat: "json",
+						width: "100%", height: "300px", id: "retrievalDashboardElementID"});
+
+		}
+		);
+
+		var ftcSettings = jQuery.extend(true, {}, settings);
+		
+		ftcSettings.modelKey = "FTCSummaryCodingRejectedModel";
+		var FTCSummaryCodingRejectedModel = new $.cordys.model({
+			objectName: 'BusinessFunctionSummary',
+			read:{
+			 	async: true,
+				method: "GetBusinessFunctionSummary",
+				namespace: DASHBOARD_NS,
+				parameters:  setRequestParameters("FTC", "CodingRejRate")
+			},
+			dataType:'json'
+		});
+		FTCSummaryCodingRejectedModel.read(ftcSettings).done(function(ftcSummaryObjects) {
+			var dataArray = [];
+			var dataExists = false;
+			if ( ftcSummaryObjects.length > 0 )
+			{
+				//Summary
+				var detailsObject = ftcSummaryObjects[0].Details;
+				//Take Details
+				if ( detailsObject )
+				{
+					var rejectionRateByPeriod  = detailsObject.RejectionRatePerPeriod;
+					rejectionRateByPeriod = rejectionRateByPeriod >= 1 ? Math.round(rejectionRateByPeriod) : rejectionRateByPeriod;
+					if ( ! rejectionRateByPeriod ) rejectionRateByPeriod = 0;
+					$("#ftcRejectionRateElement").text(rejectionRateByPeriod + " %");
+				}
+			}
+		});
+
+
+
+		ftcSettings.modelKey = "FTCSummaryCodCompletedModel";
+		var FTCSummaryCodCompletedModel = new $.cordys.model({
+			objectName: 'BusinessFunctionSummary',
+			read:{
+			 	async: true,
+				method: "GetBusinessFunctionSummary",
+				namespace: DASHBOARD_NS,
+				parameters:  setRequestParameters("FTC", "CodingCompRate")
+			},
+			dataType:'json'
+		});
+		
+		FTCSummaryCodCompletedModel.read(ftcSettings).done(function(ftcSummaryObjects) {
+			var dataArray = [];
+			var dataExists = false;
+			if ( ftcSummaryObjects.length > 0 )
+			{
+				//Summary
+				var detailsObject = ftcSummaryObjects[0].Details;
+				//Take Details
+				if ( detailsObject )
+				{
+					var completionRatePerDay = detailsObject.CompletionRatePerDay;
+					var period = detailsObject.Period;
+
+					completionRatePerDay = completionRatePerDay >= 1 ? Math.round(completionRatePerDay) : completionRatePerDay;
+
+					if(completionRatePerDay)
+						$("#ftcCompletionRateElement").text(completionRatePerDay + " / day");
+					else
+						$("#ftcCompletionRateElement").text("");
+
+					if(period)
+						$('#ftcPeriodElement').text("* "+period+" Day Average");
+				}
+			}
+		});
+
+		ftcSettings.modelKey = "FTCSummaryModel";
+
+		var FTCSummaryModel = new $.cordys.model({
+			objectName: 'BusinessFunctionSummary',
+			read:{
+			 	async: true,
+				method: "GetBusinessFunctionSummary",
+				namespace: DASHBOARD_NS,
+				parameters:  setRequestParameters("FTC", "CodSummary")
+			},
+			dataType:'json'
+		});
+
+		FTCSummaryModel.read(ftcSettings).done(function(ftcSummaryObjects) {
+			var dataArray = [];
+			var dataExists = false;
+			if ( ftcSummaryObjects.length > 0 )
+			{
+				//Summary
+				var summaryObject = ftcSummaryObjects[0].Summary;
+				var detailsObject = ftcSummaryObjects[0].Details;
+				if ( summaryObject )
+				{
+					for(var s=0, length = summaryObject.length; s < length; s++)
+					{
+						dataArray.push({'label':ftcSummaryObjects[0].Summary[s].Status,
+										'value':ftcSummaryObjects[0].Summary[s].Count,
+										'toolText' :toolTipWithCommas(ftcSummaryObjects[0].Summary[s].Count),
+                                        'color' : ftcPieColors[ftcSummaryObjects[0].Summary[s].Status]});
+
+						//Check if any one count element is greater than 0
+						if(ftcSummaryObjects[0].Summary[s].Count != 0)
+							dataExists = true;
+					}
+				}
+				//Take Details
+				if ( detailsObject )
+				{
+					$("#ftcCountElement").text(replaceCount(detailsObject.TotalCount) + " Charts");
+					$("#ftcCountElement").attr("title",toolTipWithCommas(detailsObject.TotalCount)+" Charts");
+				}
+			}
+			// Create complete chart data with schema required for Fusion Chart
+			var chartData = "";
+			if(dataExists)
+			{
+				chartData = {
+					"data" : dataArray,
+					"chart" :  properties
+				}
+			}
+			$("#ftcDashboardElement").insertFusionCharts({type: "Pie2D", dataSource: chartData, dataFormat: "json",
+						width: "100%", height: "300px", id: "ftcDashboardElementID"});
+		});
+		var GetVendorDetailsSummaryModel = new $.cordys.model({
+			objectName: 'VendorSummary',
+				dataType:'json',
+				read: {
+				async: true,
+				method: 'GetVendorDetailsSummary',
+				namespace: DASHBOARD_NS,
+				parameters: setRequestParameters("VENDOR")
+			}
+		});
+		var vendorDetailsSettings = jQuery.extend(true, {}, settings);
+
+		vendorDetailsSettings.modelKey = "GetVendorDetailsSummaryModel";
+
+		GetVendorDetailsSummaryModel.read(vendorDetailsSettings).done(function(vendorSummaryObjects) {
+			var dataArray = [];
+			var categoryArray = [];
+			var inProgressSeriesArray = [];
+			var completedSeriesArray = [];
+
+			if( vendorSummaryObjects.length > 0 )
+			{
+				for(var i = 0 ; i<vendorSummaryObjects.length; i++) {
+					var vendor = vendorSummaryObjects[i].Vendor;
+					var inProgress = vendorSummaryObjects[i].InProgress;
+					var completed = vendorSummaryObjects[i].Completed;
+
+					var inProgresstt=toolTipWithCommas(inProgress) +" In Progress";
+					var completedtt= toolTipWithCommas(completed) +" Completed";
+
+					categoryArray.push({'label':vendor});
+					inProgressSeriesArray.push({'value':inProgress,'toolText' :inProgresstt});
+					completedSeriesArray.push({'value':completed,'toolText' :completedtt});
+				}
+				var categoryDataArray = [{"category":categoryArray}];
+				
+				dataArray[dataArray.length] = {seriesname:"In Progress",color:orgGraphColors[0],data:inProgressSeriesArray};
+				dataArray[dataArray.length] = {seriesname:"Completed",color:orgGraphColors[1],data:completedSeriesArray};
+				
+			}
+
+			// Create complete chart data with schema required for Fusion Chart
+			var chartData = {
+				"categories": categoryDataArray,
+				"dataset" : dataArray,
+				"chart" :  barProperties
+			}
+
+			$("#orgOveviewDashboard").insertFusionCharts({type: "MSColumn2D", dataSource: chartData, dataFormat: "json",
+						width: "100%", height: "400px", id: "orgOveviewDashboardID"});
+
+
+           //setTimeout(function(){ },2000);
+
+
+	 });
+
+		var BusinessFunctionSummaryModel = new $.cordys.model({
+			objectName: 'BusinessFunctionSummary',
+			dataType:'json',
+				read: {
+				async: true,
+				method: 'GetBusinessFunctionDetailsSummary',
+				namespace: DASHBOARD_NS,
+				parameters: setRequestParameters("ITERATION")
+			}
+		});
+		var businessFunctionDetails = jQuery.extend(true, {}, settings);
+
+		businessFunctionDetails.modelKey = "BusinessFunctionSummaryModel";
+
+		BusinessFunctionSummaryModel.read(businessFunctionDetails).done(function(busFunctionSummaryObjects) {
+			var dataArray = [];
+			var categoryArray = [];
+			var inProgressSeriesArray = [];
+			var completedSeriesArray = [];
+			var categoryDataArray  = [];
+			if( busFunctionSummaryObjects.length > 0 )
+			{
+				for(var i = 0 ; i<busFunctionSummaryObjects.length; i++) {
+					var busFuncName = busFunctionSummaryObjects[i].BusinessFunctionName;
+					var inProgress = busFunctionSummaryObjects[i].InProgress;
+					var completed = busFunctionSummaryObjects[i].Completed;
+
+					var inProgresstt=toolTipWithCommas(inProgress) +" In Progress";
+					var completedtt= toolTipWithCommas(completed) +" Completed";
+
+					categoryArray.push({'label':busFuncName});
+					inProgressSeriesArray.push({'value':inProgress,'toolText' :inProgresstt});
+					completedSeriesArray.push({'value':completed,'toolText' :completedtt});
+				}
+				categoryDataArray = [{"category":categoryArray}];
+				//var inProgressSeriesData = [{seriesname:"In Progress",color:iterationGraphColors[0],data:inProgressSeriesArray}];
+				//var completedSeriesData = [{seriesname:"Completed",color:iterationGraphColors[1],data:completedSeriesArray}]
+				dataArray[dataArray.length] = {seriesname:"In Progress",color:iterationGraphColors[0],data:inProgressSeriesArray};
+				dataArray[dataArray.length] = {seriesname:"Completed",color:iterationGraphColors[1],data:completedSeriesArray};
+
+			}
+
+			// Create complete chart data with schema required for Fusion Chart
+			var chartData = {
+				"categories": categoryDataArray,
+				"dataset" : dataArray,
+				"chart" :  barProperties
+			}
+
+
+			$("#iterationsDashboard").insertFusionCharts({type: "MSColumn2D", dataSource: chartData, dataFormat: "json",
+						width: "100%", height: "400px", id: "iterationsDashboardID"});
+
+
+
+
+
+        });
+
+	}
+	// Disposes the old Id for chart
+	function disposeChartIds() {
+
+		if ( globalRequestStore ){
+			for(var key in globalRequestStore){
+				if ( globalRequestStore[key] ){
+					globalRequestStore[key].abort();
+					globalRequestStore[key] = null;
+					delete globalRequestStore[key];
+				}
+			}
+		}
+
+		if(FusionCharts("ftcDashboardElementID"))
+			FusionCharts("ftcDashboardElementID").dispose();
+		if(FusionCharts("retrievalDashboardElementID"))
+			FusionCharts("retrievalDashboardElementID").dispose();
+		if(FusionCharts("orgOveviewDashboardID"))
+			FusionCharts("orgOveviewDashboardID").dispose();
+		if(FusionCharts("iterationsDashboardID"))
+			FusionCharts("iterationsDashboardID").dispose();
+
+	}
+
+	function toolTipWithCommas(tooltipValue) {
+       if(tooltipValue){
+			var parts = tooltipValue.toString().split(".");
+			parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+			return parts.join(".");
+	  }
+}
+
+	function formatDate(dateString) {
+		if(dateString) {
+			var month = dateString.getMonth()+1;
+			month = (month > 9 ? month : "0"+month);
+			var date = (dateString.getDate() > 9 ? dateString.getDate() : "0"+dateString.getDate());
+			var year = dateString.getFullYear();
+
+			return month+"/"+date+"/"+year;
+		}
+	}
+
+	function setRequestParameters(type, action) {
+		var businessFunKey = '';
+		var parameterXml = "<dashBoardFilter>";
+		if(type)
+		{
+
+			if(type == 'RETRIEVAL')
+				businessFunKey = 4;
+			if(type == "FTC")
+				businessFunKey = "2.0";
+			if(type == "VENDOR")
+			{
+				parameterXml = "<dashboardFilter>";
+				businessFunKey = "2.0";
+			}
+			if(type == "ITERATION")
+			{
+				parameterXml = "<dashboardFilter>";
+			}
+		}
+		var businessSegment = $('#businessSegmentElement').val();
+		var hpKey = ($('#hpElement').val() ? $('#hpElement').val().replace('&','&amp;') : "");
+		var projectyear = $('#projectYearElement').val() ? $('#projectYearElement').val() : 0;
+		var vendorKey = ($('#vendorElement').val() ? $('#vendorElement').val() : "");
+		var projectId = ($('#projectIDElement').val() ? $('#projectIDElement').val() : "");
+		var programKey = ($('#programElement').val() ? $('#programElement').val() : "");
+		var clientKey = ($('#clientElement').val() ? $('#clientElement').val() : "");
+		parameterXml += "<DashBoardFilter>";
+
+		parameterXml += "<businessSegment>"+businessSegment+"</businessSegment>";
+		parameterXml += "<hpKey></hpKey>";
+		parameterXml += "<hpCD>"+hpKey+"</hpCD>";
+		parameterXml += "<clientKey>"+clientKey+"</clientKey>";
+		parameterXml += "<projectYear>"+projectyear+"</projectYear>";
+		parameterXml += "<vendorKey>"+vendorKey+"</vendorKey>";
+		parameterXml += "<projectID>"+projectId+"</projectID>";
+		parameterXml += "<program>"+programKey+"</program>";
+		parameterXml += "<businessFunctionKey>"+businessFunKey+"</businessFunctionKey>";
+		parameterXml += "<action>"+action+"</action>";
+		parameterXml += "</DashBoardFilter>";
+		if(type == "VENDOR" || type == "ITERATION")
+		{
+			parameterXml += "</dashboardFilter>";
+		}
+		else
+		{
+			parameterXml += "</dashBoardFilter>";
+		}
+		return parameterXml;
+	}
+
+	function replaceCount(totalCount) {
+		/*if(totalCount) {
+			var count2Show = Math.round(totalCount/1000);
+			if(count2Show > 0) count2Show = count2Show + "K";
+			else count2Show = totalCount;
+			return count2Show;
+		}*/
+		if(totalCount >= 1e12)
+		{
+			totalCount = totalCount/1e12;
+			return totalCount.toFixed(1) +"T";
+		}
+		else if(totalCount >= 1e9)
+		{
+			totalCount = totalCount/1e9;
+			return totalCount.toFixed(1) +" B";
+		}
+		else if(totalCount >= 1e6)
+		{
+			totalCount = totalCount/1e6;
+			return totalCount.toFixed(1) +"M";
+		}
+		else if(totalCount >= 1e3)
+		{
+			totalCount = totalCount/1e3;
+			return totalCount.toFixed(1) +"K";
+		}
+		return totalCount;
+	}
+	function refreshSelections(busSegmentObject) {
+		return function (data,eventObject) {
+			var selectBox = $(eventObject.target)[0];
+			var selectedValue = $(selectBox).val();
+			if(dashboardViewModel && selectedValue)
+			{
+				VendorModel.read().done(function(e){
+				dashboardViewModel.vendors = [];
+					if(e)
+					{
+						if(e.length > 0)
+						{
+							for(var i=0, length = e.length; i<length; i++) {
+								e[i].GCM_VENDOR_KEY = e[i].GCMCompositeKey.GCM_VENDOR_KEY;
+								dashboardViewModel.vendors[dashboardViewModel.vendors.length] = e[i];
+							}
+						}
+						else
+						{
+							dashboardViewModel.vendors = [];
+						}
+						ko.cleanNode($('#vendorElement')[0]);
+						ko.applyBindings(dashboardViewModel,$('#vendorElement')[0]);
+					}
+					HealthPlanModel.read().done(function(e){
+					dashboardViewModel.healthPlans = [];
+					if(e)
+					{
+						if(e.length > 0)
+						{
+							for(var i=0, length = e.length; i<length; i++)
+							{
+								e[i].GCM_HP_KEY = e[i].GCMCompositeKey.GCM_HP_KEY;
+								dashboardViewModel.healthPlans[dashboardViewModel.healthPlans.length] = e[i];
+							}
+						}
+						else
+						{
+							dashboardViewModel.healthPlans = [];
+						}
+						ko.cleanNode($('#hpElement')[0]);
+
+						ko.applyBindings(dashboardViewModel,$('#hpElement')[0]);
+					}
+					ProgramServicesModel.read().done(function(e){
+					dashboardViewModel.programs = [];
+						if(e)
+						{
+							if(e.length > 0)
+							{
+								for(var i=0; length = e.length, i<length; i++)
+								{
+									dashboardViewModel.programs[dashboardViewModel.programs.length] = e[i];
+								}
+							}
+							else
+							{
+								dashboardViewModel.programs = [];
+							}
+							ko.cleanNode($('#programElement')[0]);
+
+							ko.applyBindings(dashboardViewModel,$('#programElement')[0]);
+						}
+					});
+					});
+				});
+			}
+		}
+	}
+	</script>
+
+
+</head>
+<body >
+	<div id="ux-wrapper">
+		<div class="ux-content">
+			<div id="__xbody_msg_group_element" style="position:relative"> </div>
+
+			<div class="ux-panl" style="margin-top:10px">
+				<div class="ux-panl-content">
+					<table class='ux-tabl-form-multicol'>
+						<tbody>
+							<tr>
+								<td><label for='projectYearElement'>Project Year</label></td>
+								<td><select class='selectbox' id='projectYearElement' data-bind="options: projectYears, optionsValue: 'GCM_PROJECT_YEAR', optionsText: 'GCM_PROJECT_YEAR' " style="width:130px"></select></td>
+								<td><label for='projectIDElement'>Project ID</label></td>
+								<td><input id='projectIDElement' type="text"/ style="width:190px" class='ux-form-input-tip'></td>
+								<td><label for='businessSegmentElement'>Segment</label></td>
+								<td><select class='selectbox' id='businessSegmentElement' data-bind="options: businessSegments, optionsValue:'GCM_BUSINESS_SEGMENT', optionsText: 'GCM_BUSINESS_SEGMENT_DESC' , event:{change:refreshSelections($data,this)}" style="width:130px"></select></td>
+								<td><label for='vendorElement'>Vendor</label></td>
+								<td><select class='selectbox' id='vendorElement' data-bind="options: vendors, optionsValue: 'GCM_VENDOR_KEY',optionsText: 'VENDOR_NAME', optionsCaption: 'All'" style="width:130px"></select></td>
+							</tr>
+							<tr>
+								<td><label for='clientElement'>Client</label></td>
+								<td><select class='selectbox' id='clientElement' data-bind="options: clients, optionsValue: 'GCM_CLIENT_KEY', optionsText: 'GCM_CLIENT_CD', optionsCaption: 'All' " style="width:140px"></select></td>
+								<td><label for='hpElement'>Health Plan</label></td>
+								<td><select class='selectbox' id='hpElement' data-bind="options: healthPlans, optionsValue: 'HP_CD', optionsText: 'HP_CD', optionsCaption: 'All' " style="width:140px"></select></td>
+								<td><label for='programElement'>Program</label></td>
+								<td><select class='selectbox' id='programElement' data-bind="options: programs, optionsValue:'PROGRAM_GROUP',optionsText: 'PROGRAM_GROUP',optionsCaption: 'All'" style="width:130px"></select></td>
+							</tr>
+							<tr>
+								<td><input type="button" id="recalButton" value="Recalculate" class="ux-btn" data-bind="click:recalculate"/><input style="position:absolute;left:130px" type="button" value="Clear" class="ux-btn" data-bind="click:clear"/></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td><label for='createDateElement'>Created</label></td>
+								<td><label id="createDateElement"></label></td>
+							</tr>
+						</tbody>
+					 </table>
+				</div>
+			</div>
+			<!-- Starting Chart Groups -->
+			<div>
+			<!-- Retrieval Dashboard -->
+			<div style="position:absolute;height:380px;width:500px">
+				<div>
+					<table  align="center" style="width:100%">
+					<tbody>
+						<tr>
+							<td></td>
+							<td ><h1>Retrieval</h1></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>Completion Rate*</td>
+							<td><label  id='retrievalCountElement'></label></td>
+							<td>Received Rate</td>
+						</tr>
+						<tr>
+							<td><label class='boldlabel' id='retCompletionRateElement'></label></td>
+							<td></td>
+							<td><label class='boldlabel' id='retReceivedRateElement'></label></td>
+						</tr>
+						<tr>
+							<td><label id='retPeriodElement'></label></td>
+							<td></td>
+							<td><label class='boldlabel' id='retrievalPeriodTypeElement'></label></td>
+						</tr>
+					 </tbody>
+					 </table>
+				</div>
+				<div id='retrievalDashboardElement' class='chartdashboard'>
+				</div>
+			</div>
+			<!-- FTC Dashboard -->
+			<div id="ftcGroupBox" style="position:relative;left:600px;height:380px;width:500px">
+				<div>
+					<table  align="center" style="width:100%">
+					<tbody>
+						<tr>
+							<td></td>
+							<td align="center"><h1>First Time Coding</h1></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>Completion Rate*</td>
+							<td align="center"><label  id='ftcCountElement'></label></td>
+							<td>Rejection Rate</td>
+						</tr>
+						<tr>
+							<td><label class='boldlabel' id='ftcCompletionRateElement'></label></td>
+							<td></td>
+							<td><label class='boldlabel' id='ftcRejectionRateElement'></label></td>
+						</tr>
+						<tr>
+							<td><label id='ftcPeriodElement'></label></td>
+							<td></td>
+							<td><label class='boldlabel' id='ftcPeriodTypeElement'></label></td>
+						</tr>
+					 </tbody>
+					 </table>
+				</div>
+				<div id='ftcDashboardElement' class='chartdashboard'>
+				</div>
+			</div>
+			<!-- Org Dashboard -->
+			<div id="ftcDetailsGroupBox" style="position:relative;height:480px;width:1090px;top:10px">
+				<div>
+					<table align="center" style="width:100%">
+					<tbody>
+						<tr>
+							<td></td>
+							<td align="center"><h1>First Time Coding</h1></td>
+							<td></td>
+						</tr>
+
+					 </tbody>
+					 </table>
+				</div>
+				<div id='orgOveviewDashboard' class='chartdashboard'>
+				</div>
+			</div>
+			<!-- Iterations Dashboard -->
+			<div id="iterationsGroupBox" style="position:relative;height:40px;width:1090px;top:10px">
+				<div>
+					<table  align="center" style="width:100%">
+					<tbody>
+						<tr>
+							<td></td>
+							<td align="center"><h1>Iterations</h1></td>
+							<td></td>
+						</tr>
+
+					 </tbody>
+					 </table>
+				</div>
+				<div id='iterationsDashboard' class='chartdashboard'>
+				</div>
+			</div>
+		 </div><!-- Closing all Chart Groups -->
+
+
+		</div>
+	</div>
+</body>
+</html>

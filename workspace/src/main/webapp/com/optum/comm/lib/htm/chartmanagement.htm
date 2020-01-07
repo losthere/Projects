@@ -1,0 +1,273 @@
+<HTML><HEAD>
+<SCRIPT type="text/javascript">
+
+setPublic(ChartManagement,"com.optum.cpc.emerald.library");
+
+var DOMAIN_NS = "http://schemas.optum.com/optum/cpc/emerald/buz/domain/1.0";
+var CASEACTIVITY_NS = "http://schemas.optum.com/optum/cpc/emerald/buz/domain/caseactivity/1.0";
+
+var srcApplication;
+function ChartManagement(application)
+{
+	srcApplication = application;
+}
+ChartManagement.prototype.getBusinessFunction = function()
+{
+	return new BusinessFunction();
+}
+ChartManagement.prototype.openRejectChartApplication = function(data, reasonType, callBackHandler)
+{
+	var dataObj = new Object();
+	dataObj.dataXML = data;
+	dataObj.reasonType = reasonType;
+	srcApplication.showDialog(cordys.cloneXMLDocument(document.getElementById("RejectChartApplication").XMLDocument).documentElement, dataObj, null, onRejectCallBack(callBackHandler));
+}
+ChartManagement.prototype.openEscalateChartApplication = function(data, reasonType, callBackHandler, multipleMemberReminder, isQAMemberValid)
+{
+	var dataObj = new Object();
+	dataObj.dataXML = data;
+	dataObj.reasonType = reasonType;
+	dataObj.multipleMemberReminder = multipleMemberReminder;
+	dataObj.isQAMemberValid = isQAMemberValid;
+	srcApplication.showDialog(cordys.cloneXMLDocument(document.getElementById("EscalateChartApplication").XMLDocument).documentElement, dataObj, null, onRejectCallBack(callBackHandler));
+}
+ChartManagement.prototype.openReplyChartApplication = function(data, callBackHandler)
+{
+	var dataObj = new Object();
+	dataObj.dataXML = data;
+	dataObj.action = "Reply";
+	srcApplication.showDialog(cordys.cloneXMLDocument(document.getElementById("ReplyChartApplication").XMLDocument).documentElement, dataObj, null, onRejectCallBack(callBackHandler));
+}
+ChartManagement.prototype.openAgreeChartApplication = function(data, callBackHandler)
+{
+	var dataObj = new Object();
+	dataObj.dataXML = data;
+	dataObj.action = "Agree";
+	srcApplication.showDialog(cordys.cloneXMLDocument(document.getElementById("AgreeChartApplication").XMLDocument).documentElement, dataObj, null, onRejectCallBack(callBackHandler));
+}
+ChartManagement.prototype.openDisAgreeChartApplication = function(data, callBackHandler)
+{
+	var dataObj = new Object();
+	dataObj.dataXML = data;
+	dataObj.action = "Disagree";
+	srcApplication.showDialog(cordys.cloneXMLDocument(document.getElementById("DisagreeChartApplication").XMLDocument).documentElement, dataObj, null, onRejectCallBack(callBackHandler));
+}
+function onRejectCallBack(callBackHandler)
+{
+	return function(eventObject)
+	{
+		if(callBackHandler)
+		{
+			callBackHandler(eventObject);
+		}
+	}
+}
+ChartManagement.prototype.openPopupWindow =  function(Id, Description, Caption, Url, frame, data)
+{
+	var applicatioDefXML = cordys.cloneXMLDocument(document.getElementById("ApplicationDefinitionXML").XMLDocument);
+	cordys.setNodeText(applicatioDefXML, ".//id", Id);
+	cordys.setNodeText(applicatioDefXML, ".//description", Description);
+	cordys.setNodeText(applicatioDefXML, ".//caption", Caption);
+	cordys.setNodeText(applicatioDefXML, ".//url", Url);
+	cordys.setNodeText(applicatioDefXML, ".//frame", frame);
+	srcApplication.select(applicatioDefXML.documentElement);
+}
+ChartManagement.prototype.prepareMemberEligibility = function( memberEligibilityContainer, memberHIC, projectYear, callBackHandler, busSegment )
+{
+	var monthsXML = "<div xmlns='' id='meDiv' width='100%' ><span class='mespan' style='border-color: #cccccc;'>Jan</span><span class='mespan' style='border-color: #cccccc;'>Feb</span><span class='mespan' style='border-color: #cccccc;'>Mar</span><span class='mespan' style='border-color: #cccccc;'>Apr</span><span class='mespan' style='border-color: #cccccc;'>May</span><span class='mespan' style='border-color: #cccccc;'>Jun</span><span class='mespan' style='border-color: #cccccc;'>Jul</span><span class='mespan' style='border-color: #cccccc;'>Aug</span><span class='mespan' style='border-color: #cccccc;'>Sep</span><span class='mespan' style='border-color: #cccccc;'>Oct</span><span class='mespan' style='border-color: #cccccc;'>Nov</span><span class='mespan last' style='border-color: #cccccc;'>Dec</span></div>";
+	memberEligibilityContainer.html(monthsXML);
+	if(memberHIC)
+	{
+		var requestXML = cordys.cloneXMLDocument(document.getElementById("GetMemberEligibilityRequest").XMLDocument);
+		cordys.setNodeText(requestXML, ".//*[local-name()='memberHIC']", memberHIC);
+		cordys.setNodeText(requestXML, ".//*[local-name()='rangeStrtDt']", "01/01/" + (projectYear-1));
+		cordys.setNodeText(requestXML, ".//*[local-name()='rangeEndDt']", "31/12/" + projectYear);
+		this._sendAndReceive(requestXML, onsoapfaulthandler(memberEligibilityContainer, busSegment), onResponseHandler(memberEligibilityContainer, projectYear, callBackHandler));
+	}
+	else
+	{
+		setNodata2MemberEligibility(null, memberEligibilityContainer, busSegment);
+		if(callBackHandler) callBackHandler(false);
+	}
+}
+function onResponseHandler(memberEligibilityContainer, projectYear, callBackHandler)
+{
+	return function(eventObject)
+	{
+		var response = eventObject.response;
+		if(!cordys.selectXMLNode(response , ".//*[local-name()='Fault']"))
+		{
+			cordys.setXMLNamespaces(response, {"tns":"http://schemas.optum.com/optum/uddi/wrapper/1.0"});
+			if(cordys.selectXMLNodes(response, ".//tns:memberHicHistory").length <= 0) return;
+			var memberEligibility = getEligibleMonthsArray(response, projectYear);
+			styleSpan(memberEligibility, memberEligibilityContainer);
+			if(callBackHandler) callBackHandler(true);
+		}
+		else
+		{
+			if(callBackHandler) callBackHandler(false);
+		}
+	}
+}
+function onsoapfaulthandler(memberEligibilityContainer, busSegment)
+{
+	return function(eventObject)
+	{
+		setNodata2MemberEligibility("No Eligibility Information Available.", memberEligibilityContainer, busSegment);
+		eventObject.showError = false;
+		return false;
+	}
+}
+function setNodata2MemberEligibility(message, memberEligibilityContainer, busSegment)
+{
+	if(!message && (busSegment == "ACA" || busSegment == "MCAID")) message = "No Eligibility Information Available.";
+	else if(!message) message = "Member not eligible for this DOS Year.";
+	memberEligibilityContainer.find('#meDiv').html("<p style='font-weight: bold; color:black'>" + message + "</p>");
+}
+function getEligibleMonthsArray(response, codingYear)
+{
+	var monthArr = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+	var months = new Array();
+	var StartDateNodes = cordys.selectXMLNodes(response, ".//tns:enrlStrtDt");
+	var EndDateNodes = cordys.selectXMLNodes(response, ".//tns:enrlEndDt");
+	for(var j=0,c=0; j<12; j++)
+	{
+		var isEligibile = false;
+		for(var i=0; i < StartDateNodes.length; i++)
+		{
+			curStartDate = cordys.getTextContent(StartDateNodes[i]);
+			curEdnDate = cordys.getTextContent(EndDateNodes[i]);
+			currentMonthStartDate = new Date(codingYear, j, 1);
+			currentMonthEndDate = new Date(codingYear, j + 1, 0);
+			if(currentMonthStartDate >= changeStringToDate(curStartDate) && currentMonthEndDate <= changeStringToDate(curEdnDate))
+			{
+				isEligibile = true;
+				break;
+			}
+		}
+		if(!isEligibile)
+		{
+			months[c++] = monthArr[j];
+		}
+	}
+	return months;
+}
+function styleSpan(memberEligibility, memberEligibilityContainer)
+{
+	if(memberEligibility != null && memberEligibility.length > 0)
+	{
+		var spans= memberEligibilityContainer.find('#meDiv').children();
+		for(var i = 0; i<memberEligibility.length; i++)
+		{
+			var month = memberEligibility[i];
+			for(var j = 0; j<spans.length;j++)
+			{
+			  var month = memberEligibility[i];
+			  if(month == spans[j].innerHTML.toUpperCase())
+			  {
+					spans[j].className = "mestrike";
+
+					//Check if the span class is mestrike than add class last to previous span
+					if(j != 0 && spans[j-1].className != "mestrike")
+					  spans[j-1].className += " last";
+					  
+				  break;
+			  }
+		  }
+	  }
+  }
+}
+function changeStringToDate(dateString)
+{
+	if(!dateString) return new Date();
+	var dateArr = dateString.split("/");
+	return new Date(dateArr[2], dateArr[1]-1, dateArr[0]);
+}
+ChartManagement.prototype._sendAndReceive = function ( request, onsoapfaulthandler, onResponseHandler)
+{
+	_chartmanagement_ui_bdi.async= true; //NOMBV
+	_chartmanagement_ui_bdi.automatic = false;
+	_chartmanagement_ui_bdi.organization = CordysRoot.application.organization;
+	_chartmanagement_ui_bdi.clear();
+	if(onsoapfaulthandler) _chartmanagement_ui_bdi.onsoapfault = onsoapfaulthandler;
+	if(onResponseHandler) _chartmanagement_ui_bdi.onresponse = onResponseHandler;
+	_chartmanagement_ui_bdi.request = request;
+	_chartmanagement_ui_bdi.reset();
+	return true;
+}
+</SCRIPT>
+<script type="cordys/xml" id="RejectChartApplication">
+	<Application>
+		<id>CodingReview_RejectChartID</id>
+		<description/>
+		<caption>Reasons For Rejecting this Chart</caption>
+		<url>com/optum/cpc/emerald/businessfunction/actions/RejectChart_v1.caf</url>
+		<frame
+			features="dialogHeight:350px; dialogWidth:480px;center:yes; help:no; resizable:yes; status:no; scroll:yes">_modal</frame>
+	</Application>
+</script>
+<script type="cordys/xml" id="EscalateChartApplication">
+	<Application>
+		<id>CodingReview_EscalateChartID</id>
+		<description/>
+		<caption>Escalation Reason</caption>
+		<url>com/optum/cpc/emerald/businessfunction/actions/RejectChart_v1.caf</url>
+		<frame
+			features="dialogHeight:350px; dialogWidth:480px;center:yes; help:no; resizable:yes; status:no; scroll:yes">_modal</frame>
+	</Application>
+</script>
+<script type="cordys/xml" id="ReplyChartApplication">
+	<Application>
+		<id>CodingReview_ReplyChartID</id>
+		<description/>
+		<caption>Reply</caption>
+		<url>com/optum/cpc/emerald/businessfunction/actions/Reply.caf</url>
+		<frame
+			features="dialogHeight:350px; dialogWidth:480px;center:yes; help:no; resizable:yes; status:no; scroll:yes">_modal</frame>
+	</Application>
+</script>
+<script type="cordys/xml" id="AgreeChartApplication">
+	<Application>
+		<id>CodingReview_AgreeChartID</id>
+		<description/>
+		<caption>Agree</caption>
+		<url>com/optum/cpc/emerald/businessfunction/actions/Reply.caf</url>
+		<frame
+			features="dialogHeight:350px; dialogWidth:480px;center:yes; help:no; resizable:yes; status:no; scroll:yes">_modal</frame>
+	</Application>
+</script>
+<script type="cordys/xml" id="DisagreeChartApplication">
+	<Application>
+		<id>CodingReview_DisagreeChartID</id>
+		<description/>
+		<caption>Disagree</caption>
+		<url>com/optum/cpc/emerald/businessfunction/actions/Reply.caf</url>
+		<frame
+			features="dialogHeight:350px; dialogWidth:480px;center:yes; help:no; resizable:yes; status:no; scroll:yes">_modal</frame>
+	</Application>
+</script>
+<script type="cordys/xml" id="ApplicationDefinitionXML">
+	<Application>
+		<id></id>
+		<description></description>
+		<caption></caption>
+		<url></url>
+		<frame></frame>
+	</Application>
+</script>
+<script type="cordys/xml" id="GetMemberEligibilityRequest">
+	<SOAP:Envelope xmlns:SOAP="http://schemas.xmlsoap.org/soap/envelope/">
+		<SOAP:Body>
+			<UDDIWrapperRequest xmlns="http://schemas.optum.com/optum/uddi/wrapper/1.0">
+				<memberHIC xmlns="http://services.cpc.optum.com/"/>
+				<rangeStrtDt xmlns="http://services.cpc.optum.com/"/>
+				<rangeEndDt xmlns="http://services.cpc.optum.com/"/>
+			</UDDIWrapperRequest>
+		</SOAP:Body>
+	</SOAP:Envelope>
+</script>
+</HEAD>
+<BODY>
+	<div id="_chartmanagement_ui_bdi" style="display:none" cordysType="wcp.library.data.BusDataIsland"></div>
+</BODY>
+</HTML>

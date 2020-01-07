@@ -1,0 +1,24 @@
+.h_layoutSearch{
+	display:inline;
+}
+.v_layoutSearch
+{
+	margin-left:5px;
+	float:left;
+	width:32%;
+}
+.v_layoutSearch div{
+	margin-top:10px;
+}
+.v_layoutSearch label{
+	width:31%;
+	float:left;
+}
+.v_layoutSearch > div > input{
+	min-width:64.5%;
+	margin-left:5px;
+}
+.v_layoutSearch > div > select{
+	min-width:65%;
+	margin-left:5px;
+}

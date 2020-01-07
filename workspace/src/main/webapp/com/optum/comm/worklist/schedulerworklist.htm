@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+	<head lang="en">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Schedule</title>		
+		
+		<script type="text/javascript" src="../lib/js/common/jquery.js"></script>
+		<script type="text/javascript" src="../lib/js/common/angular.min.js"></script>
+		<script type="text/javascript" src="../lib/js/common/angular-sanitize.js"></script>
+		<script type="text/javascript" src="../lib/js/common/angular-translate/angular-translate.js"></script>
+		<script type="text/javascript" src="../lib/js/common/ngDialog.min.js"></script>
+		
+		<script type="text/javascript" src="../lib/js/common/ng-csv.js"></script>
+		<script type="text/javascript" src="../lib/js/common/angular-touch.js"></script>
+		<script type="text/javascript" src="../lib/js/common/lodash.js"></script>
+		<script type="text/javascript" src="../lib/js/common/optumui.js"></script>
+		<!--<script src="js/uitk.min.js"></script> -->
+		<script type="text/javascript" src="../lib/js/common/uitk.min.js"></script>
+		<script   type="text/javascript" src="../lib/js/common/uitk-auto-complete.js"></script>
+		<script type="text/javascript" src="../lib/js/common/uitk-wizard.js"></script>
+		<script type="text/javascript" src="../lib/js/modules/retrieval/lookup.js"></script>
+		<script type="text/javascript" src="../lib/js/modules/retrieval/staticDataService.js"></script>
+		<script type="text/javascript" src="../lib/js/modules/worklist/schedulerworklist.js"></script>
+		<script type="text/javascript" src="../lib/js/modules/worklist/scheduler/schedulermyworklist.js"></script>
+		<script type="text/javascript" src="../lib/js/modules/worklist/scheduler/schedulermyappointments.js"></script>
+		<script type="text/javascript" src="../lib/js/modules/retrieval/scheduling/providermodel.js"></script>
+		<script type="text/javascript" src="../lib/js/modules/retrieval/scheduling/retrievalrmodel.js"></script>
+		<script type="text/javascript" src="../lib/js/modules/retrieval/scheduling/appointmentmodel.js"></script>
+		<script type="text/javascript" src="../lib/js/modules/retrieval/scheduling/confirmappointmentmodel.js"></script>
+		<script type="text/javascript" src="../lib/js/modules/retrieval/scheduling/viewappointment.js"></script>
+		<script src="../lib/js/modules/retrieval/staticDataService.js" type="text/javascript"></script>
+		<link rel="stylesheet" type="text/css" href="../lib/css/uitk.min.css" />
+		
+		<style>
+			.oui-type-like-h3, h3 {
+				color: #c25608;
+			}
+			.chartStatusul {
+				list-style-type: none;
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+			}
+
+			.chartStatusli {
+				float: left;
+			}
+			.chartStatuslidiv {
+				display: block;
+				text-align: center;
+				padding-left: 20px;
+				padding-right: 20px;
+			}
+			.size {
+				width: 180px;
+				height: 25px;
+			}
+
+			.ux-btn-width {
+				width: 90px;
+				height: 22px;
+			}
+			.fontcolor {
+				color: #C36121 !important;
+			}
+			.ux-a11y-hidden {
+				display: none;
+			}
+			.anchor-padding{
+				padding-right :15px;
+			}
+		   .ux-tabl-form-multicol > tbody > tr > td{
+				 padding-right: 13px;
+				 padding-bottom: 13px;
+		   }
+		   #addCommentField_textarea{
+		   		min-height: 6rem;
+		   }
+		   #filtersDialog_headerId,#pendApptDialogId_headerId, #confirmloadingDialogId_headerId, #schCommentsDialogId_headerId, #myWorklistLoadingDialogId_headerId,#saveDraftDialogId_headerId{
+    			display: none
+			}
+			#filtersDialog_closeLink,#pendApptDialogId_closeLink, #confirmloadingDialogId_closeLink, #schCommentsDialogId_closeLink, #myWorklistLoadingDialogId_closeLink,#saveDraftDialogId_closeLink{
+    			display: none
+			}
+			#filtersDialog,#pendApptDialogId, #confirmloadingDialogId, #schCommentsDialogId, #myWorklistLoadingDialogId, #saveDraftDialogId{
+				border-width:unset;
+				border-style: none
+			}
+			.tk-lbox-content{
+				background-color: #fff;
+			}	
+		</style>
+	</head>
+	<body ng-app="schduleWorkList"  ng-cloak>
+        <main data-ng-controller="schdulerWorkListController">			
+			<uitk:message model="dataModel.workListErrorMessageModel"> </uitk:message>
+			<uitk:message model="dataModel.workListSuccessMessageModel"></uitk:message>
+			<uitk:message model="dataModel.workListWarningMessageModel"></uitk:message>
+			<uitk:dialog  dialog-id='filtersDialog' dialog-role='dialog' show="dataModel.showFiltersLoadingDialog"
+			                 header-text='' confirm-dialog="false" default-width="auto" tk-aria-describedby="dialogInsTextId">
+			      			<img src="../lib/images/loader.gif"/>
+    		</uitk:dialog>
+			<div ng-if='dataModel.showWorklist'>
+				<h1 id='worklistHeader'>Worklist</h1>
+				<uitk:panel model="worklistFilters"></uitk:panel>
+				<uitk:tabs tk-model="schedulerWorkListTabsModel"></uitk:tabs>
+				<uitk:dialog dialog-id='changeApptDtTimeDialog' dialog-role='dialog' header-text='Change Appointment Date Time' show='dataModel.showChangeApptDtTimeDialog' default-width='38%' default-height="61%">
+					<br>
+				<span style="padding: 10px;">Modify appointment date and time.</span><br><br>
+				<uitk:message model="dataModel.changeDataTimeMessageModel"> </uitk:message>
+				<div style="padding: 10px;">
+					<label>Date </label><span style="margin-left: 150px;margin-top: -15px;display:block!important"><uitk:calendar id="apptDateId" name="apptDate" ng-model="dataModel.apontmntDate" view-model="dataModel.apontmntDateViewModel" /></span>
+					<span>{{apontmntDateId | date: 'MM-dd-yyyy'}}</span>
+					<br><br>
+					<label>Time </label>
+					<span style="margin-left: 150px;margin-top: -15px;display:block!important">
+					<input id="apontmntTimeId_input" type="text"  class="uitk-text-field ng-empty ng-valid ng-valid-pattern ng-valid-minlength ng-valid-maxlength ng-valid-required" ng-model="dataModel.apontmntTime"  name="apontmntTime" />
+												<img src="../lib/images/icon-clock.png"/>
+							<span style="float:right;">
+								<uitk:radio item-list='amPMTypes' group-name='amPMGroup' model-value='dataModel.amPMType.index'></uitk:radio>
+							</span>
+					</span><br>
+					<span style='margin-left:150px;'>hh:mm</span><br><br>
+					<span style='margin-top:5px;margin-left:150px;'><span>Local Provider's Time</span></span>
+				</div>
+					<uitk:button type="button" value="Save"
+									 style="float:left;"
+									 ng-click="dataModel.handleChangeApptDateTime()"
+									 custom-class='uitk-width-10t uitk-btn-close-dialog'></uitk:button>
+				    <uitk:button type="button" value="Cancel"
+									 style="float:left;"
+									 onclick="document.getElementById('changeApptDtTimeDialog_closeLink').click();"
+									 custom-class='tk-btn-secondary-link uitk-btn-close-dialog'></uitk:button>
+				</uitk:dialog>
+				<uitk:dialog dialog-id='cancelApptDialog' dialog-role='dialog' header-text='Cancel Appointment' show='dataModel.showCancelApptDialog' default-width='38%' default-height="42%">
+					
+					<uitk:message model="cancelWarningMessageModel" style="margin-left:20px;">
+						<span>Warning</span>
+						<div><span>Appointment will be cancelled.</span></div>
+						<div><span>All members will be returned to your Worklist.</span></div>
+					</uitk:message>	
+					<uitk:button type="button" value="Cancel Appointment"
+									 style="float:left;"
+									 ng-click="dataModel.handleCancelAppointment()"
+									 onclick="document.getElementById('cancelApptDialog_closeLink').click();"
+									 custom-class='uitk-width-10t uitk-btn-close-dialog'></uitk:button>
+				    <uitk:button type="button" value="Return"
+									 style="float:left;"
+									 onclick="document.getElementById('cancelApptDialog_closeLink').click();"
+									 custom-class='tk-btn-secondary-link uitk-btn-close-dialog'></uitk:button>
+				</uitk:dialog>				
+			</div>
+			<div ng-if='!dataModel.showWorklist'>
+				<h2 id="MakeApntmnthdr" ng-if="!dataModel.showViewAppt">Make an Appointment</h2>
+				<h2 id="MakeApntmnthdr" ng-if="dataModel.showViewAppt">View Appointment</h2>
+                <uitk:panel model="chartStatusModel"></uitk:panel>
+                <uitk:panel model="faxStatusModel"></uitk:panel>
+                <uitk:panel model="commentHistoryModel"></uitk:panel>
+				<div ng-if="!dataModel.showViewAppt"><uitk-wizard view-model="dataModel.wizardModel"></uitk-wizard></div>
+				<div ng-if="dataModel.showViewAppt">
+					<uitk:panel model="viewApptModel"></uitk:panel>
+				</div>
+				<uitk:dialog dialog-id='memberInfoDialog' dialog-role='dialog' header-text='Chart Details' show='dataModel.showMemberInfoDialog' default-width='60%' default-height="51%">
+					<div>
+						<div>
+							<span ng-bind='dataModel.chartCount'></span><span> Charts</span>
+						</div>
+						<div>
+							<uitk:dynamic-table id="myWorklistTable" model="dataModel.memberInfoModel"> </uitk:dynamic-table>
+						</div>
+						<br/>
+						<uitk:button type="button" value="OK"
+									 style="float:left;"
+									 onclick="document.getElementById('memberInfoDialog_closeLink').click();"
+									 custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+					</div>
+				</uitk:dialog>
+				<uitk:dialog  dialog-id='saveDraftDialogId' dialog-role='dialog' show="showSaveDraftLoadingDialog"
+			                 header-text='' confirm-dialog="false" default-width="auto" tk-aria-describedby="dialogInsTextId">
+			      			<img src="../lib/images/loader.gif"/>
+    			</uitk:dialog>
+				<uitk:dialog dialog-id='pendApptDialogId' dialog-role='dialog' header-text='Pend Appointment' show='dataModel.showPendApptDialog' default-width='38%' default-height="45%"
+					style="overflow:hidden; top: 75%;" header-text='Pend Appointment' confirm-dialog="false">
+					<uitk:dialog  dialog-id='uitkPopupId1' dialog-role='dialog' show="dataModel.showPendLoadingDialog"
+			                 header-text='' confirm-dialog="false" default-width="auto">
+			      			<img src="../lib/images/loader.gif"/>
+    				</uitk:dialog>
+					<div>
+						<div>
+						<uitk:label id="pendReasonSelect_label" for='pendReasonSelect' required="true">Reason</uitk:label>						
+					</div>	
+					<div style="margin-top:2%">	
+						<select ng-model="dataModel.pendReasonSelect" id='pendReasonSelectId' ng-options='pendReason.key as pendReason.value for pendReason in dataModel.pendReasons'>
+							<option value="">Select</option>
+						</select>
+					</div>	 
+					</div>
+					<div style="margin-top:2%">
+						<span><label>Comments</label></span>
+						<span><uitk:textarea  id='addPendCommentField' name='addPendCommentField' width='100%' model='dataModel.addPendcomments' style="margin-top: 2%" max-char-count="200"></uitk:textarea></span>
+					</div>
+					<br/>
+					<div>
+						<uitk:button type="button" value="Save"
+									 style="float:left;"
+									 ng-click="dataModel.handlePendAppointMent()"
+									 custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+						<uitk:button type="button" value="Cancel"
+									 style="float:left;"
+									 onclick="document.getElementById('pendApptDialogId_closeLink').click();"
+									 custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+					</div>
+				</uitk:dialog>
+				<uitk:dialog  dialog-id='confirmloadingDialogId' dialog-role='dialog' show="showConfirmLoadingDialog"
+			                 header-text='' confirm-dialog="false" default-width="auto">
+			      			<img src="../lib/images/loader.gif"/>
+    			</uitk:dialog>	
+				<uitk:dialog dialog-id='cancelWizardConfirm' dialog-role='dialog' header-text='Confirm' show='dataModel.showConfirmApptDialog' default-width='35%' default-height="35%">
+					<div>
+						<span style="font-size:13px;" ng-bind='dataModel.confirmMessage'></span>
+					</div>
+					<div>
+						<uitk:button type="button" value="Yes"
+									 style="float:left;"
+									 ng-click="dataModel.handleConfirmYesClick()"
+									 custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+						<uitk:button type="button" value="No"
+									 style="float:left;"
+									 onclick="document.getElementById('cancelWizardConfirm_closeLink').click();"
+									 custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+					</div>
+				</uitk:dialog>
+			</div>
+		</main>
+	</body>	
+</html>

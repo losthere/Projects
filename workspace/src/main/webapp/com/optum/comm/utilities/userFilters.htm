@@ -1,0 +1,194 @@
+<div ng-controller='lookupCtrl'>
+    <uitk:radio  style="padding-bottom:35px; " item-list="searchCategoryTypes" group-name="searchCategoryGroup" model-value="filters.searchCategoryType.index" on-change='clear()'></uitk:radio>
+    </br>
+	<table id="filtersTableId" class="ux-tabl-form-multicol ux-margin-left-1t ux-padding-bottom-none ux-margin-top-none">  
+		<tbody>
+			<tr>
+				<td >
+					<label class="tk-labl">Business segment<span class='cux-icon-asterisk'><span class="tk-icon-glyph"></span></span></label>
+				</td>
+				<td style="padding-right: 60px; padding-bottom: 25px;">
+					<select class="size" id='busSegmentSelect' ng-options='busSegments.key as busSegments.value for busSegments in lookup.businessSegments' ng-model="filters.busSegment" ng-change="onBusSegmentChangeUtility()">
+						<option value="">--Select--</option>
+					</select>
+				</td>
+				<td  ng-if="filters.searchCategoryType.index == 0 || filters.searchCategoryType.index == 1">
+					<label class="tk-labl">Last name</label>
+				</td>
+				<td style="padding-right: 60px;" ng-if="filters.searchCategoryType.index == 0">
+					<uitk-input style-class="size" id="lastNameId" name="lastName" model="filters.memberLastName" ></uitk-input>
+				</td>
+				<td ng-if="filters.searchCategoryType.index == 1">
+					<uitk-input style-class="size" id="providerLastNameId" name="lastName" model="filters.provLastNm" ></uitk-input>
+				</td>
+				<td ng-if="filters.searchCategoryType.index == 2">
+					<label>Client internal ID</label>
+					<span class="cux-icon-asterisk"></span>
+				</td>
+				<td ng-if="filters.searchCategoryType.index == 2">
+					<uitk-input style-class="size" id="clientID" name="clientInternalId" model="filters.clientInternalId"></uitk-input>
+				</td>	
+				<td ng-if="filters.searchCategoryType.index == 3">
+					<label>Chart ID</label>
+					<span class="cux-icon-asterisk"></span>
+				</td>
+				<td ng-if="filters.searchCategoryType.index == 3">
+					<uitk-input style-class="size" id="chartId" name="chartId" model="filters.chartId"></uitk-input>
+				</td>	
+				<td ng-if="filters.searchCategoryType.index == 0">
+					<label class="tk-labl">Gender</label>
+				</td>
+				<td ng-if="filters.searchCategoryType.index == 0">
+					<select class="size" id="genderId" name="genderName" ng-change="" ng-model="filters.memberGender">
+						<option value="" selected="selected">All</option>
+						<option value="male">Male</option>
+						<option value="female">Female</option>
+						<option value="undefined">Undefined</option>
+					</select>	
+				</td>
+				<td ng-if="filters.searchCategoryType.index == 1">
+					<label class="tk-labl">Provider group name</label>
+				</td>
+				<td ng-if="filters.searchCategoryType.index == 1">
+					<uitk-input id="provGroupNameId" name="provGroupName" model="filters.provgrpNm" style-class="size"></uitk-input>
+				</td>				
+			</tr>
+			<tr>
+			<td style="padding-bottom: 30px;" ng-if="lookup.regionsList.length > 1">
+					<!-- <span ng-if="lookup.organizations.length > 1">
+						<label class="tk-labl">Organization</label>
+							<span class="cux-icon-asterisk"></span>
+					</span> -->
+					<span>
+						<label class="tk-labl">Region</label>
+							<span class="cux-icon-asterisk"></span>
+					</span>
+				</td>
+				<td ng-if="lookup.regionsList.length > 1">
+					<!-- <select ng-if="lookup.organizations.length >1"  class="size" ng-model="filters.organization" ng-change="onOrgChange()">
+						<option value="" selected="">Select</option>
+						<option ng-repeat="vendor in lookup.vendors" value="{{vendor.key}}">{{vendor.value}}</option>
+					</select> -->
+					<select  class="size" ng-model="filters.region" ng-change="onRegionChange()">
+						<option value="" selected="">Select</option>
+						<option ng-repeat="region in lookup.regionsList" value="{{region.key}}">{{region.value}}</option>
+					</select>
+				</td>
+				<td ng-if=" lookup.regionsList.length == 1 ">
+					<label class="tk-labl">Project Year <span class="cux-icon-asterisk"></span></label>
+				</td >
+				<td  style="padding-bottom: 25px;" colspan='1' ng-if=" lookup.regionsList.length == 1 ">
+					<select class="size" ng-model="filters.projYear">
+					<option value="">--Select--</option>
+						<option ng-repeat="projectYear in lookup.projectYears" value="{{projectYear}}">{{projectYear}}</option>
+					</select>
+				</td>
+				<td ng-if="filters.searchCategoryType.index == 2 || filters.searchCategoryType.index == 3">
+					<label class="tk-labl">Status</label>
+				</td>
+				<td    colspan='1'  ng-if="filters.searchCategoryType.index == 2 || filters.searchCategoryType.index == 3">
+					<select class="size" id="chartRequestStatuses" name="chartRequestStatuses"  ng-model="filters.status">
+						<option value="" selected="selected">All</option>
+						<option ng-repeat="chartRequestStatuses in lookup.chartRequestStatuses" value="{{chartRequestStatuses.key}}">{{chartRequestStatuses.value}}</option>
+					</select>
+				</td>
+				<td ng-if="filters.searchCategoryType.index == 0 || filters.searchCategoryType.index == 1">
+					<label class="tk-labl">First name</label>
+				</td>
+				<td ng-if="filters.searchCategoryType.index == 0">
+					<uitk-input style-class="size" id="firstNameId" name="firstName" model="filters.memberFirstName"></uitk-input>
+				</td>
+				<td ng-if="filters.searchCategoryType.index == 1">
+					<uitk-input style-class="size" id="providerFirstNameId" name="firstName" model="filters.provFstNm"></uitk-input>
+				</td>	
+				<td ng-if="filters.searchCategoryType.index == 1">
+					<label class="tk-labl">Status</label>
+				</td>
+				<td colspan='1'  ng-if="filters.searchCategoryType.index == 1">
+					<select class="size" id="chartRequestStatuses" name="chartRequestStatuses"  ng-model="filters.status">
+						<option value="" selected="selected">All</option>
+						<option ng-repeat="chartRequestStatuses in lookup.chartRequestStatuses" value="{{chartRequestStatuses.key}}">{{chartRequestStatuses.value}}</option>
+					</select>	
+				</td>
+				<td ng-if="filters.searchCategoryType.index == 0" >
+					<label class="tk-labl">DOB</label>
+				</td>
+				<td ng-if="filters.searchCategoryType.index == 0" style="height: 20px;">
+					<uitk:calendar id="dobId" name="dobName" ng-model="filters.memberDOB" view-model="memberDOBViewModel" style="float:top;"></uitk:calendar>
+				</td>		
+			</tr>
+			<tr>
+			<td ng-if=" lookup.regionsList.length > 1 ">
+					<label class="tk-labl">Project Year <span class="cux-icon-asterisk"></span></label>
+				</td >
+				<td  style="padding-bottom: 25px;" colspan='1' ng-if=" lookup.regionsList.length > 1 ">
+					<select class="size" ng-model="filters.projYear">
+					<option value="">--Select--</option>
+						<option ng-repeat="projectYear in lookup.projectYears" value="{{projectYear}}">{{projectYear}}</option>
+					</select>
+				</td>
+			<td style="padding-bottom:35px;" ng-if="lookup.regionsList.length == 1 ">
+					<label class="tk-labl">Project name</label>
+				</td>
+				<td colspan='1' ng-if=" lookup.regionsList.length == 1 ">
+					<select class="size" ng-model="filters.projectKey" ng-disabled="!filters.busSegment">
+						<option selected="selected" value="">All</option>
+						<option ng-repeat="project in lookup.projects" value="{{project.key}}">{{project.value}}</option>
+					</select>
+				<td ng-if="filters.searchCategoryType.index == 0" style="padding-top: -10px;">
+					<label class="tk-labl">Member ID</label>
+				</td>
+				<td ng-if="filters.searchCategoryType.index == 0" style="padding-top: -10px;">
+					<uitk-input style-class="size" id="memberId" name="memberId" model="filters.memberId" ></uitk-input>
+				</td>
+				<td ng-if="filters.searchCategoryType.index == 0">
+					<label class="tk-labl">Status</label>
+				</td>
+				<td colspan='1'  ng-if="filters.searchCategoryType.index == 0">
+					<select class="size" id="chartRequestStatuses" name="chartRequestStatuses"  ng-model="filters.status">
+						<option value="" selected="selected">All</option>
+						<option ng-repeat="chartRequestStatuses in lookup.chartRequestStatuses" value="{{chartRequestStatuses.key}}">{{chartRequestStatuses.value}}</option>
+					</select>	
+				</td>
+				<td ng-if="filters.searchCategoryType.index == 1">
+					<label class="tk-labl">Provider ID</label>
+				</td>
+				<td ng-if="filters.searchCategoryType.index == 1">
+					<uitk-input style-class="size" id="providerId" name="providerId" model="filters.provId" ></uitk-input>
+				</td>
+				<td ng-if="filters.searchCategoryType.index == -1">
+					<label class="tk-labl">Provider Name</label>
+				</td>
+				<td ng-if="filters.searchCategoryType.index == -1">
+					<uitk-input style-class="size" id="providerName" name="providerName" model="filters.provName" ></uitk-input>
+				</td>
+				
+				
+				<tr>
+				<td ng-if="filters.searchCategoryType.index == 0 ||filters.searchCategoryType.index == 1 " >
+				
+					<label class="tk-labl">Image name</label>
+				</td>
+				<td ng-if="filters.searchCategoryType.index == 0 || filters.searchCategoryType.index == 1 ">
+					<uitk-input style-class="size" id="imageName" name="imageName" model="filters.imageName" ></uitk-input>
+				</td>
+			
+			</tr>
+			<tr>
+			<td ng-if="lookup.regionsList.length > 1">
+					<label class="tk-labl">Project name</label>
+				</td>
+				<td colspan='1' ng-if=" lookup.regionsList.length > 1 ">
+					<select class="size" ng-model="filters.projectKey" ng-disabled="!filters.busSegment">
+						<option selected="selected" value="">All</option>
+						<option ng-repeat="project in lookup.projects" value="{{project.key}}">{{project.value}}</option>
+					</select>
+					</td>
+					</tr>		
+		</tbody>
+	</table>
+	<div style="display:block;clear:both;">
+		<uitk:button style="width:7%"  ng-click="filter()">Filter</uitk:button>
+		<uitk:button style="width:7%" ng-click="clear()">Clear</uitk:button>		
+	</div>
+</div>	

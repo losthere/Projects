@@ -1,0 +1,157 @@
+<div ng-controller="retrievalInfoCtrl">
+	<h3>Retrieval Information</h3>
+<!--  	<span class='cux-icon-asterisk'>
+		<span class="tk-icon-glyph">
+			<span icon='cux-icon-asterisk' style='font-size:14px;'>Required</span>
+		</span>
+	</span> -->	
+	<div>
+	<span class='cux-icon-asterisk'>
+		<span class="tk-icon-glyph"></span>
+	</span>
+	<uitk:label id="requiredLabelId" style="color : #e32315; font-weight: normal;">Required</uitk:label>
+	</div>	
+	<div class="tk-grid tk-margin-top-1t" style="width :100%">		
+		<div class="tk-col-1-5">
+			<div>
+				<div>
+					<uitk:label id="retrvlPrefSelect_label" for='retrvlPrefSelect' required="true">Retrieval Method</uitk:label>
+				</div>
+				<div style='margin-top:5px;'>
+					<select ng-model='dataModel.retrvlPrefSelect' ng-change='handleRetrvlPrefSelection()' id='retrvlPrefSelectId' style='width:130px' tabindex='1'>
+						<option value="EMR">EMR</option>
+						<option value="FAX">Fax</option>
+						<option value="ONSITE">Onsite</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="tk-col-1-5">
+			<div>
+				<div>
+					<uitk:label id="releaseTouserId" for='releaseTouser' required="true">Release To User</uitk:label>
+				</div>
+				<div style='margin-top:5px;'>
+					
+					
+						<select ng-model="dataModel.gcmUserKey" id='retrvlPrefSelectId'  ng-options='user.key as user.value for user in dataModel.users'">
+						<option value="" selected>Select</option>
+						
+					</select>
+				</div>
+			</div>
+		</div>
+	
+		<div class="tk-col-1-5">
+			<div>
+				<div>
+					<uitk:label for="firstNameId_input" >Name</uitk:label>
+				</div>
+				<div style='margin-top:5px;'>
+					<span   id="name"  ng-bind="dataModel.name" 
+						name="name"></span>
+				</div>
+			</div>
+			<div class='tk-margin-top-1t'>
+				<div>
+					<uitk:label for="location" >Location</uitk:label>
+				</div>
+				<div style='margin-top:5px;'>
+					<span  id="locationId"  ng-bind="dataModel.location"
+						name="location"></span>
+				</div>
+			</div>
+						
+		</div>
+		<div class="tk-col-1-5">
+			<div>
+				<div>
+					<uitk:label for="phone" >Phone</uitk:label>
+				</div>
+				<div style='margin-top:5px;'>
+					<span  id="phoneId"  ng-bind="dataModel.phonenumber"
+						name="phone"></span>
+				</div>
+			</div>
+			<div class='tk-margin-top-1t'>
+				<div>
+					<uitk:label id="fax" for='fax' >Fax</uitk:label>
+				</div>
+				<div style='margin-top:5px;'>
+					<span   ng-bind="dataModel.fax" id="faxId">
+					</span> 
+				</div>
+			</div>
+			<div class='tk-margin-top-1t'>
+				<div>
+					<uitk:label for="emailId_input">Email</uitk:label>
+				</div>
+				<div style='margin-top:5px;'>
+					<span>
+						<span  id="emailId"  ng-bind="dataModel.email" ></span>
+					</span>
+					<div id='emailId_tip' class='tk-input-masking-assistivetext oui-rfrm-tip' tabindex="-1">
+						
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="tk-col-1-5">
+			<div>
+				<div>
+					<uitk:label for="appDate">Appointment Date</uitk:label>
+				</div>
+				<div style='margin-top:5px;'>	
+					<span>
+						<span  id="appDateId"  ng-bind="dataModel.apptDate.substring(0,dataModel.apptDate.indexOf(' '))"></span>
+					</span>
+				</div>
+			</div>
+			<div class='tk-margin-top-1t'>
+				<div>
+					<uitk:label for="apptTime" >Appointment Time</uitk:label>
+				</div>
+				<div style='margin-top:5px;'>
+					<span>
+						<span  id="apptTimeId"  ng-bind="dataModel.apptTime"></span>
+					</span>
+					
+				</div>
+			</div>
+			<div class='tk-margin-top-1t'>
+				<div>
+					<uitk:label for="pendAttempts" >Number of Pended Appointments</uitk:label>
+				</div>
+				<div style='margin-top:5px;'>
+					<span>
+						<span  id="pendAttemptsId"  ng-bind="dataModel.pendAttempts"></span>
+					</span>
+					
+				</div>
+			</div>
+		</div>
+	</div>
+	 <div>
+        <uitk:dynamic-table id="retrievalInfoTable" model="dataModel.retrievalInfoTableModel"> </uitk:dynamic-table>
+    </div>
+	<div>
+	<uitk:button
+						value="Save"
+						enable-default="true"
+						aria-describedby="DefaultButton-desc"
+						ng-click="onSave()"
+						type="button">
+					</uitk:button>
+					<uitk:button
+						value="Finish"
+						id="finish_Btn"
+						enable-default='false'
+						disabled='disabled'
+						aria-describedby="DefaultButton-desc"
+						ng-click="onFinish()"
+						type="button">
+					</uitk:button>
+					<a href="javascript:void(0)" id="cancelBtn" ng-click="cancelBtn()">Cancel</a>
+
+	</div>
+</div>

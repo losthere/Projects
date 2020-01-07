@@ -1,0 +1,292 @@
+<HTML><HEAD>
+<SCRIPT type="text/javascript">
+
+setPublic(CommonInboxUtil,"com.optum.cpc.emerald.inbox.library");
+
+
+importType("wcp.library.util.LocaleFormat");
+importType("wcp.library.util.DateFormat");
+
+
+var gDateFormat = "DD MMM YYYY HH:mm";
+var gCordysDateFormat = "YYYY-mm-DDTHH:mm:SS";
+var gDBDateFormat = "YYYY-MM-DD";
+var gAmountFormat = '$';
+var grefDateFormat = "MMM DD YYYY";
+var gCaseDetailsDateFormat = "DD MMM YYYY";
+var gCaseDetailsDateTimeFormat = "DD MMM YYYY HH:mm:SS";
+var dueDateFormat = "DD MMM YYYY";
+
+function CommonInboxUtil()
+{
+}
+
+CommonInboxUtil.prototype.getCN = function(DNvalue)
+{
+	return DNvalue.split(",")[0].split("=")[1];
+}
+
+CommonInboxUtil.prototype.getToolbarXML = function()
+{
+	return cordys.getXML(document.getElementById("controlbar").XMLDocument.documentElement);
+}
+CommonInboxUtil.prototype.disableToolbarButtons = function(buttons)
+{
+	if(buttons && buttons.length > 0)
+	{
+		for(var i=0; i< buttons.length; i++)
+		{
+			this.disableToolbarButton(buttons[i]);
+		}
+	}
+}
+CommonInboxUtil.prototype.enableToolbarButtons = function(buttons)
+{
+	if(buttons && buttons.length > 0)
+	{
+		for(var i=0; i< buttons.length; i++)
+		{
+			this.enableToolbarButton(buttons[i]);
+		}
+	}
+}
+CommonInboxUtil.prototype.disableToolbarButton = function(button)
+{
+	if(button)
+	{
+		button.disabled = true;
+		button.style.filter = "alpha(opacity=20)";
+		button.style.opacity = '0.4';
+		button.style.cursor="default";
+		button.className = "item small disabled";
+	}
+}
+CommonInboxUtil.prototype.enableToolbarButton = function(button)
+{
+	if(button)
+	{
+		button.disabled = false;
+		button.style.filter = ""
+		button.style.opacity = "";
+		button.style.cursor="hand";
+		button.className = "item small";
+	}
+}
+CommonInboxUtil.prototype.getTaskRequest = function(workListID, selectedView, organization)
+{
+	var GetTasksRequestXMl;
+	if(selectedView == 'MyActivities')
+	{
+		GetTasksRequestXMl = cordys.cloneXMLDocument(document.getElementById("GetMyTasksRequest").XMLDocument);
+		var ParameterNode = cordys.selectXMLNode(GetTasksRequestXMl, ".//*[local-name()='Parameter']");
+		ParameterNode.setAttribute("value", system.getUser().authUserDN.split(",cn=")[0]+",cn=organizational users,"+organization);
+	}
+	else if(selectedView == 'CompletedActivities')
+	{
+		GetTasksRequestXMl = cordys.cloneXMLDocument(document.getElementById("GetCompletedTasksRequest").XMLDocument);
+		var AssigneeParameterNode = cordys.selectXMLNode(GetTasksRequestXMl, ".//*[local-name()='Parameter'][@type='Task.Assignee']");
+		AssigneeParameterNode.setAttribute("value", system.getUser().authUserDN.split(",cn=")[0]+",cn=organizational users,"+organization);
+	}
+	else
+	{
+		GetTasksRequestXMl = cordys.cloneXMLDocument(document.getElementById("GetTasksRequest").XMLDocument);
+	}
+	cordys.setNodeText(GetTasksRequestXMl, ".//*[local-name()='Target']", workListID);
+	return GetTasksRequestXMl;
+}
+CommonInboxUtil.prototype.possibleAction_onRowCheck = function(viewGrid, property, propertyValue, toolbarButtons)
+{
+	var enableButton = true;
+	var checkedRows = viewGrid.getCheckedRows();
+	if(checkedRows.length > 0)
+	{
+		for(var i=0; i < checkedRows.length; i++)
+		{
+			 if(cordys.getNodeText(checkedRows[i].businessObject, ".//tns:"+ property) == propertyValue)
+			 {
+				 enableButton = false;
+				 break;
+			 }
+		}
+	}
+	else
+	{
+		enableButton = false;
+	}
+	if(enableButton)
+		this.enableToolbarButtons(toolbarButtons);
+	else
+		this.disableToolbarButtons(toolbarButtons);
+}
+
+CommonInboxUtil.prototype.claimTask = function(viewGrid)
+{
+	var ClaimTaskRequestXML = cordys.cloneXMLDocument(document.getElementById("ClaimTaskRequest").XMLDocument);
+	var ClaimTaskNode = cordys.selectXMLNode(ClaimTaskRequestXML, ".//*[local-name()='ClaimTask']");
+	var checkedRows = viewGrid.getCheckedRows();
+	for(var i=0; i < checkedRows.length; i++)
+	{
+		var taskIDNode = ClaimTaskRequestXML.createElement("TaskId");
+		var taskID = cordys.getNodeText(checkedRows[i].businessObject, ".//*[local-name()='TaskId']")
+		cordys.setTextContent(taskIDNode, taskID);
+		cordys.appendXMLNode(taskIDNode, ClaimTaskNode);
+	}
+	this._sendAndReceive(ClaimTaskRequestXML);
+}
+CommonInboxUtil.prototype._sendAndReceive = function ( request )
+{
+	_common_inbox_util_bdi.async= false; //NOMBV
+	_common_inbox_util_bdi.automatic = false;
+	_common_inbox_util_bdi.organization = this.ownerDocument.defaultView.application.organization;
+	_common_inbox_util_bdi.clear();
+	_common_inbox_util_bdi.sendAndWait(request);
+	return _common_inbox_util_bdi.data;
+}
+CommonInboxUtil.prototype.setPriorityImage = function(currentValue)
+{
+	var dataObject = new Object();
+	if(currentValue)
+	{
+		if(currentValue == "High" || currentValue == "5")
+		{
+			dataObject.imgURL = "wcp/theme/default/icon/feedback/priority-high_eb.gif";
+			dataObject.value = currentValue;
+			return dataObject;
+		}
+		else if(currentValue == "Medium" || currentValue == "3")
+		{
+			dataObject.imgURL = "wcp/theme/default/icon/feedback/priority_eb.gif";
+			dataObject.value = currentValue;
+			return dataObject;
+		}
+		else if(currentValue == "Low" || currentValue == "1")
+		{
+			dataObject.imgURL = "wcp/theme/default/icon/feedback/priority-low_eb.gif";
+			dataObject.value = currentValue;
+			return dataObject;
+		}
+	}
+	return null;
+}
+CommonInboxUtil.prototype.formatDate = function(dateTime, isCordysTime,isRefdate,isCaseDetailsFormat, isCordysDateFormat,isCaseDetailsDateTime)
+{
+	var dateFormat = gDateFormat;
+	if(isCordysTime)
+	{
+		dateFormat = gDBDateFormat;
+	}
+	if(isRefdate)
+	{
+		dateFormat =  grefDateFormat ;
+	}
+        if(isCaseDetailsFormat)
+	{
+		dateFormat =  gCaseDetailsDateFormat ;
+	}
+	if(isCordysDateFormat)
+	{
+		dateFormat = gCordysDateFormat;
+	}
+       if(isCaseDetailsDateTime)
+	{
+		dateFormat = gCaseDetailsDateTimeFormat ;
+	}
+	
+	if (dateTime)
+	{
+		if(dateTime.indexOf("T") > 0)
+		{
+			if (dateTime.indexOf("T00:00:00.0") >= 0)
+			{
+				var df = new DateFormat(dateFormat);
+				df.setTimezone("GMT");
+				return df.format(dateTime);
+			}
+			if (dateTime.indexOf("T23:59:59.0") >= 0)
+			{
+				var df = new DateFormat(dateFormat);
+				df.setTimezone("GMT");
+				return df.format(dateTime);
+			}
+			return new DateFormat(dateFormat).format(dateTime);
+		}
+		else
+		{
+			return new DateFormat(dateFormat).format(dateTime);
+		}
+	}
+	return "";
+}
+</SCRIPT>
+<script type="cordys/xml" id="GetTasksRequest">
+	<SOAP:Envelope xmlns:SOAP="http://schemas.xmlsoap.org/soap/envelope/">
+	  <SOAP:Body>
+		<GetTasks xmlns="http://schemas.cordys.com/notification/workflow/1.0">
+		  <Target type="worklist" />
+		</GetTasks>
+	  </SOAP:Body>
+	</SOAP:Envelope>
+</script>
+<script type="cordys/xml" id="GetMyTasksRequest">
+	<SOAP:Envelope xmlns:SOAP="http://schemas.xmlsoap.org/soap/envelope/">
+	  <SOAP:Body>
+		<GetTasks xmlns:xfr="http://schemas.cordys.com/1.0/xforms/runtime" xmlns="http://schemas.cordys.com/notification/workflow/1.0">
+		  <Criteria xmlns="http://schemas.cordys.com/notification/workflow/1.0">
+			<Query xmlns="http://schemas.cordys.com/notification/workflow/1.0">Task.Assignee = :PARAMETER0</Query>
+			<Parameters>
+			  <Parameter name="PARAMETER0" type="Task.Assignee" value="asdas" />
+			</Parameters>
+		  </Criteria>
+		  <OrderBy xmlns="http://schemas.cordys.com/notification/workflow/1.0">Task.DeliveryDate desc</OrderBy>
+		  <AssignedBy xmlns="http://schemas.cordys.com/notification/workflow/1.0" />
+		  <Target xmlns="http://schemas.cordys.com/notification/workflow/1.0" type="worklist">0050568b-00dd-11e3-e255-94e055259755</Target>
+		  <ShowNonWorkableItems xmlns="http://schemas.cordys.com/notification/workflow/1.0">false</ShowNonWorkableItems>
+		  <ReturnTaskData xmlns="http://schemas.cordys.com/notification/workflow/1.0">false</ReturnTaskData>
+		  <cursor position="0" numRows="50" maxRows="50" />
+		</GetTasks>
+	  </SOAP:Body>
+	</SOAP:Envelope>
+</script>
+<script type="cordys/xml" id="GetCompletedTasksRequest">
+	<SOAP:Envelope xmlns:SOAP="http://schemas.xmlsoap.org/soap/envelope/">
+		<SOAP:Body>
+			<GetTasks xmlns:xfr="http://schemas.cordys.com/1.0/xforms/runtime" xmlns="http://schemas.cordys.com/notification/workflow/1.0">
+				<Criteria xmlns="http://schemas.cordys.com/notification/workflow/1.0">
+					<Query xmlns="http://schemas.cordys.com/notification/workflow/1.0">Task.State = :PARAMETER0 AND Task.Assignee = :PARAMETER1 </Query>
+					<Parameters>
+						<Parameter name="PARAMETER0" type="Task.State" value="COMPLETED"/>
+						<Parameter name="PARAMETER1" type="Task.Assignee" value="sdfsdf" />
+					</Parameters>
+				</Criteria>
+				<OrderBy xmlns="http://schemas.cordys.com/notification/workflow/1.0">Task.DeliveryDate desc</OrderBy>
+				<AssignedBy xmlns="http://schemas.cordys.com/notification/workflow/1.0"/>
+				<Target xmlns="http://schemas.cordys.com/notification/workflow/1.0" type="worklist">0050568b-00dd-11e3-e255-94e055259755</Target>
+				<ShowNonWorkableItems xmlns="http://schemas.cordys.com/notification/workflow/1.0">true</ShowNonWorkableItems>
+				<ReturnTaskData xmlns="http://schemas.cordys.com/notification/workflow/1.0">false</ReturnTaskData>
+				<cursor position="0" numRows="50" maxRows="50"/>
+			</GetTasks>
+		</SOAP:Body>
+	</SOAP:Envelope>
+</script>
+<script type="cordys/xml" id="controlbar">
+	<div class="elementbar">
+	  <Button class="item small" id="RefreshButton" onclick="RefreshButton_Click(event)" title="Refresh Worklist" style="width: 60px;">
+		<div class="imagecontainer">
+		  <img src="wcp/theme/default/icon/action/refresh.png" />
+		</div>
+		<label class="description">Refresh</label>
+	  </Button>
+	  
+	</div>
+</script>
+<script type="cordys/xml" id="ClaimTaskRequest">
+	<SOAP:Envelope xmlns:SOAP="http://schemas.xmlsoap.org/soap/envelope/">
+	  <SOAP:Body>
+		<ClaimTask xmlns="http://schemas.cordys.com/notification/workflow/1.0" />
+	  </SOAP:Body>
+	</SOAP:Envelope>
+</script>
+</HEAD>
+<BODY>
+	<div id="_common_inbox_util_bdi" style="display:none" cordysType="wcp.library.data.BusDataIsland"></div>
+</BODY></HTML>

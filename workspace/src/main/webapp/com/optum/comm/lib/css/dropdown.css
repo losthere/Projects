@@ -1,0 +1,64 @@
+.MultiSelect {
+	display: inline-block;
+	position: relative;
+}
+.MultiSelect .monitor {
+	display: inline-block;
+	border: 1px solid #63666A;
+	background: linear-gradient(top, #ffffff 0%, #e6e6e6 100%);
+	background: -webkit-linear-gradient(top, #ffffff 0%, #e6e6e6 100%);
+	background: -moz-linear-gradient(top, #ffffff 0%, #e6e6e6 100%);
+}
+	.MultiSelect .monitor > div {
+		display: inline-block;
+		padding-right: 16px;
+		margin-right: 2px;
+		background: url(../../images/down_arrow.png) no-repeat right center;
+	}
+		.MultiSelect .monitor > div > div {
+			background-color: white;
+			border-right: 1px solid #63666A;
+			display: inline-block;
+			height: 14px;
+			padding: 1px 4px;
+			line-height: 14px;
+			vertical-align: middle;
+			width: 100px;
+			overflow : auto;
+		}
+
+.MultiSelect > ul {
+	background-color: white;
+	border: 1px solid #63666A;
+	display: inline-block;
+	position: relative;
+	left: 0;
+	top: 100%;
+	margin-top: -1px;
+	white-space: nowrap;
+	z-index: 1;
+	min-width: 127px;
+}
+.MultiSelect > ul > li, .MultiSelect > ul > li >label{
+	cursor : pointer;
+}
+	.MultiSelect > ul > li,
+	.MultiSelect > ul > span {
+		display: block;
+		padding: 1px 4px;
+	}
+		.MultiSelect-mobile > ul > li,
+		.MultiSelect-mobile > ul > span {
+			height: 44px;
+			line-height: 44px;
+			font-size: 14px;
+		}
+			.MultiSelect-mobile > ul > li { border-top: 1px solid #63666A; }
+		.MultiSelect > ul > li.hover { background-color: #f7dd99; }
+		.MultiSelect > ul > li.selected { background-color: #f2cc66; }
+	.MultiSelect input.ux-util-hidden + label {
+		margin-left: 0;
+	}
+	.MultiSelect-display-none{
+		display:none;
+	}

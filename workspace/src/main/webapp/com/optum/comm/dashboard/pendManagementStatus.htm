@@ -1,0 +1,25 @@
+<div ng-controller='pendStatusCtrl'>
+	<div ng-if="dataModel.pendStatusShowChart && dataModel.pendStatusCounts.totalCnt > 0" class="chartStyle">
+		<uitk-pie-chart view-model="dataModel.pendStatusPieChartModel"></uitk-pie-chart>
+	</div>
+	<div ng-if="dataModel.pendStatusCounts.totalCnt == 0" style="width: 60%; height: 370px;">
+		<h1><span style="color: #f20202; font-size: 15px;">No Data Found</span><br/>
+	</div>
+	<div ng-if="dataModel.pendStatusShowChart && dataModel.pendStatusCounts.totalCnt > 0" class="valuesStyle">
+	<br/><br/>
+		<span><span style="font-size: 15px; font-weight: bold;">Total Charts = {{dataModel.pendStatusCounts.totalCnt}}</span></span><br/><br/>
+	<span ng-if="dataModel.isClientView">
+	    <div style="padding-left:5px;"><div class="symbolStyle" style="background-color: #368195;"></div><span style="width: 55%;" class="labelStyle">Unassigned</span><span style="width: 30%;" class="labelValuesStyle">{{dataModel.pendStatusCounts.unassingedCnt}}</span></div><br/><br/>
+		<div style="padding-left:5px;"><div class="symbolStyle" style="background-color: #4198af;"></div><span style="width: 55%;" class="labelStyle">Assigned</span><span style="width: 30%;" class="labelValuesStyle">{{dataModel.pendStatusCounts.assignedCnt}}</span></div><br/><br/>
+		<div style="padding-left:5px;"><div class="symbolStyle" style="background-color: #4bacc6;"></div><span style="width: 55%;" class="labelStyle">Released</span><span style="width: 30%;" class="labelValuesStyle">{{dataModel.pendStatusCounts.releasedCnt}}</span></div><br/><br/>
+		<div style="padding-left:5px;"><div class="symbolStyle" style="background-color: #91c3d5;"></div><span style="width: 55%;" class="labelStyle">Non Retrievable</span><span style="width: 30%;" class="labelValuesStyle">{{dataModel.pendStatusCounts.nonRetrievableCnt}}</span></div><br/><br/>
+		<div style="padding-left:5px;"><div class="symbolStyle" style="background-color: #a3cddc;"></div><span style="width: 55%;" class="labelStyle">CNA</span><span style="width: 30%;" class="labelValuesStyle">{{dataModel.pendStatusCounts.cnaCnt}}</span></div><br/><br/>
+	</span>
+	<span ng-if="!dataModel.isClientView">
+		<div style="padding-left:5px;"><div class="symbolStyle" style="background-color: #368195;"></div><span style="width: 55%;" class="labelStyle">Assigned</span><span style="width: 30%;" class="labelValuesStyle">{{dataModel.pendStatusCounts.assignedCnt}}</span></div><br/><br/>
+		<div style="padding-left:5px;"><div class="symbolStyle" style="background-color: #4198af;"></div><span style="width: 55%;" class="labelStyle">Released</span><span style="width: 30%;" class="labelValuesStyle">{{dataModel.pendStatusCounts.releasedCnt}}</span></div><br/><br/>
+		<div style="padding-left:5px;"><div class="symbolStyle" style="background-color: #4bacc6;"></div><span style="width: 55%;" class="labelStyle">Non Retrievable</span><span style="width: 30%;" class="labelValuesStyle">{{dataModel.pendStatusCounts.nonRetrievableCnt}}</span></div><br/><br/>
+		<div style="padding-left:5px;"><div class="symbolStyle" style="background-color: #91c3d5;"></div><span style="width: 55%;" class="labelStyle">CNA</span><span style="width: 30%;" class="labelValuesStyle">{{dataModel.pendStatusCounts.cnaCnt}}</span></div><br/><br/>		
+	</span>		
+	</div>
+</div>

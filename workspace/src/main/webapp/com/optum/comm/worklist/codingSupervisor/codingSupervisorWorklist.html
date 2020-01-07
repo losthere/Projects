@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="robots" content="noindex, nofollow" />
+<title>Coding Escalation Worklist</title>
+<link rel="stylesheet" href="../../lib/css/general2.css" type="text/css" />
+<link rel="stylesheet" href="../../lib/css/cdefault.css" type="text/css" />
+<script src="../../lib/js/common/jquery.js" type="text/javascript"></script>
+<script src="../../lib/js/common/angular.min.js" type="text/javascript"></script>
+<script src="../../lib/js/common/optumui.js" type="text/javascript"></script>
+
+<script type="text/javascript" src="../../lib/js/common/ng-csv.js"></script>
+<script type="text/javascript" src="../../lib/js/common/aes.js"></script>
+<script type="text/javascript" src="../../lib/js/common/AesUtil.js"></script>
+<script type="text/javascript" src="../../lib/js/common/jquery-dateFormat.min.js"></script>
+<script type="text/javascript" src="../../lib/js/common/jquery.base64.min.js"></script>
+<script type="text/javascript" src="../../lib/js/common/pbkdf2.js"></script>
+<script type="text/javascript" src="../../lib/js/common/angular-sanitize.js"></script>
+<script type="text/javascript" src="../../lib/js/common/angular-touch.js"></script>
+<script type="text/javascript" src="../../lib/js/common/angular-translate/angular-translate.js"></script>
+<script type="text/javascript" src="../../lib/js/common/lodash.js"></script>
+<script src="../../lib/js/common/uitk.min.js"></script>
+<script src="../../lib/js/common/uitk-auto-complete.js"></script>
+
+<script type="text/javascript" src="../../lib/js/modules/retrieval/lookup.js"></script>
+<script type="text/javascript" src="../../lib/js/modules/retrieval/staticDataService.js"></script>
+<script type="text/javascript" src="../../lib/js/modules/worklist/codingSupervisor/codingSupervisorWorklistViewModel.js"></script>
+<script type="text/javascript" src="../../lib/js/modules/worklist/codingSupervisor/codingSupervisorWorklist.js"></script>
+<script type="text/javascript" src="../../lib/js/modules/coding/codingui.js"></script>
+
+<link rel="stylesheet" href="../../lib/css/uitk.min.css" type="text/css" />
+
+<style>
+.fontcolor {
+	color: #C36121 !important;
+}
+.scrollable {
+  width: 100%;
+}
+#codingSupFiltersDialog_headerId,#codingSupMyWlistLoadingDialog_headerId,#codingSupAvlWlistLoadingDialog_headerId{
+    display: none
+}
+#codingSupFiltersDialog_closeLink,#codingSupMyWlistLoadingDialog_closeLink,#codingSupAvlWlistLoadingDialog_closeLink{
+	display: none
+}
+#codingSupFiltersDialog,#codingSupMyWlistLoadingDialog,#codingSupAvlWlistLoadingDialog{
+	border-width:unset;
+	border-style: none
+}		   
+</style>
+</head>
+<body ng-app="codingSupervisorWorklistApp" ng-controller="codingSupervisorWorklistCtrl" ng-cloak>
+	<div ng-show='showWorklist'>
+		<h1 id='worklistHeader'>Coding Escalation Worklist</h1>
+		<uitk:panel model="codingSupervisorWorklistFilters"></uitk:panel>
+	</div>
+	<div ng-include="url"></div>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<div>
+<style>
+hr{
+	margin-left: 0em;
+	margin-right: auto;
+	width :750px;
+}
+</style>
+	<span style="color:red;font-size:9pt">
+		*To upload a chart, the name of the upload file must match a valid Chart ID
+	</span>
+	<hr>
+	<style>
+	 h6 {
+	color: black;
+    font-size: 1em;
+    font-weight: 700;
+    line-height: 120%;
+    margin-bottom: .833rem;
+    }
+    </style>
+	 <h6>Upload Files</h6>
+    <div class="oui-upld" role="group" aria-describedby="{{model.id}}-status" aria-labelledby="{{model.id}}-label">
+        <!--// select file button-->
+        <input style="height:40px!important;width:110px!important;margin-top: auto" id="{{model.id}}-btn" type="button" class="tk-btn" ng-hide="enableFileUploadButton" ng-class="{'tk-button-focus':model.fileUploadButtonFocus}" value="{{model.selectFilesBtn | uitkTranslate}}" aria-describedby="{{model.id}}-label {{model.id}}-status {{model.id}}-inputtip" ng-blur="blur();" ng-focus="focus();"  ng-click="selectFilesEventHandler()"></input>
+        <span class="tk-fileinput-button tk-btn" id="fileupload-span" ng-show="enableFileUploadButton" ng-class="{'tk-button-focus':model.fileUploadButtonFocus}">
+             <span class="tk-fileinput-selectfiles">{{ model.selectFilesBtn }}</span>
+             <input id="{{model.id}}"  ng-blur="blur();" ng-focus="focus();" type="file" name="{{model.inputName ? model.inputName : 'file[]'}}" data-url="{{model.uploadUrl}}" data-max-file-size="{{model.maxFileSize}}" data-max-file-number="{{model.maxFileNumber}}" data-accept-file-types="{{model.acceptFileTypes}}" multiple="" />
+        </span>
+        <div id="{{model.id}}-status" class="oui-a11y-hidden"></div>
+        <div id="{{model.id}}-log" class="oui-a11y-hidden" aria-hidden="true" aria-relevant="additions" aria-live="assertive" role="log"></div>
+        <div class="oui-upld-container" style="height: 450px;width: 750px;">
+            <table class="oui-upld-placeholder" id="{{model.id}}_Table" role="grid" aria-readonly="true">
+                <tbody>
+                <tr>
+                    <td>{{model.tablePlaceholderValue | uitkTranslate}}</td>
+                    </tr>
+                </tbody>
+                </table>
+         </div>
+        <p class="oui-upld-restrictions" id="{{model.id}}-inputtip"></p>
+       	 <input type="button" style="height:35px!important;display:none;" aria-controls="{{model.id}}-log" uitk-navigable="false" class="tk-btn cancel" value="{{'Cancel All Uploads' | uitkTranslate}}" id="{{model.id}}_CancelBtn"/>
+        </div>
+    </div>

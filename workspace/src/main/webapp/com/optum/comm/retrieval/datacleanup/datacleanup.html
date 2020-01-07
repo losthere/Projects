@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Data Cleanup Queue</title>
+<link rel="stylesheet" href="../../common/css/uitk.min.css"
+	type="text/css" />
+	  <link rel="stylesheet"
+         href="../../common/css/general2.css" type="text/css" />
+          <link rel="stylesheet"
+         href="../../common/css/default.css" type="text/css" />
+          <link rel="stylesheet"
+         href="../../common/css/cdefault.css" type="text/css" />
+	<script src="../../common/jquery/3.2.1/jquery.js" type="text/javascript"></script>
+	<script type="text/javascript" src="../../common/angular/1.6.5/angular.js"></script>
+	
+
+<script type="text/javascript" src="../../common/optumui/ux.js"></script>
+
+<script type="text/javascript" src="../../common/js/retrieval/datacleanup.js"></script>
+
+<style>
+.size {
+	width: 180px;
+	height: 25px;
+	
+}
+.ux-btn-width {
+	width: 90px;
+	height: 22px;
+}
+.ux-panl-closed .ux-panl-header {
+	background: url(../images/twisties_gray6.png) no-repeat 9px 4px;
+	padding-left: 30px;
+	border-bottom: 0px; !
+	important border-style: none;
+	}
+	.ux-panl-closed .ux-panl-content {
+	display: none;
+}
+</style>
+</head>
+<body>
+	<div ng-app="dataCleanUp-app">
+		
+		<div>
+			<table class="ux-padding-bottom-1t"
+				style="width: 100%; margin-left: 9px;">
+				<tr>
+					<td>
+						<h1 class="ux-margin-top-none ux-margin-bottom-none">Data
+							Cleanup Queue</h1>
+					</td>
+				</tr>
+				<tr>
+					<td><statusmessage></statusmessage>
+					</td>
+				</tr>
+			</table>
+		</div>
+		 <div class="ux-acrd" style="width: 100%">
+		<div class='ux-panl ux-panl-open' panel-directive>
+			
+			<div class="ux-panl-header">
+				<h3 style="color: #C36121">Filters</h3>
+			</div>
+		
+		<div class="ux-panl-content" style="padding-top: 0px">
+				<table
+					class="ux-tabl-form-multicol ux-margin-left-1t ux-padding-bottom-none ux-margin-top-none">
+					<tbody>
+						<tr>
+							<td><label class="tk-labl">Project Load Date</label></td>
+							<td><input class="size" type="text" /></td>
+							<td style=""><label class="tk-labl">City</label></td>
+							<td><input class="size" type="text" /></td>
+							<td colspan="2"/>
+							
+							<td style=""><label class="tk-labl">FAX</label></td>
+							<td><input class="size" type="text" /></td>
+						</tr>
+						<tr>
+							<td style=""><label class="tk-labl">Provider Group</label></td>
+							<td><input class="size" type="text" /></td>
+							<td style=""><label class="tk-labl">State</label></td>
+							<td><input class="size" type="text" /></td>
+							<td style=""><label class="tk-labl">ZIP</label></td>
+							<td><input class="size" type="text" /></td>
+							<td style=""><label class="tk-labl">TIN</label></td>
+							<td><input class="size" type="text" /></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>	
+				<div style="padding-left: 20px">
+					<span><input type="button" value="Filter"
+						ng-click="filter()" class="tk-btn-default-action   ux-btn-width" /></span>
+					<span><input type="button" value="Clear" ng-click="clear()"
+						class="tk-btn-default-action   ux-btn-width" /></span>
+				</div>
+				</div>
+			
+			</div>
+			<div>
+				<table
+					class="ux-tabl-form-multicol ux-margin-left-1t ux-padding-bottom-none ux-margin-top-none tk-dtbl">
+					<thead>
+						<tr>
+							<th><input type="checkbox" /></th>
+							<th>Provider Group</th>
+							<th>Address</th>
+							<th>City</th>
+							<th>State</th>
+							<th>Zip</th>
+							<th>Phone</th>
+							<th>Fax</th>
+							<th>Provider Name</th>
+							<th>TIN</th>
+							<th>Barcode Count</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr
+							ng-repeat="result in searchResults  | limitTo:rowsPerPage:pageBeginIndex">
+							<td></td>
+							<td class="tk-dtbl-cell text">{{result.providerGrp}}</td>
+							<td class="tk-dtbl-cell text">{{result.address}}</td>
+							<td class="tk-dtbl-cell text">{{result.city}}</td>
+							<td class="tk-dtbl-cell text">{{result.state}}</td>
+							<td class="tk-dtbl-cell text">{{result.zip}}</td>
+							<td class="tk-dtbl-cell text">{{result.phone}}</td>
+							<td class="tk-dtbl-cell text">{{result.fax}}</td>
+							<td class="tk-dtbl-cell text">{{result.providerNm}}</td>
+							<td class="tk-dtbl-cell text">{{result.tin}}</td>
+							<td class="tk-dtbl-cell text">{{result.barcodeCount}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			
+		</div>
+</body>
+</html>

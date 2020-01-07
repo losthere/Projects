@@ -1,0 +1,196 @@
+	<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+	<!--
+
+		 © 2003 Cordys R&D B.V. All rights reserved.
+		 The computer program(s) is the proprietary information of Cordys R&D B.V. and provided
+		 under the relevant License Agreement containing restrictions on use and disclosure.
+		 Use is subject to the License Agreement.
+
+
+	-->
+	<html onapplicationready="loadStatus()">
+	<head>
+		<META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+		<META HTTP-EQUIV="Pragma" CONTENT="NO-CACHE">
+		<META HTTP-EQUIV="CACHE-CONTROL" CONTENT="no-store">
+		<META HTTP-EQUIV="CACHE-CONTROL" CONTENT="must-revalidate">
+		<META HTTP-EQUIV="Expires" CONTENT="Mon, 8 Aug 2005 10:00:00 GMT">
+		<title>Clinical Review</title>
+		<link type="image/x-icon" href="../../gcm-app-services/com/optum/comm/lib/images/favicon.ico" rel="icon"></link>
+		<link type="image/x-icon" href="../../gcm-app-services/com/optum/comm/lib/images/favicon.ico" rel="shortcut icon"></link>
+
+	<!--script type="text/javascript" src="../wcp/application.js"></script-->
+	<!--script type="text/javascript" src="../com/optum/comm/lib/js/common/optumui.js"></script-->
+	<!--link rel="stylesheet" href="optum/css/general2.css" /-->
+	<style>label.logs {margin-left:2cm;}</style>
+
+		<style type="text/css">
+
+						.ux-head-logo {
+			display: table-cell;
+			vertical-align: bottom;
+			height: 62px;
+		}
+
+			.ux-head-cntr-logo {
+		-moz-box-sizing: border-box;
+		-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		height: 88px;
+		padding: 13px;
+		padding-right: 26px;
+		float: left;
+	}
+
+	.ux-head {
+	height: 88px;
+	border-bottom: 1px solid #F47B29;
+	white-space: nowrap;
+}
+
+#ux-wrapper {
+	background-color: white;
+	/*width: 920px;*/
+	margin: 0 auto;
+}
+
+		</style>
+
+		<script type="text/javascript">
+
+			function loadStatus()
+			{   
+					loginUrl();
+					if(window.location.origin.indexOf("backup")>0){
+						document.getElementById("signId").hidden=true;
+					}
+					document.cookie = "SMSESSION=LOGGEDOFF; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=.optum.com";
+					document.cookie = "SESSION_TOKEN=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=.optum.com";
+					document.cookie = "USERNAME=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=.optum.com";
+			}
+
+			function getParameterByName(parameterName) {
+				if (location.hash )
+				{
+					var hashString =  location.hash.substring(1);
+					var paramString = hashString.substring(location.hash.indexOf(parameterName));
+					if(paramString.indexOf('&') > 0)
+					{
+						paramString = paramString.substring(0, paramString.indexOf('&'));
+					}
+					return paramString.substring(paramString.indexOf("=")+1);
+				}
+			}
+			
+			function showHelpDeskNumber() {
+				if (location.pathname.indexOf('CRQS') >0)
+				{
+					document.getElementById("hdNumber").innerHTML="1-844-752-9438";
+				}else{
+					document.getElementById("hdNumber").innerHTML="1-844-752-9438";
+				}
+			}
+
+			function loginUrl()
+			{
+				//if(cordys.getNodeText(application.event.application,".//*[local-name()='description']")== "timeOut")
+				if ( getParameterByName("e_m") == "T" )
+				{
+				   if ( getParameterByName("groupcode") == "CM" ){
+					document.getElementById("crqsMessage").style.display = "";
+					document.getElementById("hdNumber").innerHTML="1-844-752-9438";
+				   }else{
+				    document.getElementById("cpcMessage").style.display = "";
+					document.getElementById("hdNumber").innerHTML="1-844-752-9438";
+				   }
+				   //CordysRoot.parent.location.href = getQualifiedURL("emerald/timeOut.htm");
+				   document.getElementById("timeoutNotification").style.display = "";
+				   document.getElementById("logoutNotification").style.display = "none";
+				}
+				else
+				{
+					document.getElementById("timeoutNotification").style.display = "none";
+					document.getElementById("logoutNotification").style.display = "";
+					showHelpDeskNumber();
+					//CordysRoot.parent.location.href = getQualifiedURL("gcm/default.htm");
+				}
+				if ( getParameterByName("e_m") == "OT" ){
+					var url = "";
+/* 					if (location.pathname.indexOf('CRQS') >0){
+						url = "/home/CRQS/wcp/sso/com.eibus.sso.web.authentication.LogMeOut.wcp?RelayState=/home/CRQS/emerald/default.htm";
+					}else{
+						url = "/home/COMM/wcp/sso/com.eibus.sso.web.authentication.LogMeOut.wcp?RelayState=/home/comm/mrm/default.htm";
+					} */
+					
+					url = "/home/COMM/wcp/sso/com.eibus.sso.web.authentication.LogMeOut.wcp?RelayState=/home/comm/mrm/default.htm";
+					window.location.replace(url);
+				}
+	
+			}
+
+			function getQualifiedURL(url)
+			{
+				var div = document.createElement('div');
+				div.innerHTML = "<a></a>";
+				div.firstChild.href = url; // Ensures that the href is properly escaped (this will not convert the url to absolute)
+				div.innerHTML = div.innerHTML; // Run the current innerHTML back through the parser (that will actually converts a relative url to absolute)
+				return div.firstChild.href;
+			}
+
+			function redierctUrl()
+			{
+				var newURL=getQualifiedURL("/app/default.htm") + "?random="+(new Date()).getTime();
+				//var newURL=getQualifiedURL("../mrm/default.htm");
+				window.parent.location.replace(newURL);
+			}
+
+
+			// To hide IE context menu from getting displayed on the left-most corner
+			document.oncontextmenu = function(){return false};
+		</script>
+
+		<link rel="shortcut icon" type="image/ico" href="../../gcm-app-services/com/optum/comm/lib/images/favicon.ico" />
+		<style type="text/css">
+			html, body, iframe {position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; border: 0px; padding: 0px; margin: 0px; overflow: hidden}
+		</style>
+	</head>
+	<body onload="loadStatus()" >
+				<div id="__xbody_msg_group_element"></div>
+					 <div id="ux-wrapper">
+					 <div class="ux-head">
+					 <div class="ux-head-cntr-logo">
+						 <span class="ux-head-logo"><img src="../../gcm-app-services/com/optum/comm/lib/images/clinicalReview.png" alt="Clinical Review" /></span>
+				</div>
+				<br><br>
+				<span id="logoutNotification" style="display:none;position:absolute;left:10px;top:105px">
+						<H1 style="font-family: arial, helvetica, sans-serif;margin-left:13px;font-size:24px;color:#666666; font-weight:normal;">Signed Out</H1>
+						<label style="font-family: arial, helvetica, sans-serif; font-size: 12px;color: #000000;margin-left:13px;">You have signed out of Clinical Review.</label>
+						<b id="signId">
+						<a href="javascript:void(0)" onclick="return redierctUrl();" style="font-family: arial, helvetica, sans-serif; font-size: 12px;">Sign In</a>
+						</b>
+						<br/>
+						<p style="font-family: arial, helvetica, sans-serif;font-size:12px;color:#333333;margin-left:13px;"><b>For assistance, call the Help Desk: </b><span id='hdNumber' style="color:#333333;text-decoration: none;">1-844-752-9438</span></p>
+				</span>
+
+				<span id="timeoutNotification" style="display:none;position:absolute;left:10px;top:105px">
+						<H1 class="logs" style="font-family: arial, helvetica, sans-serif;margin-left:13px;font-size:24px;color:#666666;  font-weight:normal;">Session Ended</H1>
+						
+						<label class="logs" id='cpcMessage'  style="display:none;font-family: arial, helvetica, sans-serif; font-size: 12px;color: #333333;margin-left:13px;">Your session has ended due to inactivity. Sessions terminate after 20 minutes of inactivity.</label>
+						<label class="logs" id='crqsMessage'  style="display:none;font-family: arial, helvetica, sans-serif; font-size: 12px;color: #333333;margin-left:13px;">Your session has ended due to inactivity. Sessions terminate after 15 minutes of inactivity.</label>
+						<b id="signId">
+							<a href="javascript:void(0)" onclick="return redierctUrl();" style="font-family: arial, helvetica, sans-serif; font-size: 12px;">Sign In</a>
+						</b>
+						<br/>
+						<p style="font-family: arial, helvetica, sans-serif;font-size:12px;color:#333333;margin-left:13px"><b>For assistance, call the Help Desk: </b><span id='hdNumber' style="color:#333333;text-decoration: none;">1-844-752-9438</span></p>
+				</span>
+
+			<noscript>
+				<div cordystype="wcp.library.util.Translator" id="translator_ajaxtoolkit_default" messageBundle="ajaxtoolkit/ajaxtoolkitmessagebundle"></div>
+				<div style="width: 50%; height: 30%; display: block; top: 35%; left: 50%;margin-left:-25%;position:relative">
+					<h1 translatable="true">Javascript is disabled or not supported by this browser.</h1>
+					<p translatable="true">Enable Javascript for full functionality.</p>
+				</div>
+			</noscript>
+	</body>
+	</html>

@@ -1,0 +1,179 @@
+<style>
+span.overflow-needed {
+	display: block;
+}
+
+span.overflow-needed div {
+	width: fit-content;
+}
+
+span.overflow-needed input {
+	width: 160px;
+	height: 23px;
+}
+
+.horizontal-main-container{
+	display:flex;
+ 	flex-direction: row;
+}
+
+.colspacing{
+	margin-right : 20px;
+}
+
+.horizontal-container{
+	display:flex;
+	justify-content : space-between;
+ 	flex-direction : row;
+}
+
+.horizontal-container span{
+	margin-right : 20px;
+}
+
+.vertical-container{
+	display : flex; 
+ 	flex-direction: column;
+}
+
+.linespacing{
+	margin-top : 10px;
+}
+
+</style>
+<div ng-controller='lookupCtrl'>
+	
+	<div style='margin-bottom:10px;'>
+		<label><span class='cux-icon-asterisk'><span class="tk-icon-glyph"></span></span> Required</label>
+	</div>
+	<div>
+		<div class="ux-margin-left-1t">
+			<div class="horizontal-main-container">
+				<div class="vertical-container colspacing">
+					<div class="horizontal-container">
+						<span><label id='busSegmentLbl' class="tk-labl">Business segment</label></span>
+						<select class="size" id='busSegmentSelect' ng-options='busSegments.key as busSegments.value for busSegments in lookup.businessSegments' ng-model="filters.busSegment" ng-change="onBusSegmentChange()">
+							<option ng-if="filters.currentTab != 'Coding'" value="">All</option>
+						</select>
+					</div>
+					<div class="horizontal-container linespacing" ng-if='lookup.vendors.length > 1'>
+						<span>
+							<label id='orgLbl' class="tk-labl">Organization<span class='cux-icon-asterisk'><span class="tk-icon-glyph"></span></span></label>
+						</span>
+						<select class="size" id='orgSelect' ng-options="vendor.key as vendor.value for vendor in lookup.vendors" ng-disabled = 'lookup.vendors.length == 1' ng-model="filters.organization" ng-change="onOrganizationChange()">
+							<option value="" selected="">Select</option>
+						</select>
+					</div>
+					<div class="horizontal-container linespacing">
+						<span><label id='projectLbl' class="tk-labl">Project name</label></span>
+						<select class="size" id='projSelect' ng-options='project.key as project.value for project in lookup.projects' ng-model="filters.projectKey" ng-disabled="filters.busSegment==''">
+							<option selected="selected" value="">All</option>
+						</select>
+					</div>
+				</div>
+				<div class="vertical-container colspacing">
+					<div class="horizontal-container">
+						<span>
+							<label id='hpLbl' class="tk-labl">Health plan</label>
+						</span>						
+						<select id='hpSelect' class="size" ng-options='client.key as client.value for client in lookup.clients' ng-model="filters.client" ng-change="onClientChange()">
+							<option value="">All</option>
+						</select>
+					</div>
+					<div class="horizontal-container linespacing">
+						<span>
+							<label id='hpnLbl' class="tk-labl">Health plan name</label>
+						</span>
+						<select id='hpnSelect' class="size" ng-options='healthPlan.key as healthPlan.value for healthPlan in lookup.healthPlans' ng-model="filters.hp" ng-disabled="filters.client==''" ng-change="onHPChange()">
+							<option value="">All</option>
+						</select>
+					</div>
+					<div class="horizontal-container linespacing">
+						<span>
+							<label id='hppLbl' class="tk-labl">Health plan product</label>
+						</span>
+						<select id='hppSelect' class="size" ng-options='hpp as hpp for hpp in lookup.healthPlanProds' ng-model="filters.hpp" ng-disabled="filters.hp==''">
+							<option value="">All</option>
+						</select>
+					</div>
+				</div>
+				<div class="vertical-container colspacing">
+					<div class="horizontal-container" ng-if="filters.currentTab != 'Coding'">
+						<span><label id='provIdLbl' class="tk-labl">Provider ID</label></span>
+						<span class="overflow-needed">
+							 <uitk:auto-complete id="providerId" items="providerIds" min-length="3"	disable-input="false" read-only="false" model="filters.provId" on-refresh-items="fetchproviderIds"></uitk:auto-complete>
+						</span>					
+					</div>
+					<div class="horizontal-container" ng-if="filters.currentTab == 'Coding'">
+						<span><label id='progLbl' class="tk-labl">Program</label></span>
+						<select id='progSelect' ng-options='program.key as program.value for program in lookup.programs' ng-disabled="!filters.busSegment" class="size" ng-model="filters.program" ng-change="onProgramChange()">
+							<option value="" selected="selected">All</option>
+						</select>
+					</div>
+					<div class="horizontal-container linespacing">
+						<span ng-if="filters.currentTab != 'Coding'">
+							<label id='grpNmLbl' class="tk-labl">Group name</label>
+						</span>
+						<span class="overflow-needed" ng-if="filters.currentTab != 'Coding'">
+							<uitk:auto-complete id="providerGrpNm" items="providerGrpNms" min-length="3" disable-input="false" read-only="false" model="filters.provgrpNm" on-refresh-items="fetchproviderGrpNms"></uitk:auto-complete>
+						</span>
+					</div>
+					<div class="horizontal-container linespacing">
+						<span ng-if="filters.currentTab != 'Coding'">
+							<label id='prvLastNmLbl' class="tk-labl">Provider last name</label>
+						</span>
+						<span class="overflow-needed" ng-if="filters.currentTab != 'Coding'">
+							<uitk:auto-complete id="provLastNm" items="providerLastNms" min-length="3" disable-input="false" read-only="false" model="filters.provLastNm" on-refresh-items="fetchproviderLastNms"></uitk:auto-complete>
+						</span>
+					</div>
+					<div class="horizontal-container linespacing">
+						<span ng-if="filters.currentTab != 'Coding'">
+							<label id='provFirstNmLbl' class="tk-labl">Provider first name</label>
+						</span>
+						<span class="overflow-needed" ng-if="filters.currentTab != 'Coding'">
+							<uitk:auto-complete id="provFstNm" items="providerFstNms" min-length="3" disable-input="false" read-only="false" model="filters.provFstNm" on-refresh-items="fetchproviderFstNms"></uitk:auto-complete>
+						</span>
+					</div>
+				</div>
+				<div class="vertical-container">
+					<div class="horizontal-container">
+						<span>
+							<label id='statusLbl' class="tk-labl">Status</label>
+						</span>
+						<span ng-if="filters.currentRole!='IM'">
+							<select id='statusSelect' class="size" ng-model="filters.status" ng-change="onStatusChange()">
+								<option value="">Unassigned</option>
+								<option value="1">Assigned to User</option>
+							</select>
+						</span>
+						<span ng-if="filters.currentRole == 'IM'">
+							<select id='imStatusSelect' class="size" ng-model="filters.status" ng-change="onStatusChange()">
+								<option value="">Assigned to Location</option>
+								<option value="1">Assigned to User</option>
+							</select>
+						</span>	
+					</div>
+					<div class="horizontal-container linespacing" ng-if="filters.currentRole!='IM'">
+						<span>
+							<label id='userLbl' class="tk-labl">User <span class='cux-icon-asterisk' ng-if="filters.status=='1'"><span class="tk-icon-glyph"></span></span></label>
+						</span>
+						<span>
+							<select id='userSelect' class="size" ng-options='user.key as user.value for user in lookup.users' ng-model="filters.user" ng-disabled="!filters.status || filters.status== 0">
+								<option value=''>Select</option>
+							</select>
+						</span>
+					</div>
+				</div>
+			</div>			
+		</div>
+	</div>
+	
+	<div style="padding-left: 20px">
+		<span>
+			<input id='filterBtn' type="button" value="Filter" ng-click="filter()" class="tk-btn-default-action   ux-btn-width" />
+		</span> 
+		<span>
+			<input id='clearBtn' type="button" value="Clear" ng-click="clear()" class="tk-btn-default-action   ux-btn-width" />
+		</span>
+	</div>
+</div>

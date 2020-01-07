@@ -1,0 +1,414 @@
+@charset "utf-8";
+
+html, body, div, span, applet, object, iframe,
+p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+h1, h2, h3, h4, h5, h6{
+	margin: 0;
+	padding: 0;
+	border: 0;
+	vertical-align: baseline;
+}
+/** Custom Styles **/
+body{
+	border-width:0px;
+	background-color: white;
+	color: #333333;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	margin: 0;
+	cursor:default;
+	scrollbar-3dlight-color:#b8bdc0;
+	scrollbar-arrow-color:#0066cc;
+	scrollbar-darkshadow-color:#9aa1a6;
+	scrollbar-face-color:#ececec;
+	scrollbar-highlight-color:#ffffff;
+	scrollbar-shadow-color:#ffffff;
+	scrollbar-track-color:#fbfcfd;
+    line-height : 1;
+    overflow : visible;
+}
+*{
+
+	-moz-border-radius: 0px !important;
+	-webkit-border-radius: 0px  !important;
+	border-radius: 0px  !important;
+}
+
+iframe
+{
+border: 0px !important;
+}
+
+.dueOver
+{
+ 
+   color : red !important;
+  
+}
+
+.itemselect,.itemselect *{
+  background-color:#53a4d2 !immediate;
+  color:#d7f3ff;
+  background-image:none;
+}
+
+.outputfield label
+{
+font-weight: bold;
+}
+
+.output
+{
+border-width: 0px !important;
+}
+
+.loading_message
+{
+border: 1px solid !important;
+background-color: rgb(242, 242, 242)  !important;
+color : #323335  !important;
+height : 20px !important;
+display : none !important;
+}
+
+#fb_pinImage{
+  display : none !important;
+}
+#fb_title{
+  color : #333333 !important;
+}
+#feedback_wrapper{
+  border : 1px solid #b3b3b3  !important;
+}
+#fb_titlebar{
+  background-color: white !important;
+  border-bottom: 1px solid #b1b3b3 !important;
+  padding: 12px 13px 12px 13px !important;
+  margin-bottom: 13px !important;
+  background-image : none !important;
+  height : 18px !important;
+}
+#fb_titlebar h1{
+  line-height : 40px !important;
+}
+#fb_container{
+top : 44px !important;
+}
+
+/** Loading Styles **/
+#fb_container_wrapper{
+   top : 20px !important;
+   left : 10px !important;
+   height : 20px !important;
+   border : 0px !important;
+   position : absolute;
+
+}
+
+#fb_message_wrapper{
+   left : 60px;
+   top  : -30px;
+   position : relative;
+
+}
+
+h1{
+font-family: Arial, Helvetica, sans-serif;
+font-size : 24px;
+font-weight: normal;
+color : #666666;
+font : inherti;
+}
+
+h2{
+	font-family: Arial, Helvetica, sans-serif;
+	color: #C36121;
+	font-size: 16px;
+	font-weight: bold;
+	xmargin-bottom: 13px;
+	line-height: 120%;
+}
+h3 {
+	font-family: Arial, Helvetica, sans-serif;
+	color: #333333;
+	font-size: 14px;
+	font-weight: bold;
+	line-height: 120%;
+}
+.userfield
+{
+   text-align:right;
+}
+
+.maincontainer
+{
+	padding : 10px !important;
+}
+
+.v_layout,.v_layout_i
+{
+    margin : 5px !important;
+}
+
+.ux-panl-header h2 { 
+	color: #333333; 
+	line-height: inherit;
+}
+.groupcontent
+{
+	border-bottom : #d3deed 1px solid !important;
+	border-left: #d3deed 1px solid !important;
+	border-right: #d3deed 1px solid !important;
+	border-top: #ffffff 1px solid !important;
+}
+.groupheader
+{
+	border-left: #d3deed 1px solid !important;
+	border-right: #d3deed 1px solid !important;
+	border-top: #d3deed 1px solid !important;
+}
+
+
+
+a:hover{
+
+  #text-decoration : underline !important;
+}
+
+
+.underline, .underline input
+{
+   text-decoration : none !important;
+   cursor : pointer !important;
+   color:#0066CC !important;
+}
+
+.underlinedis
+{
+   text-decoration : none !important;
+   cursor : default !important;
+   color:#D3D3D3 !important;
+}
+.discolor
+{
+   color:#D3D3D3 !important;
+}
+.underline:hover input
+{
+   text-decoration: underline !important;
+   color:#0066CC !important;
+   cursor: pointer !important;
+}
+.xgridrowcell.underline:hover
+{
+   text-decoration: underline !important;
+   color:#0066CC !important;
+   cursor: pointer !important;
+}
+.disablelink, .disablelink:hover
+{
+    text-decoration: none !important;
+    color: black !important;
+}
+.linktext
+{
+   text-decoration : underline;
+   cursor : hand;
+   color:#0000FF !important;
+}
+
+
+.toolbar button.toolbaritem:hover{
+	background-color:#F6C9A7  !important;
+	border:1px solid #BA5F1B !important;
+       height : 22px !important;
+}
+
+.mespan {
+        color:black;
+	padding:10px;
+	border-style:solid;
+	border-left-width:1px;
+	border-top-width:1px;
+	border-bottom-width:1px;
+      border-right-width:1px;
+        display:inline-block;
+        text-align:center;
+}
+.mespan.last
+{
+   	border-right-width : 1px;
+}
+
+.mestrike {
+       color:black;
+	padding:10px;
+	text-decoration : line-through;
+        display:inline-block;
+       text-align:center;
+}
+
+
+/************************************************************************************ Pagination */
+.ux-pagi,
+.ux-pagi-touch {
+	float: right;
+	text-align: right;
+}
+	.ux-pagi h6,
+	.ux-pagi strong,
+	.ux-pagi-selected { font-weight: bold; }
+	.ux-pagi h6 { display: inline; }
+	
+	.ux-pagi ul { 
+		display: inline-block;
+		margin-left: 13px;
+	}
+		.ux-pagi ul li { 
+			/*border-left: 1px solid #333333;*/
+			display: inline-block;
+			padding: 0 4px 0 7px;
+		}
+			.ux-pagi ul li:first-child,
+			.ux-pagi ul li.ux-pagi-last,
+			.ux-pagi ul li.ux-pagi-prev { border-left: 0; }
+			.ux-pagi ul li:first-child { padding-left: 0; }
+			.ux-pagi ul li a {
+				display: inline-block;
+				margin: 0 -4px 0 -7px;
+				padding: 0 4px 0 7px;
+			}
+			.ux-pagi ul li.ux-pagi-last { 
+				margin-right: 0;
+				padding-right: 0; 
+			}
+			input.ux-pagi-current-page {
+				width: 24px;
+				text-align: center;	
+			}
+	
+
+/************************************************************************************ Records per Page */
+
+/** Dashboard **/
+
+.dashboardheader{
+}
+
+.dashboardheader h1{
+	font-size : 18px !important;
+}
+
+.dashboardheader p{
+	font-size : 14px !important;
+}
+
+
+.dashboardlabelsection{
+}
+
+.dashboardlabelsection p{
+	font-size : 12px !important;
+}
+
+.dashboardlabelsection p span{
+	font-size : 18px !important;
+}
+
+.monthLabel>div>div {
+      font-weight : bold;
+}
+
+#Year1FHImg.xgridheadercell {
+	max-width : 40px !important;
+}
+
+
+#Year1LHImg.xgridheadercell {
+	max-width : 40px !important;
+}
+
+#Year2FHImg.xgridheadercell {
+	max-width : 40px !important;
+}
+
+#Year2LHImg.xgridheadercell {
+	max-width : 40px !important;
+}
+
+.hccTrackerImg{
+	max-width : 40px !important;
+}
+#fb_closeImg Img {
+	padding:20px 20px 0px 0px; 
+	/*background: url('../img/ui/xCirBtns_norm.png');*/
+	background: url('../img/ui/dialog_alt_close_icon.png');
+	background-size:auto;
+	width:0px;
+	height:0px;
+	margin-top:5px;
+	margin-right:5px;
+}
+
+#fb_closeImg Img:hover {
+	/*background: url('../img/ui/xCirBtns_over.png');*/
+	background-position: 0 -20px;
+}
+
+#fb_closeImg:hover{
+	background-color: #e6e6e6 !important;
+}
+
+#fb_closeImg:active {
+	background-position: 0 -40px;
+}
+
+.autofill {
+	background-color: white;
+	border: 1px solid #63666A;
+	position: absolute;
+	z-index: 1;
+	overflow : scroll;
+	height : 200px;
+}
+.autofill div  {
+	padding : 3px;
+}
+.autofill  span{
+	width : 100%;
+	padding : 3px;
+	cursor:pointer;
+}
+.autofill  div.hover { background-color: #f7dd99; }
+
+.chartImgNav {
+  float: right;
+  margin-top: 30px;
+}
+
+/*** Added class to apply border to elements. Can be used where border needs to be applied. ***/
+.borderClass {
+	border: 1px solid #E6E6E6 !important;
+}
+
+/*** Added class to apply border to elements. Can be used where border needs to be applied. ***/
+.borderClass {
+	border: 1px solid #E6E6E6 !important;
+}

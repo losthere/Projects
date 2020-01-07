@@ -1,0 +1,61 @@
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="ehcache.xsd" 
+	updateCheck="true"
+	monitoring="autodetect" 
+	dynamicConfig="true">
+
+	<diskStore path="java.io.tmpdir" />
+
+	<cache name="getEncEoCodes" 
+		maxEntriesLocalHeap="1000"
+		maxEntriesLocalDisk="10000" 
+		eternal="false" 
+		timeToIdleSeconds="300000" timeToLiveSeconds="600000"
+		memoryStoreEvictionPolicy="LFU" 
+		transactionalMode="off">
+	</cache>
+	
+	<cache name="getDxLevelEoCodes" 
+		maxEntriesLocalHeap="1000"
+		maxEntriesLocalDisk="10000" 
+		eternal="false" 
+		timeToIdleSeconds="300000" timeToLiveSeconds="600000"
+		memoryStoreEvictionPolicy="LFU" 
+		transactionalMode="off">
+	</cache>
+	
+	<cache name="getAllICDDXCodes" 
+		maxEntriesLocalHeap="1000"
+		maxEntriesLocalDisk="100000" 
+		eternal="false" 
+		timeToIdleSeconds="0" timeToLiveSeconds="0"
+		memoryStoreEvictionPolicy="LFU" 
+		transactionalMode="off">
+	</cache>
+	
+	<cache name="getAllHccMappingsforMCARE" 
+		maxEntriesLocalHeap="1000"
+		maxEntriesLocalDisk="100000" 
+		eternal="false" 
+		timeToIdleSeconds="0" timeToLiveSeconds="0"
+		memoryStoreEvictionPolicy="LFU" 
+		transactionalMode="off">
+	</cache>
+	<cache name="getAllHhsMappingsforACA" 
+		maxEntriesLocalHeap="1000"
+		maxEntriesLocalDisk="100000" 
+		eternal="false" 
+		timeToIdleSeconds="0" timeToLiveSeconds="0"
+		memoryStoreEvictionPolicy="LFU" 
+		transactionalMode="off">
+	</cache>
+	<cache name="getAllAgeGenderValidations" 
+		maxEntriesLocalHeap="1000"
+		maxEntriesLocalDisk="100000" 
+		eternal="false" 
+		timeToIdleSeconds="0" timeToLiveSeconds="0"
+		memoryStoreEvictionPolicy="LFU" 
+		transactionalMode="off">
+	</cache>
+	
+</ehcache>

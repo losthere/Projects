@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+</head>
+<body ng-app="userProfileApp">
+	<div ng-controller="userProfileCtrl"  data-ng-init="init()"
+		style="text-align: left; height: auto;">
+		<div id="onLastNameClick_headerId" tabindex="-1" class="tk-lbox-header">
+			<h2><span tabindex="-1">User Profile UI</span></h2>
+			<div class="tk-lbox-controls">
+			<button type="button" ng-attr-aria-describedby="{{tkCloseButtonText ? dialogId + &quot;_btnClose&quot; : undefined }}"
+					tabindex="0" id="onLastNameClick_closeLink" ng-click="dataModel.closeUpdateProfile();">
+					<span class="tk-icon ng-isolate-scope" icon="cux-icon-close"
+						hidden-text="Close"> <span aria-hidden="true"
+						class="tk-icon-glyph"><span class="cux-icon-close"></span>
+					</span>
+					</span>
+				</button>	
+				</div>
+		</div>
+		<div style="width: 700px; height: 70px; margin-top: 10px;padding: 1.083rem !important;">
+			<table id="filtersTableId"
+				class="ux-tabl-form-multicol ux-margin-left-1t ux-padding-bottom-none ux-margin-top-none">
+				<tbody>
+					<tr>
+						<td style="width: 150px;"><label class="tk-labl">User ID</label></td>
+						<td style="width: 150px;"><span
+							ng-bind='viewUserProfileObj.userID'></span></td>
+					</tr>
+					<tr>
+						<td style="width: 150px;"><label class="tk-labl">Name</label></td>
+						<td style="width: 150px;"><span
+							ng-bind='viewUserProfileObj.name'></span></td>
+					</tr>
+					<tr>
+						<td style="width: 150px;"><label class="tk-labl">Email Address</label></td>
+						<td style="width: 150px;"><span
+							ng-bind='viewUserProfileObj.email'></span></td>
+					</tr>
+					<tr>
+						<td style="width: 150px;"><label class="tk-labl">Supervisor</label></td>
+						<td style="width: 150px;"><span
+							ng-bind='viewUserProfileObj.supervisor'></span></td>
+					</tr>
+					<tr>
+						<td style="width: 150px;"><label class="tk-labl">Organization</label></td>
+						<td style="width: 150px;"><select
+							ng-model="viewUserProfileObj.vendor"
+							ng-options='vendor.key as vendor.value for vendor in viewUserProfileObj.organizations'
+							ng-change="dataModel.viewProfileVendorChange()">
+								<option value="filters.supOrganizations[0].key"></option>
+						</select></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<div style="padding-left: 13px; margin-top: 70px;padding: 2.083rem !important;">
+			<h5>
+				<span><label class="tk-labl">Role(s)</label></span>
+			</h5>
+			<div style="width: 250px;">
+				<table id="userRolesTable"
+					class="tk-dtbl tk-dtbl-reorderable-columns" role="grid"
+					ng-class="{ 'tk-dtbl-expandable' : model.rowTemplate }">
+					<thead>
+						<tr>
+							<th style="padding-bottom: 10px; padding-top: 13px;"
+								class="tk-dtbl-cell"><span class="tk-dtbl-as-table-cell">Assigned Roles</span></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr
+							ng-repeat="role in viewUserProfileObj.userRoleListModelrecords">
+							<td class="tk-dtbl-cell"><span ng-bind="role.roleName"
+								style="text-align: right;"></span></td>
+						</tr>
+						<tr
+							ng-if="viewUserProfileObj.userRoleListModelrecords.length == 0">
+							<td class="tk-dtbl-cell">No Records found</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

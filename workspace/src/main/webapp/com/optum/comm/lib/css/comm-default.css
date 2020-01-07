@@ -1,0 +1,53 @@
+/** Messaging Styles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ **/
+.ux-msg-success,.ux-msg-error {
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	min-height: 23px;
+	color: #333333;
+	padding: 13px 13px 4px 56px;
+	margin-bottom: 26px;
+	margin-top: 13px;
+	left: 10px;
+	right: 10px;
+	position: absolute;
+}
+
+.ux-msg-success {
+	border: 1px solid #7E9E16;
+	background: #E9EFDA url(../images/icon-success1.png) 13px 4px no-repeat;
+}
+
+.ux-msg-error {
+	border: 1px solid #ce0c28;
+	background: #f7eeef url(../images/warning-icon1.png) 13px 4px no-repeat;
+}
+
+.ux-form-required {
+	color: #ce0c28;
+}
+
+.ux-a11y-hidden{
+       display :none;
+}
+
+.imgcontainer.small{
+	width : 18px;
+	height: 18px;
+	display: inline-block;
+	position:relative;
+	overflow:hidden;
+}
+
+.imgcontainer.small img{
+	clip : rect(auto, 16px, 16px, auto);
+	
+}
+
+.hover-item:hover {
+	text-decoration:underline;
+}
+
+.error{
+    color: solid red;
+    border-color:red !important;
+}

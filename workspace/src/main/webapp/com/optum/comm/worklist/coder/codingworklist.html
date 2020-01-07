@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="robots" content="noindex, nofollow" />
+		<title>Worklist</title>
+		<link rel="stylesheet" href="../../lib/css/general2.css" type="text/css" />
+		<link rel="stylesheet" href="../../lib/css/cdefault.css" type="text/css" />
+		<script src="../../lib/js/common/jquery.js" type="text/javascript"></script>
+		<script src="../../lib/js/common/angular.min.js" type="text/javascript"></script>
+		<script src="../../lib/js/common/optumui.js" type="text/javascript"></script>
+		
+		<script type="text/javascript" src="../../lib/js/common/ng-csv.js"></script>
+		<script type="text/javascript" src="../../lib/js/common/angular-sanitize.js"></script>
+		<script type="text/javascript" src="../../lib/js/common/angular-touch.js"></script>
+		<script type="text/javascript" src="../../lib/js/common/angular-translate/angular-translate.js"></script>
+		<script type="text/javascript" src="../../lib/js/common/lodash.js"></script>
+		<script type="text/javascript" src="../../lib/js/common/uitk.min.js"></script>
+		<script type="text/javascript" src="../../lib/js/common/uitk-auto-complete.js"></script>
+		<script type="text/javascript" src="../../lib/js/common/aes.js"></script>
+		<script type="text/javascript" src="../../lib/js/common/AesUtil.js"></script>
+		<script type="text/javascript" src="../../lib/js/common/jquery-dateFormat.min.js"></script>
+		<script type="text/javascript" src="../../lib/js/common/jquery.base64.min.js"></script>
+		<script type="text/javascript" src="../../lib/js/common/pbkdf2.js"></script>
+		
+		<script type="text/javascript" src="../../lib/js/modules/retrieval/lookup.js"></script>
+		<script type="text/javascript" src="../../lib/js/modules/retrieval/staticDataService.js"></script>
+		<script type="text/javascript" src="../../lib/js/modules/worklist/coder/codingWorklistViewModel.js"></script>
+		<script type="text/javascript" src="../../lib/js/modules/worklist/coder/codingWorklist.js"></script>
+		<script type="text/javascript" src="../../lib/js/modules/coding/codingui.js"></script>
+		<script type="text/javascript" src="../../lib/js/modules/worklist/coder/codingQAFeedback.js"></script>
+		
+		
+		<link rel="stylesheet" href="../../lib/css/uitk.min.css" type="text/css" />		
+		<style>
+			.fontcolor {
+				color: #C36121 !important;
+			}
+			.scrollable {
+			  width: 100%;
+			}
+			.cux-icon-warning_filled {
+			  color: #C6900E;
+			}
+			
+			#codingFiltersDialog_headerId,#codingLoadingDialog_headerId{
+    			display: none
+			}
+			#codingFiltersDialog_closeLink,#codingLoadingDialog_closeLink{
+    			display: none
+			}
+			#codingFiltersDialog,#codingLoadingDialog{
+				border-width:unset;
+				border-style: none
+			}	
+			
+			
+			
+		</style>
+	</head>
+	<body ng-app="codingWorklistApp" ng-controller="codingWorklistCtrl" ng-cloak>
+		<div ng-show='showWorkList'>
+			<h1 id='worklistHeader'>Worklist</h1>
+			<uitk:panel model="codingWorklistFilters"></uitk:panel>
+		</div>
+		<div ng-include="url"></div>
+	</body>
+</html>

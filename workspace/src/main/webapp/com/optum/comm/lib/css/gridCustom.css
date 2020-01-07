@@ -1,0 +1,18 @@
+.evenrowHighlight .highlight.evenrow
+{
+  background-color : #ffffff !important;
+}
+
+.oddrowHighlight .highlight.oddrow
+{
+  background-color : #ffffff !important;
+}
+
+.outputColor .highlight .output
+{
+  background-color : #ffffff !important;
+}
+.inputColor .highlight .input
+{
+  background-color : #ffffff !important;
+}

@@ -1,0 +1,144 @@
+<div ng-controller="utilityCtrl">
+	<h3>Retrieval Information</h3>
+	<uitk:message model="errorMessageModel"> </uitk:message>
+	<!-- <span class='cux-icon-asterisk'>
+		<span class="tk-icon-glyph">
+			<span icon='cux-icon-asterisk' style='font-size:14px;'>Required</span>
+		</span>
+	</span> -->
+	<div>
+	<span class='cux-icon-asterisk'>
+		<span class="tk-icon-glyph"></span>
+	</span>
+	<uitk:label id="requiredLabelId" style="color : #e32315; font-weight: normal">Required</uitk:label>
+	</div>
+	<div class="tk-grid tk-margin-top-1t" style='width:80%'>		
+		<div class="tk-col-1-4">
+			<div>
+				<div>
+					<uitk:label id="retrvlPrefSelect_label" for='retrvlPrefSelect' required="true">Retrieval Method</uitk:label>
+				</div>
+				<div style='margin-top:5px;'>
+					<select ng-model='dataModel.retrvlPrefSelect' ng-change='handleRetrvlPrefSelection()' id='retrvlPrefSelectId' style='width:130px' tabindex='1'>
+						<option value="" selected>Select</option>
+						<option value="EMR">EMR</option>
+						<option value="FAX">Fax</option>
+						<option value="ONSITE">Onsite</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="tk-col-1-4">
+			<div>
+				<div>
+					<uitk:label for="firstNameId_input" required="true">First name</uitk:label>
+				</div>
+				<div style='margin-top:5px;'>
+					<uitk:input tk-type="text"  id="firstNameId" style-class="tk-width-18t" model="dataModel.firstName" 
+						name="firstname"></uitk:input>
+				</div>
+			</div>
+			<div class='tk-margin-top-1t'>
+				<div>
+					<uitk:label for="lastNameId_input" required="true">Last name</uitk:label>
+				</div>
+				<div style='margin-top:5px;'>
+					<uitk:input tk-type="text" id="lastNameId" style-class="oui-width-18t" model="dataModel.lastName"
+						name="lastname"></uitk:input>
+				</div>
+			</div>
+			<div class='tk-margin-top-1t'>
+				<div>
+					<uitk:label for="address1_input" required="true">Address 1</uitk:label>
+				</div>
+				<div style='margin-top:5px;'>
+					<uitk:input tk-type="text" id="address1Id" style-class="oui-width-18t" model="dataModel.address1"
+						name="address1"></uitk:input>
+				</div>
+			</div>
+			<div class='tk-margin-top-1t'>
+				<div>
+					<uitk:label for="address2_input">Address 2</uitk:label>
+				</div>
+				<div style='margin-top:5px;'>
+					<uitk:input tk-type="text" id="address2Id" style-class="oui-width-18t" model="dataModel.address2"
+						name="address2"></uitk:input>
+				</div>
+			</div>
+			
+		</div>
+		<div class="tk-col-1-4">
+			<div>
+				<div>
+					<uitk:label for="CityId_input" required="true">City</uitk:label>
+				</div>
+				<div style='margin-top:5px;'>
+					<uitk:input tk-type="text" id="CityId" style-class="tk-width-18t" model="dataModel.city"
+						name="city"></uitk:input>
+				</div>
+			</div>
+			<div class='tk-margin-top-1t'>
+				<div>
+					<uitk:label id="stateSelect_label" for='stateSelect' required="true">State</uitk:label>
+				</div>
+				<div style='margin-top:5px;'>
+					<select ng-model="dataModel.stateSelect" id="stateSelectId" ng-options="state.key as state.value for state in dataModel.states">
+					</select> 
+				</div>
+			</div>
+			<div class='tk-margin-top-1t'>
+				<div>
+					<uitk:label for="zipID_input" required="true">Zip</uitk:label>
+				</div>
+				<div style='margin-top:5px;'>
+					<uitk:input tk-type="text" id="zipId" style-class="oui-width-10t" model="dataModel.zip"
+						name="zip"></uitk:input>
+				</div>
+			</div>
+		</div>
+		<div class="tk-col-1-4">
+			<div class='tk-margin-top-1t'>
+				<div>
+					<uitk:label for="PhoneNumberId_input" required="true">Phone number</uitk:label>
+				</div>
+				<div style='margin-top:5px;'>	
+					<span>
+						<uitk:input tk-type="text" id="PhoneNumberId" style-class="oui-width-10t" model="dataModel.phonenumber"></uitk:input>
+					</span>
+					<div id='PhoneNumberId_tip' class='tk-input-masking-assistivetext oui-rfrm-tip' tabindex="-1">
+						<span class="oui-a11y-hidden">Format</span>555-555-5555
+					</div>
+				</div>
+			</div>
+			<div class='tk-margin-top-1t'>
+				<div>
+					<uitk:label for="faxId_input" required="true">Fax</uitk:label>
+				</div>
+				<div style='margin-top:5px;'>
+					<span>
+						<uitk:input tk-type="text" id="faxId" style-class="oui-width-10t" model="dataModel.fax"></uitk:input>
+					</span>
+					<div id='faxId_tip' class='tk-input-masking-assistivetext oui-rfrm-tip' tabindex="-1">
+						<span class="oui-a11y-hidden">Format</span>555-555-5555
+					</div>
+				</div>
+			</div>
+			<div>
+				<div class='tk-margin-top-1t'>
+					<uitk:label for="emailId_input">Email</uitk:label>
+				</div>
+				<div style='margin-top:5px;'>
+					<span>
+						<uitk:input tk-type="text" id="emailId" style-class="oui-width-18t" model="dataModel.email" ></uitk:input>
+					</span>
+					<div id='emailId_tip' class='tk-input-masking-assistivetext oui-rfrm-tip' tabindex="-1">
+						<span class="oui-a11y-hidden">Format</span> email@email.com
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	 <div>
+        <uitk:dynamic-table id="retrievalInfoTable" model="dataModel.retrievalInfoModel"> </uitk:dynamic-table>
+    </div>
+</div>

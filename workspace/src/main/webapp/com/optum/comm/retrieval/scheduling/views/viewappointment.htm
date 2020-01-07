@@ -1,0 +1,219 @@
+<div ng-controller="viewApptCntrl">
+
+	<!--<h3>Confirmation</h3> -->
+	<div style='width:98%'>
+		<h4>Retrieval Information</h4>
+		<div class="tk-grid">
+			<div class="tk-col-1-4">
+				<div>
+					<div>
+						<uitk:label>Contact Name</uitk:label>
+					</div>
+					<div>
+						<span style="text-transform:capitalize;" ng-bind='dataModel.retrievalProvName'></span>
+					</div>
+				</div>
+			</div>
+			<div class="tk-col-1-4">
+				<div>
+					<div>
+						<uitk:label>Contact Location</uitk:label>
+					</div>
+					<div ng-if="dataModel.address1">
+						<span ng-bind='dataModel.address1'></span>,
+					</div>
+					<div ng-if="dataModel.address2">
+						<span ng-bind='dataModel.address2'></span>,
+					</div>
+					<div>
+						<span ng-bind='dataModel.city'></span>,
+						<span ng-bind='dataModel.stateSelect'></span>,
+						<span ng-bind='dataModel.zip'></span>
+					</div>
+				</div>
+			</div>
+			<div class="tk-col-1-4">
+				<div>
+					<div>
+						<uitk:label>Contact Phone</uitk:label>
+					</div>
+					<div>
+						<span ng-bind='dataModel.phonenumber'></span>
+					</div>
+					<div class='tk-margin-top-1t'>
+						<uitk:label>Contact Fax</uitk:label>
+					</div>
+					<div>
+						<span ng-bind='dataModel.fax'></span>
+					</div>
+				</div>
+			</div>
+			<div class="tk-col-1-4">
+				<div>
+					<div>
+						<uitk:label>Contact Email</uitk:label>
+					</div>
+					<div>
+						<span ng-bind='dataModel.email'></span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div>
+			<img src='../lib/images/user_line.png'/>
+		</div>
+		<h4>Appointment Information</h4>
+		<div class="tk-grid">
+			<div class="tk-col-1-4">
+				<div>
+					<div>
+						<uitk:label>Appointment Date</uitk:label>
+					</div>
+					<div>
+						<span ng-bind='dataModel.apontmntDateViewModel.displayDate'></span>
+					</div>
+				</div>
+			</div>
+			<div class="tk-col-1-4">
+				<div>
+					<div>
+						<uitk:label>Appointment Time</uitk:label>
+					</div>
+					<div>
+						<span ng-bind='dataModel.apontmntTime'></span>
+						<span>{{dataModel.amPMType.index == 0 ? 'AM' : 'PM'}}</span>
+					</div>
+				</div>
+			</div>
+			<div class="tk-col-1-4">
+				<div>
+					<div>
+						<uitk:label>Retrieval Method</uitk:label>
+					</div>
+					<div>
+						<span ng-bind='dataModel.retrvlPrefSelect'></span>
+					</div>					
+				</div>
+			</div>
+			<div class="tk-col-1-4">
+				<div>
+					<div>
+						<uitk:label>Number Of Appointment Attempts</uitk:label>
+					</div>
+					<div>
+						<span ng-bind='dataModel.noOfAttempts'></span>
+					</div>
+				</div>
+			</div>
+			<div>
+				<img src='../lib/images/user_line.png'/>
+			</div>
+		</div>
+		<h4>Member Information</h4>
+		 <div>
+			<uitk:dynamic-table id="retrievalInfoTable" model="viewAppointmentModel"> </uitk:dynamic-table>
+		</div>
+
+		<!-- <div class="oui-rfrm-group" ng-if="!dataModel.isFromViewApptmnt">
+            <div class="oui-rfrm-label-container">
+                <input type="checkbox" id="iAgreeLblId" ng-model="dataModel.agree"/>
+                <uitk:label for='iAgreeLblId'>I Agree</uitk:label>
+            </div>
+        </div> -->
+	</div>
+	 <div>
+		<uitk:dialog dialog-id='chartFileUpload' dialog-role='dialog' default-width='38%' default-height="30%"
+			style="overflow:hidden; top: 75%;" header-text='Upload Chart File' show="showChartFileUploadDialog" confirm-dialog="false">
+
+			<uitk:dialog dialog-id='uitkPopupId1' dialog-role='dialog'
+				show="showLoadingDialog" header-text='' confirm-dialog="false"
+				default-width="auto" tk-aria-describedby="dialogInsTextId">
+				<img src="../lib/images/loader.gif" />
+			</uitk:dialog>
+
+			<div>
+				<input type="file" data-method="ctrlFn" chart-file-model="chartFile" class="form-control" id ="chartFileId"/>
+				<span ng-show="messageModel.showUploadError" style="color: red;">PDF file format only supported</span>
+				<span ng-show="messageModel.showFileSizeError" style="color: red;">Max limit allowed is 200 MB</span>
+			</div>
+			<div ng-if="!messageModel.showChartFileUploadButton" style="margin-top:60px;">
+	    		<span style="color:red;">Note : Max limit allowed is 200 MB and supported format is only PDF</span>
+	    	</div>
+			<div ng-if="messageModel.showChartFileUploadButton" style="margin-top:30px;">
+			   <uitk:button id="saveChartFile" type="button" value="Submit" enable-default="true" 
+	                custom-class='uitk-width-6t uitk-btn-close-dialog' ng-click="uploadChartFile()"></uitk:button>
+	            
+			   <uitk:button type="button" id="cancelUser" value="Close" enable-default="true" 
+			   		onclick="document.getElementById('chartFileUpload_closeLink').click();" custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+	    	</div>
+	    	<div ng-if="messageModel.showChartFileUploadButton">
+	    		<span style="color:red;">Note : Max limit allowed is 200 MB and supported format is only PDF</span>
+	    	</div>
+		</uitk:dialog>
+	</div>	
+	
+		 <div>
+		<uitk:dialog dialog-id='chartFileUpload' dialog-role='dialog' default-width='38%' default-height="30%"
+			style="overflow:hidden; top: 75%;" header-text='Upload Chart File' show="showChartFileUploadDialog" confirm-dialog="false">
+
+			<uitk:dialog dialog-id='uitkPopupId1' dialog-role='dialog'
+				show="showLoadingDialog" header-text='' confirm-dialog="false"
+				default-width="auto" tk-aria-describedby="dialogInsTextId">
+				<img src="../lib/images/loader.gif" />
+			</uitk:dialog>
+
+			<div>
+				<input type="file" data-method="ctrlFn" chart-file-model="chartFile" class="form-control" id ="chartFileId"/>
+				<span ng-show="messageModel.showUploadError" style="color: red;">PDF file format only supported</span>
+				<span ng-show="messageModel.showFileSizeError" style="color: red;">Max limit allowed is 200 MB</span>
+			</div>
+			<div ng-if="!messageModel.showChartFileUploadButton" style="margin-top:60px;">
+	    		<span style="color:red;">Note : Max limit allowed is 200 MB and supported format is only PDF</span>
+	    	</div>
+			<div ng-if="messageModel.showChartFileUploadButton" style="margin-top:30px;">
+			   <uitk:button id="saveChartFile" type="button" value="Submit" enable-default="true" 
+	                custom-class='uitk-width-6t uitk-btn-close-dialog' ng-click="uploadChartFile()"></uitk:button>
+	            
+			   <uitk:button type="button" id="cancelUser" value="Close" enable-default="true" 
+			   		onclick="document.getElementById('chartFileUpload_closeLink').click();" custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+	    	</div>
+	    	<div ng-if="messageModel.showChartFileUploadButton">
+	    		<span style="color:red;">Note : Max limit allowed is 200 MB and supported format is only PDF</span>
+	    	</div>
+		</uitk:dialog>
+	</div>	
+	
+		 <div>
+		<uitk:dialog dialog-id='chartFileUploadWarning' dialog-role='dialog' default-width='40%' default-height="auto"
+			style="top: 75%;" header-text='Upload process failed' show="showchartFileUploadWarningDialog" confirm-dialog="false">
+			<div>
+	    		<p>A chart upload session is already in progress.  Please close that window before attempting another upload.</p>
+	    	</div>
+	    <uitk:button type="button" id="closeChartFileUploadWarningDialog" value="OK" enable-default="true"
+			   		ng-click="showchartFileUploadWarning()" custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+		<!--  <uitk:button type="button" id="closeChartFileUploadWarningDialog" value="Cancel" enable-default="true"
+			   		ng-click="showchartFileUploadWarningCancel()" custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button> -->
+		</uitk:dialog>
+	</div>	
+	
+ 	<div>
+ 
+	<div>
+		<uitk:button
+				aria-describedby="addToAppointmentButton-desc"
+				ng-click="pendAppointment()"
+				type="button"
+				uitk-btn-disabled='buttonFlag.disableFlagForGenIconBtn'>
+			Pend Appointment
+		</uitk:button>
+		<!-- <a href="" ng-click="handleCancelClick()" style="padding:6px;margin-right:13px;">Cancel</a>  -->
+		<uitk:button
+				aria-describedby="addToAppointmentButton-desc"
+				ng-click="handleCancelClick()"
+				type="button">
+			Exit
+		</uitk:button>
+		 	
+	</div>
+	
+</div>

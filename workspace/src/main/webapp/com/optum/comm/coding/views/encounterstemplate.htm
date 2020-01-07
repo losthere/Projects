@@ -1,0 +1,118 @@
+<form ng-controller="codingEncountersUIController">
+<div class="encountersForm" ng-if='(!dataModel.isSupervisorUI && !dataModel.isReadonly) || dataModel.showEncounterSection' onkeydown='handlePreventDefault(event)'>
+	<div style="display:block"><uitk:label required="true" class="form-label" style="padding-bottom:15px">Required</uitk:label></div>
+	<div style="display:block">
+	<span class="form-span" style="display:block">
+		<uitk:label class="form-label" for='fromDate' required="true">From</uitk:label>
+    	<uitk:calendar id="fromDateId" name="fromDate" ng-model="encounterObj.dosFromDt" ng-keyup="fromDateChange()" ng-change="fromDateChange()" view-model="dataModel.fromDateModel"> 		
+    </span>
+
+	<span class="form-span">
+		<uitk:label class="form-label" for='throughDate' required="true">Through</uitk:label>
+		<uitk:calendar id="throughDateId" name="throughDate" ng-model="encounterObj.dosThruDt"  view-model="dataModel.throughDateModel" ng-keyup="displayICDCodeTable()" ng-change="displayICDCodeTable()" style-class="width: 7%"/>	
+	</span>
+	
+	<span class="form-span">
+		<uitk:label class="form-label" for='pageNumber' required="true">Page#</uitk:label>
+		<uitk-input id='pageNumber' model="encounterObj.pageNumber" tk-disabled ='dataModel.isReadonly || dataModel.isSupervisorUI' style-class="uitk-input-custom-class-number" tk-supress-message="true"> </uitk-input> 
+		<!-- <input type='text' ng-model-options="{ updateOn: 'blur' }" ng-model='encounterObj.pageNumber' style='width:57px;'/> -->
+	</span>
+	
+	<span class="form-span">
+	 	<uitk:label class="form-label" required="true" for='renderingProviderId'>Rendering Provider Match</uitk:label>
+			<select id="renderingProviderId" name="Rendering Provider" class='tk-width-12t' style = "margin-right: 0px;margin-top: 0px;"ng-disabled ='dataModel.isReadonly || dataModel.isSupervisorUI' ng-change="checkRPValue(encounterObj.retrievalProvFlag)" ng-model="encounterObj.retrievalProvFlag">
+				<option value="">Select</option>
+				<option value="Y">{{dataModel.chartDetailsObj.provName}}</option>
+				<option value="N">Other</option>
+			</select>
+		<span style = "margin-right: 20px;"><uitk:icon-font title="Does the rendering provider match the provider displayed above?" icon="cux-icon-info_hollow"></uitk:icon-font></span>
+	</span>
+	
+	<span class="form-span" ng-if="encounterObj.retrievalProvFlag == 'N' ">
+		<uitk:label ng-if='!encounterObj.isOptumCoding' class="form-label" for='npi'>NPI</uitk:label>
+		<uitk:label ng-if='encounterObj.isOptumCoding' required="true" class="form-label" for='npi'>NPI</uitk:label>
+		<uitk-input tk-type="text" id='npi'  max-character-allowed="10" tk-disabled ='dataModel.isReadonly || dataModel.isSupervisorUI' model="encounterObj.provNpi" style-class="uitk-input-custom-class-number"></uitk-input>		
+	</span>
+	
+	<span class="form-span" ng-if="encounterObj.retrievalProvFlag == 'N' ">
+		<uitk:label class="form-label" for='firstName'>First Name</uitk:label>		
+		<uitk-input tk-type="text" id='firstName' model='encounterObj.provFirstName' tk-disabled ='dataModel.isReadonly || dataModel.isSupervisorUI' style-class="uitk-input-custom-class-text"></uitk-input>		
+	</span>
+	
+	<span class="form-span" ng-if="encounterObj.retrievalProvFlag == 'N' ">
+		<uitk:label class="form-label" for='lastName'>Last Name</uitk:label>
+		<uitk-input tk-type="text" id='lastName' model='encounterObj.provLastName' tk-disabled ='dataModel.isReadonly || dataModel.isSupervisorUI' style-class="uitk-input-custom-class-text" ></uitk-input>				
+	</span>
+	
+	<span class="form-span" ng-if='dataModel.isEncEoCodesPresent'>
+		<uitk:label class="form-label-dropDown" style="vertical-align: top" for=eoCodeDropDownId>EO Code</uitk:label>
+		<div>
+		<!--<uitk:select id="eoCodeDropDownId" item-list="eoCodeDropdownList" selected-value="default"></uitk:select> -->
+		 <uitk:multiselect id="id2" input-model="encLevelEoCodeList"
+        	output-model="dataModel.selected1" button-label="gcmEoDesc" item-label="gcmEoDesc"
+        	max-height="16.667rem" flyoutwindow-width="16.667rem" max-labels="1"  helper-elements="all none"
+        	tick-property="ticked" default-label="Select" is-disabled='dataModel.isReadonly || dataModel.isSupervisorUI' on-item-click="dataModel.changeEncEoCode()" on-close="dataModel.changeEncEoCode()">
+ 		</uitk:multiselect>
+		<div ng-repeat="selected in dataModel.selected1">
+			<span>{{selected.gcmEoDesc}}</span>
+	    </div>
+
+			<!-- <select id="eoCodeDropDownId" name="Encounter EoCodes" ng-disabled ='dataModel.isReadonly || dataModel.isSupervisorUI' ng-change='dataModel.changeEncEoCode()' ng-model="encounterObj.encEoKey" ng-options=' eoCodeObj.gcmEoKey as eoCodeObj.gcmEoDesc for eoCodeObj in dataModel.encLevelEoCodeList'>
+				<option selected="selected">Select</option>
+				<option value="D02">No provider signature on documentation</option>
+			</select> -->
+		</div>
+	</span>
+	</div>
+</div>	
+	<!-- <div ng-show="encounters.showICDCodeTable" style="display: block; padding-top: 30px; border-collapse: collapse ">
+		<span ng-if="dataModel.ICDTableModel"><uitk:dynamic-table  id="dynamicTableICDCodes" model="dataModel.ICDTableModel"></uitk:dynamic-table></span>
+		<span style="display:block""><a href ng-click="onAddRow()"> Add More</a></span>
+	</div> -->
+	<div ng-if="encounters.showICDCodeTable"  style="display: block; padding-top: 30px; border-collapse: collapse;width:80% " onkeydown='handlePreventDefault(event)'>
+		<div class='tk-dtbl-container'>
+			<table class='tk-dtbl tk-dtbl-reorderable-columns'>
+				<thead>
+					<tr>
+						<th><span>ICD-10 DX Codes</span></th>
+						<th ng-if="dataModel.chartDetailsObj.busSegment =='MCARE'"><span>HCC</span></th>
+						<th ng-if="dataModel.chartDetailsObj.busSegment =='MCARE'"><span>RxHCC</span></th>
+						<th ng-if="dataModel.chartDetailsObj.busSegment =='ACA'"><span>HCC</span></th>
+						<th><span>ICD 10 DX Description</span></th>
+						<th ng-if='dataModel.dxLevelEoCodeLst.length > 1'><span>EO Code</span></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat='record in dataModel.ICDTableModel.records track by $index' onkeydown='handlePreventDefault(event)'> 
+						<td id='icdCodeId'><input ng-model="record.icdDxCd" ng-disabled ='dataModel.isReadonly || dataModel.isSupervisorUI' ng-update-model-on="blur" onkeydown='handlePreventDefault(event)' ng-blur="dataModel.handleIcdDXChange(record)" type="text" id="icdCodeInputId"></input></td>
+						<td id='hccId' ng-if="dataModel.chartDetailsObj.busSegment =='MCARE'"><span ng-if="record.v22Hcc">V22 : <span ng-bind="record.v22Hcc"></span><br/></span><span ng-if="record.v24Hcc">V24 : <span ng-bind="record.v24Hcc"></span></span></td>
+						<td id='rxHccId' ng-if="dataModel.chartDetailsObj.busSegment =='MCARE'"><span ng-bind="record.rxHcc"> </span></td>
+						<td id='hhsId' ng-if="dataModel.chartDetailsObj.busSegment =='ACA'"><span ng-bind="record.hhs"> </span></td>
+						<td id='icdDescriptionId' ><span ng-bind="record.icdDesc"> </span></td>
+						<td id='eoCodeId' ng-if='dataModel.dxLevelEoCodeLst.length > 1'><select ng-model="record.encDxEoKey" ng-disabled ='dataModel.isReadonly || dataModel.isSupervisorUI' style='max-width:250px;'class="eocodes-class" id="eoTableDropDown" ng-options="eoCodeObj.gcmEoKey as eoCodeObj.gcmEoDesc for eoCodeObj in dataModel.dxLevelEoCodeLst"></select></td>
+					</tr>
+				</tbody>
+			</table>
+			<span style="display: block;" ng-if='(!dataModel.isReadonly && !dataModel.isSupervisorUI)'>
+				<a href ng-click="onAddRow()" style="float:left;"><uitk:icon-font icon="cux-icon-add2"></uitk:icon-font> Add More</a>
+			</span>
+		</div>
+	</div>
+	</br>
+	<div style="display:block;margin-top:30px;">	
+		<uitk:button ng-if='!dataModel.isReadonly && !dataModel.isSupervisorUI' ng-click="saveEncounter()">Save</uitk:button>
+		<uitk:button ng-if='!dataModel.isReadonly && !dataModel.isSupervisorUI' ng-click="toggleCancelEncDialog(false)">Cancel</uitk:button>
+	</div>
+	<div>
+		<uitk:dialog dialog-id='cancelEncounterId' dialog-role='dialog' header-text='Confirm' show='showCancelEncounterDialog'
+		confirm-dialog="false" default-width='407px' default-height="167px">
+			<div><span style='font-size:13px;'>Are you sure you want to Cancel? All unsaved data will be lost.</span></div>
+			<div>
+				<uitk:button type="button" value="Yes" enable-default="true" ng-click="clearEncounterSection()"
+					custom-class='tk-width-6t'></uitk:button>
+				<uitk:button type="button" value="No" enable-default="true" ng-click="toggleCancelEncDialog(true)"
+					custom-class='tk-width-6t'></uitk:button>
+			</div>
+		</uitk:dialog>
+	</div>
+</form>

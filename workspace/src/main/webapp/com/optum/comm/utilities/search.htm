@@ -1,0 +1,94 @@
+<div ng-controller="searchController">
+	<p>
+		<uitk:message model="errorMessageModel"> </uitk:message>
+	</p> 
+	<div>
+		<uitk:panel model="searchFilters"></uitk:panel>	
+		<div>
+			<uitk:dynamic-table id="chartInfoTable" model="basicSearchModel"> </uitk:dynamic-table>
+		</div>	
+		<uitk:dialog  dialog-id='searchLoadingDialogId' dialog-role='dialog' show="showSearchLoadingDialog"
+        	header-text='' confirm-dialog="false" tk-aria-describedby="dialogInsTextId" default-width="auto" >
+			<img src="../lib/images/loader.gif"/>
+    	</uitk:dialog>
+		<div>
+			<uitk:dialog dialog-id='chartFileUpload' dialog-role='dialog' default-width='38%' default-height="30%"
+				style="overflow:hidden; top: 75%;" header-text='Upload Chart File' show="showChartFileUploadDialog" confirm-dialog="false">
+				<uitk:dialog dialog-id='uitkPopupId1' dialog-role='dialog' show="showLoadingDialog"
+			    	header-text='' confirm-dialog="false" default-width="auto" tk-aria-describedby="dialogInsTextId">
+			      	<img src="../lib/images/loader.gif"/>
+			    </uitk:dialog>
+				<div>
+					<input type="file" data-method="ctrlFn" chart-file-model="chartFile" class="form-control" id ="chartFileId"/>
+					<span ng-show="uploadMessageModel.showUploadError" style="color: red;">PDF file format only supported</span>
+					<span ng-show="uploadMessageModel.showFileSizeError" style="color: red;">Max limit allowed is 200 MB</span>
+				</div>
+				<div ng-if="!uploadMessageModel.showChartFileUploadButton" style="margin-top:60px;">
+		    		<span style="color:red;">Note : Max limit allowed is 200 MB and supported format is only PDF</span>
+		    	</div>
+				<div ng-if="uploadMessageModel.showChartFileUploadButton" style="margin-top:30px;">
+				   <uitk:button id="saveChartFile" type="button" value="Submit" enable-default="true" 
+		                custom-class='uitk-width-6t uitk-btn-close-dialog' ng-click="uploadChartFile()"></uitk:button>
+				   <uitk:button type="button" id="cancelUser" value="Close" enable-default="true" 
+				   		onclick="document.getElementById('chartFileUpload_closeLink').click();" custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+		    	</div>
+		    	<div ng-if="uploadMessageModel.showChartFileUploadButton">
+		    		<span style="color:red;">Note : Max limit allowed is 200 MB and supported format is only PDF</span>
+		    	</div>
+			</uitk:dialog>
+		</div>
+		<uitk:dialog dialog-id="cancelDialogId" dialog-role='dialog' header-text='Cancel' show='showCancelChartDialog' 
+			default-width='30%' default-height="65%" style="overflow:unset;">
+			<div style="margin-bottom:15px;">
+			  <uitk:message model="dataModel.dialogErrorMessageModel" style="width:250px;"></uitk:message>
+				<span>This Chart ID will be cancelled and removed from view and any associated appointment.</span>
+			</div>
+			<div>
+				<span>Click Confirm to proceed or Cancel to return to the previous page.</span>
+			</div>
+			<div style="margin-top:10px;margin-bottom:10px;">
+				<uitk:label id="selectedCancelReasonLabel" for='selectedCancelReason' required="true">Reason</uitk:label>
+				<select ng-model="selectedCancelReason.value" id='cancelReasonSelectId' 
+					ng-options='cancelReason.key as cancelReason.value for cancelReason in cancelReasons'">
+					<option value="">Select</option>
+				</select> 
+			</div>
+			<div style="margin-bottom:10px;">
+				<uitk:label>Comments</uitk:label>
+			</div>
+			<div>
+				<span><uitk:textarea id='cancelCommentId' name='cancelComment' width='100%' model='cancelComment.value'></uitk:textarea></span>
+			</div>
+			<br/>
+			<div style="display:block;">
+				<uitk:button type="button" value="Confirm" enable-default="true" ng-click="cancelChart()"
+					custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+				<uitk:button type="button" value="Cancel" enable-default="true" onclick="document.getElementById('cancelDialogId_closeLink').click();"
+					custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+			</div>
+		</uitk:dialog>
+		<uitk:dialog dialog-id="duplicateRecordId" dialog-role='dialog' default-width='25%' default-height="35%" 
+			header-text='Duplicate' show="showDuplicateChartDialog" style="overflow:unset;">
+			<div style="margin-bottom:15px;">
+			<span>This chart ID will be marked as a duplicate and removed from view and any associated appointment.</span>
+			</div>
+			<div>
+				<span>Click Confirm to continue or Exit to return to the page.</span>
+			</div>
+			<div style="display:block;">
+				<uitk:button type="button" value="Confirm" enable-default="true" ng-click="duplicateChart()"
+					custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+				<uitk:button type="button" value="Cancel" enable-default="true" onclick="document.getElementById('duplicateRecordId_closeLink').click();"
+					custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+			</div>					 
+		</uitk:dialog>
+		<uitk:dialog dialog-id='chartFileUploadWarning' dialog-role='dialog' default-width='40%' default-height="auto"
+			style="top: 75%;" header-text='Upload process failed' show="showchartFileUploadWarningDialog" confirm-dialog="false">
+			<div>
+	    		<p>A chart upload session is already in progress.  Please close that window before attempting another upload.</p>
+	    	</div>
+	    <uitk:button type="button" id="closeChartFileUploadWarningDialog" value="OK" enable-default="true"
+			   		ng-click="showchartFileUploadWarning()" custom-class='uitk-width-6t uitk-btn-close-dialog'></uitk:button>
+		</uitk:dialog>
+	</div>	
+</div>

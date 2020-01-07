@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Image Upload</title>
+
+<script src="../../../lib/js/common/jquery.js" type="text/javascript"></script>
+<script src="../../../lib/js/common/angular.min.js" type="text/javascript"></script>
+
+<script type="text/javascript" src="../../../lib/js/common/ng-csv.js"></script>
+<script type="text/javascript" src="../../../lib/js/common/angular-sanitize.js"></script>
+<script type="text/javascript" src="../../../../comm/lib/js/common/angular-touch.js"></script>
+<script type="text/javascript" src="../../../lib/js/common/angular-translate/angular-translate.js"></script>
+<script type="text/javascript" src="../../../lib/js/common/lodash.js"></script>
+
+<script src="../../../lib/js/common/uitk.js"></script>
+<script type="text/javascript" src="../../../lib/js/common/jquery.ui.widget.js"></script>
+<script type="text/javascript" src="../../../lib/js/common/jquery.iframe-transport.js"></script>
+<script type="text/javascript" src="../../../lib/js/common/jquery.fileupload.js"></script>
+<script type="text/javascript" src="../../../lib/js/common/jquery.fileupload-process.js"></script>
+<script type="text/javascript" src="../../../lib/js/common/jquery.fileupload-validate.js"></script>
+<script type="text/javascript" src="../../../lib/js/common/uitk-file-upload.js"></script>
+<script type="text/javascript" src="../../../lib/js/modules/retrieval/bulkupload.js"></script>
+<link rel="stylesheet" href="../../../lib/css/uitk.min.css"
+	type="text/css" />
+<div class="ux-head-cntr-navigation">
+	<div class="ux-head-cntr-navigation-global"
+		style="background-color: #666666; height: 30px;"></div>
+</div>
+<div id="__xbody_msg_group_element"></div>
+<div id="ux-wrapper" style="position: relative">
+	<div class="ux-head">
+		<div class="ux-head-cntr-logo" style="padding-top: 10px">
+			<span class="ux-head-logo" style="height: 10px">
+			<img src="../../../lib/images/clinicalReview.png" alt="Clinical Review"/>
+<div class="demo"></div>
+<style>
+.demo {
+	margin-top: -10px;
+    position:relative;
+    overflow:auto;
+    border-top:2px solid orange;
+}
+				</style>
+			</span>
+		</div>
+	</div>
+</div>
+</head>
+<body ng-app="bulkUploadApp" ng-controller="bulkUploadCntrl"
+	style="overflow: auto">
+	<div style="position: relative; top: 5%; left: 5%;width:85%;margin-right:5px;">
+		<uitk-file-upload model="fileUploadViewModel"></uitk-file-upload>
+	</div>
+</body>
+</html>

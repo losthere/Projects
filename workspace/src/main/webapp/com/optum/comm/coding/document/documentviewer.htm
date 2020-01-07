@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+	<script type="text/javascript">
+		
+		window.opener = null;
+		
+		function getParameter(parameterName){
+			if (window.location.search.match(new RegExp("[\?\&]" + parameterName + "=([^\&]*)")))
+                    return decodeURIComponent(RegExp.$1);
+		}
+		
+		function loadViewer()
+		{
+			var desktopFrame = document.getElementById("documentFrame");
+			desktopFrame.src = "downloaddocument.htm?documentId=" + getParameter("documentId");
+		}
+		// To hide IE context menu from getting displayed on the left-most corner
+		document.oncontextmenu = function(){return false};
+	</script>
+
+	<style type="text/css">
+		html, body, iframe {position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; border: 0px; padding: 0px; margin: 0px; overflow: hidden}
+	</style>
+
+<body onload="loadViewer()">
+	<iframe id="documentFrame"  frameborder="0" framespacing="0" border="0" cellspacing="0" scrolling="no" src=""></iframe>
+
+</body>
+</html> 
+

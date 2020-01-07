@@ -1,0 +1,37 @@
+<!doctype html>
+<html onapplicationready="downloadDocument()">
+<head>
+
+	<script type='text/javascript'>
+		function downloadDocument()
+		{ 
+			var request = cordys.cloneXMLDocument(crqsDocumentRequest.XMLDocument);
+			cordys.setNodeText(request, ".//*[local-name()='gapId']", application.getParameter("documentId"));
+			downloader.searchPath = "<Content>"; 
+			downloader.organization = application.organization; 
+			downloader.setFrameId("documentFrame");
+			downloader.request = request ; 
+			downloader.downloadFile(); 
+		} 
+
+	</script>
+	<script type='text/javascript' src="/cordys/wcp/application.js"></script>
+
+	<script type ="cordys/xml" id="crqsDocumentRequest">
+<SOAP:Envelope xmlns:SOAP="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP:Body>
+    <GetDocument xmlns="http://schemas.optum.com/cpc/gcm/cm/service/1.0">
+      <gapId></gapId>
+    </GetDocument>
+  </SOAP:Body>
+</SOAP:Envelope>
+</script>
+</head>
+<body>
+	<div cordysType="wcp.library.util.Download" id="downloader">
+
+	</div>
+	<iframe id="documentFrame" style="width:100%;height:100%"></iframe>
+</body>
+</html> 
+
